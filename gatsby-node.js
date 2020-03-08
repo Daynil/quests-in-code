@@ -1,7 +1,16 @@
-/**
- * Implement Gatsby's Node APIs in this file.
- *
- * See: https://www.gatsbyjs.org/docs/node-apis/
- */
+const remark = require('remark');
+const html = require('remark-html');
+const fs = require('fs');
 
-// You can delete this file if you're not using it
+exports.createPages = async ({ actions }) => {
+  const { createPage } = actions;
+
+  const post1 = fs.readFileSync(require.resolve('./content/level-one.md'));
+
+  remark()
+    .use(html)
+    .process(post1, function(err, file) {
+      if (err) console.error(err);
+      console.log(String(file));
+    });
+};
