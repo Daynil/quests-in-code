@@ -2,9 +2,7 @@ const remark = require('remark');
 const html = require('remark-html');
 const fs = require('fs');
 
-exports.createPages = async ({ actions }) => {
-  const { createPage } = actions;
-
+exports.createPages = async () => {
   const post1 = fs.readFileSync(require.resolve('./content/level-one.md'));
 
   remark()
