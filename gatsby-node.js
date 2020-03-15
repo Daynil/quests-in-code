@@ -5,29 +5,99 @@ const rehypePrism = require('rehype-prism');
 const rehypeStringify = require('rehype-stringify');
 const fs = require('fs');
 
-exports.createPages = async ({ actions }) => {
+exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
+
+  const markdownPages = await graphql(`
+    query {
+      allBlogHtml {
+        edges {
+          node {
+            slug
+          }
+        }
+      }
+    }
+  `);
+
+  markdownPages.data.allBlogHtml.edges.forEach(({ node }) => {
+    createPage({
+      path: node.slug,
+      component: require.resolve('./src/templates/blog-post.js'),
+      context: {
+        slug: node.slug
+      }
+    });
+  });
+};
+
+exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
+  const { createNode } = actions;
 
   const contentDir = fs.readdirSync('./content/');
 
-  contentDir.forEach(mdFile => {
-    const post = fs.readFileSync(require.resolve(`./content/${mdFile}`));
+  contentDir.forEach(mdFilePath => {
+    const nodeData = {
+      absolutePath: require.resolve(`./content/${mdFilePath}`),
+      relativePath: mdFilePath
+    };
 
-    unified()
-      .use(remarkParse)
-      .use(remarkRehype)
-      .use(rehypePrism)
-      .use(rehypeStringify)
-      .process(post, function(err, file) {
-        if (err) console.error(err);
-        console.log(String(file));
-        createPage({
-          path: `/${mdFile.replace(/\.[^/.]+$/, '')}`,
-          component: require.resolve('./src/templates/blog-post.js'),
-          context: {
-            post: String(file)
-          }
-        });
-      });
+    const nodeMetaData = {
+      id: createNodeId(`id-${mdFilePath}`),
+      parent: null,
+      children: [],
+      internal: {
+        type: 'BlogMDFile',
+        mediaType: 'text/markdown',
+        contentDigest: createContentDigest(nodeData)
+      }
+    };
+
+    createNode(Object.assign({}, nodeData, nodeMetaData));
   });
+
+  return;
+};
+
+exports.onCreateNode = async ({
+  node,
+  actions,
+  loadNodeContent,
+  createNodeId,
+  createContentDigest
+}) => {
+  const { createNode, createParentChildLink } = actions;
+  if (node.internal.mediaType !== 'text/markdown') return;
+
+  const content = await loadNodeContent(node);
+  unified()
+    .use(remarkParse)
+    .use(remarkRehype)
+    .use(rehypePrism)
+    .use(rehypeStringify)
+    .process(content, function(err, file) {
+      if (err) console.error(err);
+      console.log(String(file));
+
+      const htmlNodeData = {
+        html: String(file),
+        slug: `/${node.relativePath.replace(/\.[^/.]+$/, '')}`
+      };
+
+      const htmlNodeMetaData = {
+        id: createNodeId(`id-html-${node.absolutePath}`),
+        parent: node.id,
+        children: [],
+        internal: {
+          type: 'BlogHTML',
+          mediaType: 'text/html',
+          contentDigest: createContentDigest(String(file))
+        }
+      };
+
+      const htmlNode = Object.assign({}, htmlNodeData, htmlNodeMetaData);
+
+      createNode(htmlNode);
+      createParentChildLink({ parent: node, child: htmlNode });
+    });
 };
