@@ -4,10 +4,10 @@ const remarkRehype = require('remark-rehype');
 const rehypePrism = require('rehype-prism');
 const rehypeStringify = require('rehype-stringify');
 const fs = require('fs');
+const { slash } = require('gatsby-core-utils');
 
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
-
   const markdownPages = await graphql(`
     query {
       allBlogHtml {
@@ -19,7 +19,6 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     }
   `);
-
   markdownPages.data.allBlogHtml.edges.forEach(({ node }) => {
     createPage({
       path: node.slug,
@@ -38,7 +37,7 @@ exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
 
   contentDir.forEach(mdFilePath => {
     const nodeData = {
-      absolutePath: require.resolve(`./content/${mdFilePath}`),
+      absolutePath: slash(require.resolve(`./content/${mdFilePath}`)),
       relativePath: mdFilePath
     };
 
@@ -69,7 +68,9 @@ exports.onCreateNode = async ({
   const { createNode, createParentChildLink } = actions;
   if (node.internal.mediaType !== 'text/markdown') return;
 
-  const content = await loadNodeContent(node);
+  console.log('node: ', node);
+
+  const content = await fs.readFileSync(node.absolutePath);
   unified()
     .use(remarkParse)
     .use(remarkRehype)
