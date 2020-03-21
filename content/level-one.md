@@ -4,4 +4,4 @@ This is the first post in the blog, currently just a placeholder but we will soo
 
 ### This came from a markdown file!
 
-![Funny Cat](/cat-1.jpg)
+![Funny Cat](./cat-1.jpg)

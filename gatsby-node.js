@@ -4,7 +4,9 @@ const remarkRehype = require('remark-rehype');
 const rehypePrism = require('rehype-prism');
 const rehypeStringify = require('rehype-stringify');
 const fs = require('fs');
+const path = require('path');
 const { slash } = require('gatsby-core-utils');
+const visit = require('unist-util-visit');
 
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
@@ -38,8 +40,13 @@ exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
   contentDir.forEach(mdFilePath => {
     const nodeData = {
       absolutePath: slash(require.resolve(`./content/${mdFilePath}`)),
-      relativePath: mdFilePath
+      relativePath: mdFilePath,
+      publicURL: slash(
+        path.resolve(process.cwd(), 'public', 'static', mdFilePath)
+      )
     };
+
+    const extension = mdFilePath.split('.')[1];
 
     const nodeMetaData = {
       id: createNodeId(`id-${mdFilePath}`),
@@ -47,10 +54,14 @@ exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
       children: [],
       internal: {
         type: 'BlogMDFile',
-        mediaType: 'text/markdown',
+        mediaType: extension === 'md' ? 'text/markdown' : 'image/jpeg',
         contentDigest: createContentDigest(nodeData)
       }
     };
+
+    console.log(nodeMetaData);
+
+    fs.copyFileSync(nodeData.absolutePath, nodeData.publicURL);
 
     createNode(Object.assign({}, nodeData, nodeMetaData));
   });
@@ -61,24 +72,28 @@ exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
 exports.onCreateNode = async ({
   node,
   actions,
-  loadNodeContent,
   createNodeId,
   createContentDigest
 }) => {
   const { createNode, createParentChildLink } = actions;
   if (node.internal.mediaType !== 'text/markdown') return;
 
-  console.log('node: ', node);
-
   const content = await fs.readFileSync(node.absolutePath);
   unified()
     .use(remarkParse)
+    .use(() => {
+      return function transformer(tree, file) {
+        visit(tree, 'image', function(node) {
+          const imageName = node.url.split('./')[1];
+          node.url = `/static/${imageName}`;
+        });
+      };
+    })
     .use(remarkRehype)
     .use(rehypePrism)
     .use(rehypeStringify)
     .process(content, function(err, file) {
       if (err) console.error(err);
-      console.log(String(file));
 
       const htmlNodeData = {
         html: String(file),
