@@ -1,14 +1,19 @@
+const path = require('path');
 const { createFilePath } = require('gatsby-source-filesystem');
 
+/** @type { import("gatsby").GatsbyNode["createPages"] } */
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
   const markdownPages = await graphql(`
-    query {
-      allMarkdownRemark {
+    query AllMarkdownPages {
+      allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
         edges {
           node {
             fields {
               slug
+            }
+            frontmatter {
+              title
             }
           }
         }
@@ -16,17 +21,25 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
 
-  markdownPages.data.allMarkdownRemark.edges.forEach(({ node }) => {
+  const posts = markdownPages.data.allMarkdownRemark.edges;
+
+  posts.forEach((post, index) => {
+    const previous = index === posts.length - 1 ? null : posts[index + 1].node;
+    const next = index === 0 ? null : posts[index - 1].node;
+
     createPage({
-      path: node.fields.slug,
-      component: require.resolve('./src/templates/blog-post.js'),
+      path: post.node.fields.slug,
+      component: path.resolve('./src/templates/blog-post.tsx'),
       context: {
-        slug: node.fields.slug
+        slug: post.node.fields.slug,
+        previous,
+        next
       }
     });
   });
 };
 
+/** @type { import("gatsby").GatsbyNode["onCreateNode"] } */
 exports.onCreateNode = async ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
 
@@ -35,7 +48,7 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
     createNodeField({
       node,
       name: 'slug',
-      value: slug
+      value: `/blog${slug}`
     });
   }
 };

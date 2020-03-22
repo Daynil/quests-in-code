@@ -1,24 +1,25 @@
 module.exports = {
   siteMetadata: {
-    title: 'Gatsby Default Starter',
+    title: 'Javascript Adventures',
     description:
-      'Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.',
-    author: '@gatsbyjs'
+      'Exploring the vast javascript landscape with fun learning adventures',
+    author: 'Danny Libin'
   },
   plugins: [
     'gatsby-plugin-react-helmet',
+    'gatsby-plugin-postcss',
     {
       resolve: 'gatsby-source-filesystem',
       options: {
-        name: 'images',
-        path: `${__dirname}/src/images`
+        name: 'assets',
+        path: `${__dirname}/content/assets`
       }
     },
     {
       resolve: 'gatsby-source-filesystem',
       options: {
-        name: 'markdown-pages-images',
-        path: `${__dirname}/content`
+        name: 'blog',
+        path: `${__dirname}/content/blog`
       }
     },
     {
@@ -37,17 +38,21 @@ module.exports = {
     },
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
+    'gatsby-plugin-typescript',
+    'gatsby-plugin-typegen',
     {
       resolve: 'gatsby-plugin-manifest',
       options: {
-        name: 'gatsby-starter-default',
-        short_name: 'starter',
+        name: 'Javascript Adventures',
+        short_name: 'JS Adventures',
         start_url: '/',
-        background_color: '#663399',
+        background_color: '#white',
         theme_color: '#663399',
         display: 'minimal-ui',
         icon: 'src/images/gatsby-icon.png' // This path is relative to the root of the site.
       }
     }
+    // Support for downloading or pre-caching pages, needed for PWAs
+    // "gatsby-plugin-offline",
   ]
 };
