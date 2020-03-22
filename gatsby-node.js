@@ -43,7 +43,8 @@ exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
       relativePath: mdFilePath,
       publicURL: slash(
         path.resolve(process.cwd(), 'public', 'static', mdFilePath)
-      )
+      ),
+      publicRelativePath: `/static/${mdFilePath}`
     };
 
     const extension = mdFilePath.split('.')[1];
@@ -58,8 +59,6 @@ exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
         contentDigest: createContentDigest(nodeData)
       }
     };
-
-    console.log(nodeMetaData);
 
     fs.copyFileSync(nodeData.absolutePath, nodeData.publicURL);
 
