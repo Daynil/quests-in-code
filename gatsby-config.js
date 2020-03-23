@@ -39,7 +39,7 @@ module.exports = {
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
     'gatsby-plugin-typescript',
-    'gatsby-plugin-typegen',
+    'gatsby-plugin-graphql-codegen',
     {
       resolve: 'gatsby-plugin-manifest',
       options: {

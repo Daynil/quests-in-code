@@ -1,10 +1,12 @@
 import { graphql } from 'gatsby';
 import React from 'react';
+import { BlogPostBySlugQuery } from '../../graphql-types';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import './blog-post.css';
 
 export default function BlogPost(props: {
-  data: GatsbyTypes.BlogPostBySlugQuery;
+  data: BlogPostBySlugQuery;
   pageContext: any;
 }) {
   const post = props.data.markdownRemark;
@@ -16,8 +18,10 @@ export default function BlogPost(props: {
         title={post.frontmatter.title}
         description={post.frontmatter.description || post.excerpt}
       />
-      <h1 className="text-blue-600">Testing color</h1>
-      <div dangerouslySetInnerHTML={{ __html: post.html }}></div>
+      <div className="mt-12">
+        <h1 className="text-blue-600">{post.frontmatter.title}</h1>
+        <div dangerouslySetInnerHTML={{ __html: post.html }}></div>
+      </div>
     </Layout>
   );
 }

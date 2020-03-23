@@ -1,0 +1,19 @@
+h1 {
+  @apply text-4xl mb-8 font-bold;
+}
+
+h2 {
+  @apply text-2xl mb-8 font-bold;
+}
+
+p {
+  @apply mb-6 leading-relaxed;
+}
+
+pre {
+  @apply rounded-md;
+}
+
+.gatsby-highlight {
+  @apply mb-6;
+}
