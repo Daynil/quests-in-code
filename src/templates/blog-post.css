@@ -17,3 +17,16 @@ pre {
 .gatsby-highlight {
   @apply mb-6;
 }
+
+a {
+  @apply text-blue-500 no-underline transition duration-300;
+}
+
+a:hover,
+a:active {
+  @apply text-gray-900;
+}
+
+ul {
+  @apply list-disc list-inside mb-6;
+}

@@ -6,13 +6,29 @@ description: Building a GatsbyJS blog from scratch without plugins for a deep un
 
 If you want to get started with Gatsby quickly, Gatsby has excellent [documentation](https://www.gatsbyjs.org/docs/). Have a look at their quick start, pick a nice starter template, create your app with the starter template, and you're off to the races!
 
-However, I've never been the one that likes to take such complexity for granted. To be sure, there is a reason for the complexity Gatsby introduces, but you truly need to understand it in order to appreciate what it brings to the table.
+However, I've never been one that takes complexity for granted. To be sure, there is a reason for the complexity Gatsby introduces, but you truly need to understand it in order to appreciate what it brings to the table. Complexity is a trade-off, so you really need to consider why you would want to use something like Gatsby over, say, a simple site with just HTML and some CSS and javascript sprinkled in as needed.
 
-Gatsby has a lot of moving pieces, particularly when you start adding plugins, and it's easy to get overwhelmed as you inevitably start customizing to suite your sites and preferences. Plugins are an extremely useful tool in Gatsby, and the community that has developed around it is [quite rich](https://www.gatsbyjs.org/plugins/). However, the best way to understand Gatsby is starting completely bare, with no plugins or starters, even those developed by the Gatsby team. Eventually, those tools will add much convenience and velocity to your development. But if you want to understand everything that's going on, its nice to start from scratch and work your way up.
+## Plan to Learn Gatsby In Depth
 
-Clearly there are far too many plugins to break each one down and understand them all in one shot before you even start using Gatsby, and that would be counter to the purpose of Gatsby. But there are a few core features of Gatsby which, if you can dig into them deeply and understand them at the lowest level, you will have a solid foundation upon which to draw from in your work with Gatsby. You'll be able to understand how most plugins work in general, and have a clear vision for building your own plugins or extensions when you need them.
+Gatsby has a lot of moving pieces, particularly when you start adding plugins, and it's easy to get overwhelmed as you inevitably start customizing to suite your sites and preferences. Plugins are an extremely useful tool in Gatsby, and the community that has developed around it is [quite rich](https://www.gatsbyjs.org/plugins/).
 
-The three core features that most websites will be utilizing in Gatsby that we'll look to dig into are sourcing data, passing it to components to programmatically create pages, and plugging into Gatsby's data management layer, GraphQL. Once we manually implement a basic functioning version of all of these, we'll have an appreciation for the simplicity that Gatsby's plugin architecture brings and we'll swap out our code for the plugins that do the same thing and take advantage of the many performance improvements Gatsby offers.
+However, the best way to understand Gatsby is starting completely bare, with no plugins or starters, even those developed by the Gatsby team. Eventually, those tools will add much convenience and velocity to your development. But if you want to understand everything that's going on, its nice to start from scratch and work your way up.
+
+Clearly there are far too many plugins to break each one down and understand them all in one shot before you even start using Gatsby, and that would be counter to the purpose of Gatsby. But there are a few core features of Gatsby which, if you can dig into them deeply and understand them at the lowest level, you will have a solid foundation upon which to draw from in your work with Gatsby.
+
+After our exploration of Gatsby today, we'll:
+
+- Understand how Gatsby's build process works
+- Understand how most plugins work and how they hook into Gatsby
+- Have a clear vision for building our own plugins or extensions when we need them
+
+The three core features that most websites will be utilizing in Gatsby that we'll look to dig into are:
+
+- Sourcing external data for consumption in Gatsby
+- Passing data to components to programmatically create pages
+- Plugging into Gatsby's data management layer, GraphQL
+
+Once we manually implement a basic functioning version of all of these, we'll have an appreciation for the simplicity that Gatsby's plugin architecture brings and we'll swap out our code for the plugins that do the same thing and take advantage of the many performance improvements Gatsby offers.
 
 ## What are we building?
 
@@ -49,7 +65,7 @@ If you open up `gatsby-config.js`, you'll notice there are actually already a nu
 
 `gatsby-config.js`
 
-```javascript
+```javascript:title=gatsby-config.js
 module.exports = {
   siteMetadata: {
     title: `Gatsby Default Starter`,
@@ -117,7 +133,7 @@ Now, navigate to http://localhost:8000/blog-post and you will see our first blog
 
 Awesome, that was easy enough right?!
 
-Of course, as simple as this is, we don't want to have to take the time to write all of our blog posts in raw JSX. There are several ways to author content in a more user friendly way, then use Gatsby to create pages out of it. One of the most popular ways is using a content management system, such as[Netlify CMS](https://www.netlifycms.org/). Another popular and simple way, which we will use, is markdown files.
+Of course, as simple as Gatsby makes this, we don't want to have to take the time to write all of our blog posts in raw JSX. There are several ways to author content in a more user friendly way, then use Gatsby to create pages out of it. One of the most popular ways is using a content management system, such as [Netlify CMS](https://www.netlifycms.org/). Another popular and simple way, which we will use, is markdown files.
 
 ## Using Markdown
 
