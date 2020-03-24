@@ -63,8 +63,6 @@ What we see is a very simple starter application with a few things already in pl
 
 If you open up `gatsby-config.js`, you'll notice there are actually already a number of plugins included even in this default blank starter:
 
-`gatsby-config.js`
-
 ```javascript:title=gatsby-config.js
 module.exports = {
   siteMetadata: {
@@ -106,9 +104,7 @@ We will be needing all of these eventually, but we will start building out our b
 
 First, let's create a simple page ourselves just to make sure we understand the very basics. Create a file called blog-post.js in the pages folder. Gatsby automatically builds a page with the URL as the file name for files in this folder. Throw an image called cat-1.jpg into the images folder so we can explore how to use our own images.
 
-`src/pages/blog-post.js`
-
-```jsx
+```jsx:title=src/pages/blog-post.js
 import React from 'react';
 import Cat1 from '../images/cat-1.jpg';
 
@@ -141,9 +137,7 @@ Let's create a couple of super simple markdown placeholders for our first 2 post
 
 ![Gatsby content folder structure screenshot](./markdown-folder.png)
 
-`content/level-one.md`
-
-```markdown
+```markdown:title=content/level-one.md
 # Level One
 
 This is the first post in the blog, currently just a placeholder but we will soon add lots of _awesome_ meaningful content.
@@ -153,9 +147,7 @@ This is the first post in the blog, currently just a placeholder but we will soo
 ![Funny Cat](/cat-1.jpg)
 ```
 
-`content/level-two.md`
-
-```markdown
+```markdown:title=content/level-two.md
 # Level Two
 
 This is our second post, we're _really_ on a roll now aren't we?
@@ -175,9 +167,7 @@ $ npm install remark remark-html
 
 Gatsby has a special file called `gatsby-node.js` which is run once when your site is being built. We can use this file to parse the markdown files. Let's start by just parsing our first markdown post and logging it out to the console.
 
-`gatsby-node.js`
-
-```javascript
+```javascript:title=gatsby-node.js
 const remark = require('remark');
 const html = require('remark-html');
 const fs = require('fs');
@@ -205,9 +195,7 @@ Great! So now we've read in our markdown file into memory with node's readFileSy
 
 In Gatsby, you create page templates in order to programmatically generate pages. So, let's move our `blog-post.js` component to `src/templates` (and remove the hard coded image if you moved it to the content folder earlier). Now that `blog-post.js` is in templates and not pages, Gatsby will no longer automatically generate a page for it. Gatsby expects us to explain how to create this page programmatically, so let's do that.
 
-`gatsby-node.js`
-
-```javascript{13-16}
+```javascript{13-16}:title=gatsby-node.js
 const remark = require('remark');
 const html = require('remark-html');
 const fs = require('fs');
@@ -230,9 +218,7 @@ exports.createPages = async () => {
 
 Now restart the development server and go back to http://localhost:8000/blog-post and you'll see that it still works. Ok, what was the point of that? We've just imperatively done what Gatsby did for us automatically by convention when this file was in the pages. Well, this is where the power of Gatsby comes in. Now that we can tap into Gatsby's build system, we can use whatever data we want and map it to page templates. We can make use of our parsed markdown file by passing it to our template using createPage's context property.
 
-`gatsby-node.js`
-
-```javascript{10-12}
+```javascript{10-12}:title=gatsby-node.js
 // …
 remark()
   .use(html)
@@ -251,9 +237,7 @@ remark()
 
 Now our blog-post template component has access to the context via the pageContext prop, so let's replace the hard-coded post in blog-post.js with dynamically set HTML from the markdown.
 
-`src/templates/blog-post.js`
-
-```jsx
+```jsx:title=src/templates/blog-post.js
 import React from 'react';
 
 export default function BlogPost({ pageContext }) {
@@ -279,9 +263,7 @@ Essentially, we haven't told Gatsby anything about how to process images, but it
 
 Our blog-post template is now fully dynamic and is the only thing we need to render all of our markdown files. Let's prove this out by creating another page for our other post. The only thing we need to change is the path, creating a unique slug for each post.
 
-`gatsby-node.js`
-
-```javascript{5,6-7,15}
+```javascript{5,6-7,15}:title=gatsby-node.js
 // …
 exports.createPages = async ({ actions }) => {
   const { createPage } = actions;
@@ -314,9 +296,7 @@ Now refresh the development server, and both of our posts will be available at t
 
 Now, given that we're coders, we're obviously going to want to be able to utilize syntax highlighted code in our blog to show off our cool code snippets right? Of course, silly question. So let's add a markdown file with some code and see how it looks with our current setup.
 
-`content/level-three.md`
-
-````markdown
+````markdown:title=content/level-three.md
 # Level Three
 
 This is a really informative post with a really fancy code snippet.
@@ -344,9 +324,7 @@ Navigate to our new /level-three page URL in the browser and you'll see that we 
 $ npm install prismjs unified remark-parse remark-rehype rehype-prism rehype-stringify
 ```
 
-`gatsby-node.js`
-
-```javascript
+```javascript:title=gatsby-node.js
 const unified = require('unified');
 const remarkParse = require('remark-parse');
 const remarkRehype = require('remark-rehype');
@@ -384,9 +362,7 @@ exports.createPages = async ({ actions }) => {
 
 Here we're parsing our markdown into tokens, using prism to apply the appropriate classes to each token, then turning it into HTML. However, if you refresh now, you'll see the syntax is still not highlighted. We've inserted span elements with the correct classes to highlight each token of code, but we don't have any CSS classes set up yet. Let's take one of Prism's default themes, tomorrow night, and use that. You can insert styles globally in `gatsby-browser.js`.
 
-`gatsby-browser.js`
-
-```javascript
+```javascript:title=gatsby-browser.js
 require('prismjs/themes/prism-tomorrow.css');
 ```
 
@@ -398,9 +374,7 @@ We've now got the skeleton of a fully functioning technical blog. However, as we
 
 Let's start by loading our markdown file information into GraphQL.
 
-`gatsby-node.js`
-
-```javascript
+```javascript:title=gatsby-node.js
 //…
 const { slash } = require('gatsby-core-utils');
 
@@ -449,9 +423,7 @@ Gatsby's development server exposes an extremely useful interactive in-browser G
 
 Great! Now that we've got our markdown files "sourced" into the GraphQL layer, we're going to use the information from these newly created nodes and create the "transformer" portion of our plugin, which will take the files and parse them, then load them into GraphQL as well.
 
-`gatsby-node.js`
-
-```javascript
+```javascript:title=gatsby-node.js
 //…
 exports.onCreateNode = async ({
   node,
@@ -500,9 +472,7 @@ Here we're just hooking into Gatsby's build process, looking for when nodes of t
 
 Great, so now we've got our parsed HTML again, but now it's loaded into the GraphQL layer. Now we can query that data the same way we would query anything in Gatsby. Let's rewrite our `createPages` function to leverage GraphQL.
 
-`gatsby-node.js`
-
-```javascript
+```javascript:title=gatsby-node.js
 //…
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
@@ -533,9 +503,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
 Awesome, that dramatically simplifies our `createPages` function. Now we're just querying grabbing the slug for each post and create a page for it. However, you'll note we're no longer passing the parsed HTML in the context. Well, how will our template know what to render?! Well, that's the beauty of GraphQL. We can now colocate the query for the data the template needs with the template itself! The only thing we need when we're actually creating the pages is the slug.
 
-`src/templates/blog-past.js`
-
-```jsx{5,8-14}
+```jsx{5,8-14}:title=src/templates/blog-past.js
 import { graphql } from 'gatsby';
 import React from 'react';
 
@@ -566,9 +534,7 @@ Let's deal with this in a way that lets us organize our files logically. We'll m
 
 Next, we need to do a few new things in our `sourceNodes` function. First, create a `publicURL` field in node data which will tell us where each file we process will sit in the public directory. We'll put all of our files into the `public/static` directory. Now that we're processing images in addition to markdown files, we'll need to set our `internal.mediaType` to correctly reflect the file type, otherwise our transformer will have a cow trying to parse an jpeg file into HTML. Then, we'll copy each file to its public location, so it will be accessible to our blog posts at runtime.
 
-`gatsby-node.js`
-
-```javascript{12-15,18,26,34,39}
+```javascript{12-15,18,26,34,39}:title=gatsby-node.js
 const path = require('path');
 
 exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
@@ -610,9 +576,7 @@ exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
 
 Now, we can access our images in runtime. If we wanted to use our cat image directly in our JSX, we could write a static or page query to grab the url. For example, we can create the following query in our blog post template to pull in the public URL:
 
-`src/templates/blog-post.js`
-
-```jsx{5,16-18}
+```jsx{5,16-18}:title=src/templates/blog-post.js
 //…
 export default function BlogPost({ data }) {
   return (
@@ -641,9 +605,7 @@ However, the astute reader will note that we've clearly not solved the problem w
 
 This piece is just a bit trickier, but still worth exploring to make sure we've fully wrapped our heads around everything going on under the hood. The complexity is that the markdown file to which the image is relative no longer exists as far as the runtime environment is concerned - it's parsed into an HTML fragment, which we insert into our template. So our only remaining choice is to fake it, hot-swapping the original relative URL with the public directory we know the file is in.
 
-`gatsby-node.js`
-
-```javascript{2,17-24}
+```javascript{2,17-24}:title=gatsby-node.js
 //…
 const visit = require('unist-util-visit');
 
@@ -757,9 +719,7 @@ $ npm install gatsby-transformer-remark gatsby-remark-prismjs gatsby-remark-imag
 
 Now, let's configure our plugins.
 
-`gatsby-config.js`
-
-```javascript
+```javascript:title=gatsby-config.js
 module.exports = {
   //…
   plugins: [
@@ -794,9 +754,7 @@ We're adding a configuration for `gatsby-source-filesystem` with the directory o
 
 Next, let's make the needed adjustments to our gatsby-node.js file. First, we can completely remove the `sourceNodes` function, since the plugins create all of our nodes for us. We also need to make a few tweaks to the `createPages` and `onCreateNode` functions.
 
-`gatsby-node.js`
-
-```javascript
+```javascript:title=gatsby-node.js
 const { createFilePath } = require('gatsby-source-filesystem');
 
 exports.createPages = async ({ graphql, actions }) => {
@@ -844,9 +802,7 @@ That's the whole file now! That really cleans things up doesn't it?! 😌 One it
 
 The last change we made was to change our `allBlogHtml` node names in the query to `allMarkdownRemark`. It's important to note also that since we added the slug as a `field`, you need to access it with `node.fields.slug` rather than just `node.slug`. Finally, we just need to change the node names in our template file.
 
-`src/templates/blog-post.js`
-
-```jsx
+```jsx:title=src/templates/blog-post.js
 import { graphql } from 'gatsby';
 import React from 'react';
 

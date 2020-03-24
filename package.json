@@ -15,6 +15,7 @@
     "gatsby-plugin-sharp": "^2.4.3",
     "gatsby-plugin-typegen": "^2.0.0",
     "gatsby-plugin-typescript": "^2.3.0",
+    "gatsby-remark-code-titles": "^1.1.0",
     "gatsby-remark-images": "^3.2.0",
     "gatsby-remark-prismjs": "^3.4.0",
     "gatsby-source-filesystem": "^2.1.46",
