@@ -10,14 +10,6 @@ p {
   @apply mb-6 leading-relaxed;
 }
 
-/* pre {
-  @apply rounded-md;
-} */
-
-.gatsby-highlight {
-  @apply mb-6;
-}
-
 a {
   @apply text-blue-500 no-underline transition duration-300;
 }
@@ -29,12 +21,6 @@ a:active {
 
 ul {
   @apply list-disc list-inside mb-6;
-}
-
-:not(pre) > code[class*='language-'] {
-  @apply text-gray-900 bg-gray-300;
-  padding: 0.15rem 0.45rem 0.15rem 0.45rem;
-  border-radius: 0.375rem;
 }
 
 .gatsby-code-title {
@@ -53,7 +39,7 @@ ul {
 }
 
 .gatsby-highlight-code-line {
-  background-color: hsl(240, 13%, 16%);
+  background-color: hsl(240, 13%, 17%);
   display: block;
   margin-right: -1em;
   margin-left: -1em;
@@ -74,20 +60,11 @@ ul {
   border-radius: 0.375rem;
 }
 
-/**
- * Remove the default PrismJS theme background-color, border-radius, margin,
- * padding and overflow.
- * 1. Make the element just wide enough to fit its content.
- * 2. Always fill the visible space in .gatsby-highlight.
- * 3. Adjust the position of the line numbers
- */
-.gatsby-highlight pre[class*='language-'] {
-  background-color: transparent;
-  margin: 0;
-  padding: 0;
-  overflow: initial;
-  float: left; /* 1 */
-  min-width: 100%; /* 2 */
+/* Code blocks */
+pre[class*='language-'] {
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
 }
 
 .gatsby-code-title + .gatsby-highlight {
@@ -117,11 +94,26 @@ pre[class*='language-'] {
   hyphens: none;
 }
 
-/* Code blocks */
-pre[class*='language-'] {
-  padding: 1em;
-  margin: 0.5em 0;
-  overflow: auto;
+/**
+ * Remove the default PrismJS theme background-color, border-radius, margin,
+ * padding and overflow.
+ * 1. Make the element just wide enough to fit its content.
+ * 2. Always fill the visible space in .gatsby-highlight.
+ * 3. Adjust the position of the line numbers
+ */
+.gatsby-highlight pre[class*='language-'] {
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+  overflow: initial;
+  float: left; /* 1 */
+  min-width: 100%; /* 2 */
+}
+
+:not(pre) > code[class*='language-'] {
+  @apply text-gray-900 bg-gray-300;
+  padding: 0.15rem 0.45rem 0.15rem 0.45rem;
+  border-radius: 0.375rem;
 }
 
 .token.comment,

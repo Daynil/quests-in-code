@@ -821,7 +821,9 @@ export const query = graphql`
 `;
 ```
 
-Restart Gatsby and voila! Everything is exactly as it was before, with 95% less _custom_ code. However, we'll be wise to note that all of the functionality we just removed from our own `gatsby-node.js` is now in each plugin's own `gatsby-node.js` file. That's how Gatsby's plugin system works. Plugins provide their own functionality by wrapping everything in a tidy package which contains just the Gatsby APIs they utilize. If you [open the code](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-source-filesystem/src) for `gatsby-source-filesystem` for example, you'll see it also has a `gatsby-node.js` file which does what we coded ourselves (and much more, of course). When we install the plugin and add it to our configuration, the idea "plugs in" to our own project's Gatsby build process as though we had the code in our `gatsby-node.js` file.
+Restart Gatsby and voila! Everything is exactly as it was before, with 95% less _custom_ code. However, we'll be wise to note that all of the functionality we just removed from our own `gatsby-node.js` is now in each plugin's own `gatsby-node.js` file.
+
+That's how Gatsby's plugin system works. Plugins provide their own functionality by wrapping everything in a tidy package which contains just the Gatsby APIs they utilize. If you [open the code](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-source-filesystem/src) for `gatsby-source-filesystem` for example, you'll see it also has a `gatsby-node.js` file which does what we coded ourselves (and much more, of course). When we install the plugin and add it to our configuration, the idea is it "plugs in" to our own project's Gatsby build process as though we had the code in our `gatsby-node.js` file.
 
 Likewise, if we were to make our own plugin that we wanted to reuse in other projects, or even publish publicly, we could extract the relevant code from our `gatsby-node.js` file into a `/plugins/my-plugin` folder with its own `package.json` and `gatsby-node.js` file, and we'd pretty much be ready to use it. Neat!
 
@@ -831,12 +833,18 @@ I created this post in order to learn Gatsby more deeply as I created this very 
 
 So what have we learned from today's adventure?
 
-We took a deep dive into Gatsby's internals, and essentially reimplemented basic functioning versions of some of Gatsby's popular plugins. Along the way, I think we've certainly developed an appreciation for the complexity that is abstracted away. However, since we didn’t shy away from this complexity initially, we now understand exactly how Gatsby's core systems operate, and we're well equipped to understand exactly how most plugins operate, as well as how to create our own for custom use cases if needed.
+We took a deep dive into Gatsby's internals, and essentially reimplemented basic functioning versions of some of Gatsby's popular plugins. Along the way, I think we've certainly developed an appreciation for the complexity that is abstracted away.
 
-For me, tools like Gatsby really come alive when you don't just take their abstractions for granted, but dive in head-first and really figure out how things work and come together. Once you've developed a robust mental model for the foundational principles, as we have, you can take a step back and leverage the advantages of such a tool.
+However, since we didn’t shy away from this complexity initially, we now understand exactly how many of Gatsby's key core systems operate, and we're well equipped to understand exactly how most plugins operate, as well as how to create our own for custom use cases if needed.
 
-Well, if after swapping out our code for Gatsby plugins we ended up with exactly the same thing, what exactly did we gain other than writing less code? As you may have noticed, our implementations of the plugin were very basic and naïve. We wouldn't want to use code like that in production. Many edge cases are not addressed, and we only built it to function exactly how we were currently trying to use it. So rather than having to build production-ready code for every single function, we can utilize some of Gatsby's existing plugins to save us a ton of time and energy, and we get a lot of additional bonuses. You may have noticed, for example, that while it is loading, our cat image now holds its position in the page, and blurs in when we open our `level-one` blog post. These are clearly non-trivial things to accomplish, but we get a robust mechanism for doing these things for free with our plugins.
+For me, tools like Gatsby really come alive when you don't just take their abstractions for granted, instead diving in head-first and really taking the time to figure out how things work and come together. Once you've developed a robust mental model for the foundational principles, as we have, you can take a step back and leverage the advantages of such a tool.
 
-If we ever run into the limitations of existing plugins, or we need to source data from new places, we now know exactly where to start.
+Well, one might think, if after swapping out our code for Gatsby plugins we ended up with exactly the same thing, what exactly did we gain other than writing less custom code?
+
+As you may have noticed, our implementations of the plugin were very basic and naïve. We wouldn't want to use code like that in production. Many edge cases are not addressed, and we only built it to function exactly how we were currently trying to use it.
+
+Rather than having to build production-ready code for every single use case, we can utilize some of Gatsby's existing plugins to save us a ton of time and energy, and we get a lot of additional bonuses. You may have noticed, for example, that while it is loading, our cat image now holds its position in the page, and blurs in when we open our `level-one` blog post. Super cool! These are clearly non-trivial things to accomplish, but we get a robust mechanism for doing them for free with our plugins.
+
+If we ever run into the limitations of existing plugins, or we need to source data from new places, we now know exactly where to start. In the same spirit as this blog post, if you ever feel you don't understand something about a plugin, or it seems not to work right for some reason, don't be shy about diving into the plugin's codebase. You know how it should work now!
 
 With that, it's onward to new adventures!
