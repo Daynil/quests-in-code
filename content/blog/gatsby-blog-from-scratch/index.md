@@ -102,7 +102,7 @@ module.exports = {
 
 We will be needing all of these eventually, but we will start building out our blog without them so we can understand what they are for.
 
-First, let's create a simple page ourselves just to make sure we understand the very basics. Create a file called blog-post.js in the pages folder. Gatsby automatically builds a page with the URL as the file name for files in this folder. Throw an image called cat-1.jpg into the images folder so we can explore how to use our own images.
+First, let's create a simple page ourselves just to make sure we understand the very basics. Create a file called blog-post.js in the pages folder. Gatsby automatically builds a page with the URL as the file name for files in this folder. Throw an image called `cat-1.jpg` into the images folder so we can explore how to use our own images.
 
 ```jsx:title=src/pages/blog-post.js
 import React from 'react';
