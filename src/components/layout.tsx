@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
     <div>
       <Header siteTitle={data.site.siteMetadata.title} />
       <div
-        className="m-auto text-gray-900 text-lg px-4 sm:px-0 max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl"
+        className="m-auto text-gray-900 text-lg px-4 md:max-w-3xl"
         // style={{
         //   margin: `0 auto`,
         //   maxWidth: 960,
