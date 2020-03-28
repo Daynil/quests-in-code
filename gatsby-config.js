@@ -12,20 +12,20 @@ module.exports = {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'assets',
-        path: `${__dirname}/src/assets`
+        path: `${__dirname}/src/content/assets`
       }
     },
     {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'posts',
-        path: `${__dirname}/src/pages/posts`
+        path: `${__dirname}/src/content/posts`
       }
     },
     {
-      resolve: 'gatsby-transformer-remark',
+      resolve: 'gatsby-plugin-mdx',
       options: {
-        plugins: [
+        gatsbyRemarkPlugins: [
           'gatsby-remark-code-titles',
           {
             resolve: 'gatsby-remark-images',
