@@ -5,10 +5,13 @@
   "version": "0.1.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
+    "@mdx-js/mdx": "^1.5.8",
+    "@mdx-js/react": "^1.5.8",
     "gatsby": "^2.19.7",
     "gatsby-image": "^2.2.39",
     "gatsby-plugin-graphql-codegen": "^2.5.0",
     "gatsby-plugin-manifest": "^2.2.39",
+    "gatsby-plugin-mdx": "^1.1.3",
     "gatsby-plugin-offline": "^3.0.32",
     "gatsby-plugin-postcss": "^2.2.0",
     "gatsby-plugin-react-helmet": "^3.1.21",

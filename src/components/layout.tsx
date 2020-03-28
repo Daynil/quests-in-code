@@ -17,16 +17,12 @@ const Layout = ({ children }) => {
   return (
     <div>
       <Header siteTitle={data.site.siteMetadata.title} />
-      <div
-        className="m-auto text-gray-900 text-lg px-4 md:max-w-3xl"
-        // style={{
-        //   margin: `0 auto`,
-        //   maxWidth: 960,
-        //   padding: `0 1.0875rem 1.45rem`
-        // }}
-      >
+      <div className="m-auto text-gray-900 text-lg px-6 md:max-w-3xl">
         <main>{children}</main>
-        <footer>© Javascript Adventures {new Date().getFullYear()}</footer>
+        <footer>
+          © {new Date().getFullYear()} Javascript Adventures. All Rights
+          Reserved.
+        </footer>
       </div>
     </div>
   );

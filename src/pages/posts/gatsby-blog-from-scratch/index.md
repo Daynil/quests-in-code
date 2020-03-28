@@ -46,14 +46,14 @@ The final version using our custom code is available at the [final-plugin-free](
 
 To get started, let's use the gatsby CLI to generate the default blank starter.
 
-```
+```bash
 $ npm install -g gatsby-cli
 $ gatsby new javascript-adventures
 ```
 
 The Gatsby CLI allows you to pass an optional parameter called `starter-url`, which can provide many useful defaults such as plugins for parsing markdown, for using typescript, etc. However, for our learning purposes we want to start with the minimum available option. If you do not pass anything for the starter-url, the default blank starter used, gatsby-starter-default. You can also pass `gatsby-starter-default` as the parameter, but that does the same thing as omitting it. Once Gatsby finishes installing everything, you'll see a success message. Let's explore what Gatsby has scaffolded out for us.
 
-```
+```bash
 $ cd javascript-adventures
 $ code .
 $ gatsby develop
@@ -161,7 +161,7 @@ Right now, Gatsby doesn't know anything about our markdown files. We need to tel
 
 Let's start fix this by teaching Gatsby how to parse a markdown file into HTML so that we can use it in our site. First, let's install a markdown parser. There are several options, but we'll use (remark)[https://remark.js.org/] since that's what Gatsby's main markdown plugin uses, which we will switch to once we understand what it is doing under the hood.
 
-```
+```bash
 $ npm install remark remark-html
 ```
 
@@ -320,7 +320,7 @@ const unfold = (f, seed) => {
 
 Navigate to our new /level-three page URL in the browser and you'll see that we have a nice code block with our code, but no syntax highlighting. That may work fine for Medium (😏) but we're much cooler than that, so let's add it! First, we need to install a syntax highlighter. However, we also need to install a few additional packages as well to help us with this new parsing task. Syntax highlighting code in markdown is more complex than just turning it straight into HTML since we now have to tokenize individual characters and highlight them appropriately depending on the language. To achieve this, we can use [PrismJS](https://prismjs.com/) and a few helpers.
 
-```
+```bash
 $ npm install prismjs unified remark-parse remark-rehype rehype-prism rehype-stringify
 ```
 
@@ -712,7 +712,7 @@ So, now that we've really gotten into the weeds and created an entire build pipe
 
 Our `exports.sourceNodes` function replicates `gatsby-source-filesystem`. Our `exports.onCreateNode` function replicates `gatsby-transformer-remark`, which parses the markdown to HTML, `gatsby-remark-prismjs`, which adds syntax highlighting to code blocks, and `gatsby-remark-images`, which processes images in markdown to be used in the production build. Let's start by installing everything we'll need. The default starter already comes with the filesystem plugin, a few image utilities (but not remark-images) and some SEO tool. Before we do that, let's also uninstall the packages we used to manually do some of this stuff, since many of Gatsby's plugins use the same packages as dependencies.
 
-```
+```bash
 $ npm uninstall rehype-prism rehype-stringify remark remark-html remark-parse remark-rehype unified unist-util-visit
 $ npm install gatsby-transformer-remark gatsby-remark-prismjs gatsby-remark-images prismjs
 ```

@@ -12,14 +12,14 @@ module.exports = {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'assets',
-        path: `${__dirname}/content/assets`
+        path: `${__dirname}/src/assets`
       }
     },
     {
       resolve: 'gatsby-source-filesystem',
       options: {
-        name: 'blog',
-        path: `${__dirname}/content/blog`
+        name: 'posts',
+        path: `${__dirname}/src/pages/posts`
       }
     },
     {
