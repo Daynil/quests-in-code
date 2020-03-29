@@ -22,11 +22,18 @@ export default function TextLink({
   // Prevents the new page from being able to access to window.opener
   if (external) rel = 'noopener';
 
-  return external || internalImage ? (
-    <a href={href} rel={rel} target={target} {...delegated}>
-      {children}
-    </a>
-  ) : (
-    <Link to={href}>{children}</Link>
+  const link =
+    external || internalImage ? (
+      <a href={href} rel={rel} target={target} {...delegated}>
+        {children}
+      </a>
+    ) : (
+      <Link to={href}>{children}</Link>
+    );
+
+  return (
+    <span className="transition duration-200 border-b-2 border-teal-500 hover:text-teal-500 hover:border-transparent">
+      {link}
+    </span>
   );
 }

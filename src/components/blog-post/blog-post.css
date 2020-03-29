@@ -12,15 +12,6 @@ p {
   @apply mb-6 leading-relaxed;
 }
 
-p a {
-  @apply transition duration-200 border-b-2 border-teal-500;
-}
-
-p a:hover,
-p a:active {
-  @apply text-teal-500 border-0;
-}
-
 ul {
   @apply list-disc list-inside mb-6;
 }
