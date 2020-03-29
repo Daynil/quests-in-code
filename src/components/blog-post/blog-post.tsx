@@ -5,7 +5,7 @@ import React from 'react';
 import { BlogPostBySlugQuery } from '../../../graphql-types';
 import Layout from '../layout';
 import SEO from '../seo';
-import TextLink from '../TextLink';
+import TextLink from '../text-link';
 import './blog-post.css';
 
 export default function BlogPost(props: { data: BlogPostBySlugQuery }) {

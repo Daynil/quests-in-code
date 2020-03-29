@@ -11,15 +11,18 @@ export default function TextLink({
   ...delegated
 }: Props) {
   const external = href.match(/(^http|^mailto)/i);
+  const internalImage = href.match(/(^\/static\/)/i);
 
-  // Open external links in a new tab
-  if (typeof target === 'undefined') target = external ? '_blank' : '_self';
+  // Open external links and internal images in a new tab
+  // If we use Gatsby's link for an image, it breaks
+  if (typeof target === 'undefined')
+    target = external || internalImage ? '_blank' : '_self';
 
   // External links should have noopener for security
   // Prevents the new page from being able to access to window.opener
   if (external) rel = 'noopener';
 
-  return external ? (
+  return external || internalImage ? (
     <a href={href} rel={rel} target={target} {...delegated}>
       {children}
     </a>
