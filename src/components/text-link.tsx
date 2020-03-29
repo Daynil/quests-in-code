@@ -14,7 +14,7 @@ export default function TextLink({
   const internalImage = href.match(/(^\/static\/)/i);
 
   // Open external links and internal images in a new tab
-  // If we use Gatsby's link for an image, it breaks
+  // If we use Gatsby's link for an internal image, it breaks
   if (typeof target === 'undefined')
     target = external || internalImage ? '_blank' : '_self';
 

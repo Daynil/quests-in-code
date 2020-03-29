@@ -31,14 +31,16 @@ export default function BlogPost(props: { data: BlogPostBySlugQuery }) {
         />
         <div className="mt-12">
           <div className="text-center">
-            <div className="text-blue-500 font-semibold">{tagString}</div>
-            <h1 className="mb-2">{frontmatter.title}</h1>
+            <div className="text-teal-500 font-semibold">{tagString}</div>
+            <h1 className="my-2">{frontmatter.title}</h1>
             <div className="mb-8 text-gray-700">
               <span>{frontmatter.date} • </span>
               <span>{timeToRead} minute read</span>
             </div>
           </div>
-          <MDXRenderer>{body}</MDXRenderer>
+          <div className="mt-12">
+            <MDXRenderer>{body}</MDXRenderer>
+          </div>
         </div>
       </Layout>
     </MDXProvider>

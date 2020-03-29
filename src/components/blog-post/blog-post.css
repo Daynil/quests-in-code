@@ -5,20 +5,20 @@ h1 {
 }
 
 h2 {
-  @apply text-2xl mb-8 font-bold;
+  @apply text-2xl mt-12 mb-6 font-bold;
 }
 
 p {
   @apply mb-6 leading-relaxed;
 }
 
-a {
-  @apply text-blue-500 no-underline transition duration-300;
+p a {
+  @apply text-teal-500 transition duration-300 border-b-2 border-teal-500;
 }
 
-a:hover,
-a:active {
-  @apply text-gray-900;
+p a:hover,
+p a:active {
+  @apply text-teal-900 border-0;
 }
 
 ul {
@@ -36,7 +36,7 @@ ul {
   margin-bottom: -8px;
   background-color: hsl(240, 13%, 12%);
   color: hsl(0, 0%, 80%);
-  border-bottom: 2px hsl(205, 79%, 66%) solid;
+  border-bottom: 2px hsl(177, 52%, 46%) solid;
   font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
     'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono',
     'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier,
@@ -50,7 +50,7 @@ ul {
   margin-left: -1em;
   padding-right: 1em;
   padding-left: 0.75em;
-  border-left: 0.25em solid hsl(205, 79%, 66%);
+  border-left: 0.25em solid hsl(177, 52%, 46%);
 }
 
 /**
@@ -167,7 +167,7 @@ pre[class*='language-'] {
 .token.boolean,
 .token.number,
 .token.function {
-  color: hsl(205, 79%, 66%);
+  color: hsl(174, 59%, 56%);
 }
 
 .token.property,
