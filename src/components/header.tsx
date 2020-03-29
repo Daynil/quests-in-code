@@ -1,7 +1,14 @@
 import { Link } from 'gatsby';
 import React from 'react';
 
-export default function Header() {
+type Props = {
+  path: string;
+};
+
+export default function Header({ path }: Props) {
+  const navClassName =
+    'transition duration-200 ml-4 px-3 py-2 rounded-md text-xl font-medium text-gray-900 hover:text-teal-800 hover:bg-teal-100 focus:outline-none';
+
   return (
     <header className="max-w-6xl mx-auto sm:px-6 lg:px-8 text-xl">
       <div className="flex items-center justify-between h-16">
@@ -18,19 +25,25 @@ export default function Header() {
             <div className="ml-10 flex items-baseline">
               <Link
                 to="/posts"
-                className="ml-4 px-3 py-2 rounded-md text-xl font-medium text-gray-900 hover:text-teal-800 hover:bg-teal-100 focus:outline-none"
+                className={
+                  path.match(/(^\/posts\/)/i)
+                    ? navClassName + ' text-teal-800 bg-teal-100'
+                    : navClassName
+                }
               >
                 Posts
               </Link>
               <Link
                 to="/topics"
-                className="ml-4 px-3 py-2 rounded-md text-xl font-medium text-gray-900 hover:text-teal-800 hover:bg-teal-100 focus:outline-none"
+                className={navClassName}
+                activeClassName={navClassName + ' text-teal-800 bg-teal-100'}
               >
                 Topics
               </Link>
               <Link
                 to="/about"
-                className="ml-4 px-3 py-2 rounded-md text-xl font-medium text-gray-900 hover:text-teal-800 hover:bg-teal-100 focus:outline-none"
+                className={navClassName}
+                activeClassName={navClassName + ' text-teal-800 bg-teal-100'}
               >
                 About
               </Link>

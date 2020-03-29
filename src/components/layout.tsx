@@ -1,10 +1,15 @@
 import React from 'react';
 import Header from './header';
 
-const Layout = ({ children }) => {
+type Props = {
+  path: string;
+  children: React.ReactNode;
+};
+
+const Layout = ({ path, children }: Props) => {
   return (
     <div>
-      <Header />
+      <Header path={path} />
       <div className="m-auto text-gray-900 text-lg px-6 md:max-w-3xl">
         <main>{children}</main>
         <footer>

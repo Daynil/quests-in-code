@@ -8,9 +8,16 @@ import SEO from '../seo';
 import TextLink from '../text-link';
 import './blog-post.css';
 
-export default function BlogPost(props: { data: BlogPostBySlugQuery }) {
+type Props = {
+  path: string;
+  data: BlogPostBySlugQuery;
+};
+
+export default function BlogPost(props: Props) {
   const { excerpt, body, frontmatter, timeToRead } = props.data.mdx;
   // const { previous, next } = props.pageContext;
+
+  console.log(props);
 
   let tagString = '';
   frontmatter.tags.forEach((tag, index) => {
@@ -24,7 +31,7 @@ export default function BlogPost(props: { data: BlogPostBySlugQuery }) {
         a: TextLink
       }}
     >
-      <Layout>
+      <Layout path={props.path}>
         <SEO
           title={frontmatter.title}
           description={frontmatter.description || excerpt}
