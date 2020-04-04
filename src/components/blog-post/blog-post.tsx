@@ -38,9 +38,9 @@ export default function BlogPost(props: Props) {
         />
         <div className="mt-12">
           <div className="text-center">
-            <div className="text-teal-500 font-semibold">{tagString}</div>
+            <div className="text-dblue-500 font-semibold">{tagString}</div>
             <h1 className="my-2">{frontmatter.title}</h1>
-            <div className="mb-8 text-gray-700">
+            <div className="mb-8 text-gray-700 dk:text-gray-500">
               <span>{frontmatter.date} • </span>
               <span>{timeToRead} minute read</span>
             </div>
