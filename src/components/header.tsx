@@ -1,5 +1,5 @@
 import { Link } from 'gatsby';
-import React from 'react';
+import React, { useState } from 'react';
 import MoonIcon from './svg/MoonIcon';
 import SunIcon from './svg/SunIcon';
 
@@ -10,22 +10,52 @@ type Props = {
 };
 
 export default function Header({ path, handleDarkSwitch, darkMode }: Props) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const navClassName =
-    'transition duration-200 ease-in-out ml-4 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-500 hover:border-dblue-500 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none';
+    'transition duration-200 ease-in-out md:ml-4 mt-2 md:mt-0 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-500 hover:border-dblue-500 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none';
   const activeClassName =
     ' text-dblue-500 border-b-2 border-dblue-500 dk:border-dblue-500 dk:text-dblue-100';
 
   return (
-    <header className="max-w-6xl mx-auto sm:px-6 lg:px-8 text-xl">
-      <div className="flex items-center justify-between h-16">
-        <div className="w-full justify-between flex items-center">
-          <div className="flex-shrink-0">
+    <header className="max-w-6xl mx-auto px-6 lg:px-8 text-xl">
+      <div className="flex items-center justify-between md:h-16">
+        <div className="w-full justify-between flex flex-col md:flex-row md:items-center">
+          <div className="flex justify-between">
             <Link
               to="/"
               className="px-3 py-2 rounded-md text-3xl font-medium text-gray-900 dk:text-dblue-100"
             >
               {'{⚔} JS Adventures'}
             </Link>
+            <div className="-mr-2 flex md:hidden">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none focus:text-white"
+              >
+                <svg
+                  className="h-6 w-6"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    className={'inline-flex ' + (menuOpen ? 'hidden' : '')}
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                  <path
+                    className={'inline-flex ' + (menuOpen ? '' : 'hidden')}
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline">
@@ -55,6 +85,48 @@ export default function Header({ path, handleDarkSwitch, darkMode }: Props) {
               </Link>
               <button
                 className="transition duration-200 ease-in-out ml-4 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-400 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none self-center hover:border-transparent"
+                onClick={handleDarkSwitch}
+              >
+                {darkMode ? (
+                  <SunIcon className="w-8" />
+                ) : (
+                  <MoonIcon className="w-8" />
+                )}
+              </button>
+            </div>
+          </div>
+          <div
+            className={
+              'w-20 ml-4 text-center md:hidden ' + (menuOpen ? '' : 'hidden')
+            }
+          >
+            <div className="flex flex-col">
+              <Link
+                to="/posts"
+                className={
+                  path.match(/(^\/posts\/)/i)
+                    ? navClassName + activeClassName
+                    : navClassName
+                }
+              >
+                Posts
+              </Link>
+              <Link
+                to="/topics"
+                className={navClassName}
+                activeClassName={navClassName + activeClassName}
+              >
+                Topics
+              </Link>
+              <Link
+                to="/about"
+                className={navClassName}
+                activeClassName={navClassName + activeClassName}
+              >
+                About
+              </Link>
+              <button
+                className="transition duration-200 ease-in-out mt-2 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-400 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none self-center hover:border-transparent block"
                 onClick={handleDarkSwitch}
               >
                 {darkMode ? (
