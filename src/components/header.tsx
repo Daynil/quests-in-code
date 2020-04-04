@@ -1,16 +1,21 @@
 import { Link } from 'gatsby';
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { ThemeContext } from './layout';
 import MoonIcon from './svg/MoonIcon';
 import SunIcon from './svg/SunIcon';
 
 type Props = {
   path: string;
-  darkMode: boolean;
   handleDarkSwitch: () => void;
+  handleMenuOpen: () => void;
 };
 
-export default function Header({ path, handleDarkSwitch, darkMode }: Props) {
-  const [menuOpen, setMenuOpen] = useState(false);
+export default function Header({
+  path,
+  handleDarkSwitch,
+  handleMenuOpen
+}: Props) {
+  const { darkMode, menuOpen } = useContext(ThemeContext);
 
   const navClassName =
     'transition duration-200 ease-in-out md:ml-4 mt-2 md:mt-0 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-500 hover:border-dblue-500 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none';
@@ -18,7 +23,7 @@ export default function Header({ path, handleDarkSwitch, darkMode }: Props) {
     ' text-dblue-500 border-b-2 border-dblue-500 dk:border-dblue-500 dk:text-dblue-100';
 
   return (
-    <header className="max-w-6xl mx-auto px-6 lg:px-8 text-xl">
+    <header className="relative max-w-6xl mx-auto px-6 lg:px-8 text-xl">
       <div className="flex items-center justify-between md:h-16">
         <div className="w-full justify-between flex flex-col md:flex-row md:items-center">
           <div className="flex justify-between">
@@ -30,7 +35,7 @@ export default function Header({ path, handleDarkSwitch, darkMode }: Props) {
             </Link>
             <div className="-mr-2 flex md:hidden">
               <button
-                onClick={() => setMenuOpen(!menuOpen)}
+                onClick={handleMenuOpen}
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none focus:text-white"
               >
                 <svg
@@ -97,10 +102,40 @@ export default function Header({ path, handleDarkSwitch, darkMode }: Props) {
           </div>
           <div
             className={
-              'w-20 ml-4 text-center md:hidden ' + (menuOpen ? '' : 'hidden')
+              'flex absolute inset-0 justify-center w-full h-screen text-center md:hidden ' +
+              (menuOpen ? '' : 'hidden')
             }
+            style={{
+              backgroundColor: 'hsla(215, 41%, 28%, 97%)'
+            }}
           >
-            <div className="flex flex-col">
+            <button
+              onClick={handleMenuOpen}
+              className="absolute right-0 top-0 mt-4 mr-4 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none focus:text-white"
+            >
+              <svg
+                className="h-6 w-6"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  className={'inline-flex ' + (menuOpen ? 'hidden' : '')}
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+                <path
+                  className={'inline-flex ' + (menuOpen ? '' : 'hidden')}
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <div className="flex flex-col justify-center">
               <Link
                 to="/posts"
                 className={
@@ -126,7 +161,7 @@ export default function Header({ path, handleDarkSwitch, darkMode }: Props) {
                 About
               </Link>
               <button
-                className="transition duration-200 ease-in-out mt-2 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-400 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none self-center hover:border-transparent block"
+                className="transition duration-200 ease-in-out mt-2 px-3 py-2 text-xl font-medium border-b-2 border-transparent text-gray-100 dk-hover:text-dblue-400 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none self-center hover:border-transparent block"
                 onClick={handleDarkSwitch}
               >
                 {darkMode ? (

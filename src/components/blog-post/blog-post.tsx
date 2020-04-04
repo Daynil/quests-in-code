@@ -1,9 +1,9 @@
 import { MDXProvider } from '@mdx-js/react';
 import { graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
-import React from 'react';
+import React, { useContext } from 'react';
 import { BlogPostBySlugQuery } from '../../../graphql-types';
-import Layout from '../layout';
+import Layout, { ThemeContext } from '../layout';
 import SEO from '../seo';
 import TextLink from '../text-link';
 import './blog-post.css';
@@ -16,6 +16,8 @@ type Props = {
 export default function BlogPost(props: Props) {
   const { excerpt, body, frontmatter, timeToRead } = props.data.mdx;
   // const { previous, next } = props.pageContext;
+
+  const { menuOpen } = useContext(ThemeContext);
 
   console.log(props);
 
@@ -36,7 +38,7 @@ export default function BlogPost(props: Props) {
           title={frontmatter.title}
           description={frontmatter.description || excerpt}
         />
-        <div className="mt-12">
+        <div className={'mt-12 ' + (menuOpen ? 'overflow-hidden' : '')}>
           <div className="text-center">
             <div className="text-dblue-500 font-semibold">{tagString}</div>
             <h1 className="my-2">{frontmatter.title}</h1>
