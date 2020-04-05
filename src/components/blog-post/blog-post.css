@@ -133,6 +133,10 @@ pre[class*='language-'] {
   word-break: break-word;
 }
 
+.dark-mode :not(pre) > code[class*='language-'] {
+  @apply text-dblue-200 bg-gray-800;
+}
+
 .token.comment,
 .token.block-comment,
 .token.prolog,
