@@ -2,12 +2,14 @@ import React from 'react';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TextLink from '../components/text-link';
+import Moon from '../content/assets/svgs/moon-stars-duotone.svg';
 
 type Props = {
   path: string;
 };
 
 const About = ({ path }: Props) => {
+  console.log(Moon);
   return (
     <Layout path={path}>
       <SEO title="About" />
