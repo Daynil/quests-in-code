@@ -7,8 +7,7 @@ type Props = {
 };
 
 export const ThemeContext = React.createContext({
-  darkMode: false,
-  menuOpen: false
+  darkMode: false
 });
 
 const Layout = ({ path, children }: Props) => {
@@ -16,17 +15,20 @@ const Layout = ({ path, children }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const handleDarkSwitch = () => setDarkMode(!darkMode);
   const handleMenuOpen = () => setMenuOpen(!menuOpen);
+
   useEffect(() => {
     if (menuOpen) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = 'unset';
   }, [menuOpen]);
+
   return (
-    <ThemeContext.Provider value={{ darkMode, menuOpen }}>
+    <ThemeContext.Provider value={{ darkMode }}>
       <div className={darkMode ? 'dark-mode' : ''}>
         <div className="min-h-screen dk:bg-gray-900 transition duration-200 ease-in-out">
           <Header
             path={path}
             handleDarkSwitch={handleDarkSwitch}
+            menuOpen={menuOpen}
             handleMenuOpen={handleMenuOpen}
           />
           <div className="m-auto text-gray-900 dk:text-gray-300 text-lg px-6 md:max-w-3xl transition duration-200 ease-in-out">

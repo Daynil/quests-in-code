@@ -7,15 +7,17 @@ import SunIcon from './svg/SunIcon';
 type Props = {
   path: string;
   handleDarkSwitch: () => void;
+  menuOpen: boolean;
   handleMenuOpen: () => void;
 };
 
 export default function Header({
   path,
   handleDarkSwitch,
+  menuOpen,
   handleMenuOpen
 }: Props) {
-  const { darkMode, menuOpen } = useContext(ThemeContext);
+  const { darkMode } = useContext(ThemeContext);
 
   const navClassName =
     'transition duration-200 ease-in-out md:ml-4 mt-2 md:mt-0 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-500 hover:border-dblue-500 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none';
@@ -38,7 +40,7 @@ export default function Header({
             <div className="-mr-2 flex md:hidden">
               <button
                 onClick={handleMenuOpen}
-                className="transition duration-200 ease-in-out inline-flex items-center justify-center p-2 rounded-md text-gray-900 dk:text-gray-100 hover:text-dblue-500 focus:outline-none focus:text-white"
+                className="transition duration-200 ease-in-out inline-flex items-center justify-center p-2 rounded-md text-gray-900 dk:text-gray-100 hover:text-dblue-500 dk-hover:text-dblue-500 focus:outline-none focus:text-white"
               >
                 <svg
                   className="h-6 w-6"
@@ -48,16 +50,16 @@ export default function Header({
                 >
                   <path
                     className={'inline-flex ' + (menuOpen ? 'hidden' : '')}
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M4 6h16M4 12h16M4 18h16"
                   />
                   <path
                     className={'inline-flex ' + (menuOpen ? '' : 'hidden')}
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
@@ -125,16 +127,16 @@ export default function Header({
               >
                 <path
                   className={'inline-flex ' + (menuOpen ? 'hidden' : '')}
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M4 6h16M4 12h16M4 18h16"
                 />
                 <path
                   className={'inline-flex ' + (menuOpen ? '' : 'hidden')}
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
