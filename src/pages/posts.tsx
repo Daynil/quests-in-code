@@ -1,24 +1,17 @@
 import { graphql, Link } from 'gatsby';
 import React from 'react';
-import { PostsIndexIndexQuery } from '../../graphql-types';
+import { PostsIndexPostsQuery } from '../../graphql-types';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 
 type Props = {
   path: string;
-  data: PostsIndexIndexQuery;
+  data: PostsIndexPostsQuery;
 };
 
 export default ({ path, data }: Props) => (
   <Layout path={path}>
-    <SEO title="Home" />
-    <div className="mt-20 text-center">
-      <h1>Adventures in Javascript Development</h1>
-      <p className="text-xl -mt-4">
-        Create and explore awesome stuff with Javascript
-      </p>
-      <p className="-mt-4">Bring your adventurous spirit! 🏹</p>
-    </div>
+    <SEO title="Posts" />
     <div className="mt-20">
       {data.allMdx.edges.map(({ node }) => {
         let tagString = '';
@@ -45,7 +38,7 @@ export default ({ path, data }: Props) => (
 );
 
 export const query = graphql`
-  query PostsIndexIndex {
+  query PostsIndexPosts {
     allMdx {
       edges {
         node {
