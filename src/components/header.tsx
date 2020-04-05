@@ -1,9 +1,8 @@
 import { Link } from 'gatsby';
 import React, { useContext } from 'react';
-import Moon from '../content/assets/svgs/moon-stars-duotone.svg';
-import Sun from '../content/assets/svgs/sun-duotone.svg';
+import MoonIcon from './blog-post/svg/MoonIcon';
+import SunIcon from './blog-post/svg/SunIcon';
 import { ThemeContext } from './layout';
-import SVG from './svg';
 
 type Props = {
   path: string;
@@ -99,9 +98,9 @@ export default function Header({
                 onClick={handleDarkSwitch}
               >
                 {darkMode ? (
-                  <SVG url={Sun} className="w-8"></SVG>
+                  <SunIcon className="w-8" />
                 ) : (
-                  <SVG url={Moon} className="w-8" />
+                  <MoonIcon className="w-8" />
                 )}
               </button>
             </div>
@@ -172,9 +171,9 @@ export default function Header({
                 onClick={handleDarkSwitch}
               >
                 {darkMode ? (
-                  <SVG url={Sun} className="w-8"></SVG>
+                  <SunIcon className="w-8" />
                 ) : (
-                  <SVG url={Moon} className="w-8" />
+                  <MoonIcon className="w-8" />
                 )}
               </button>
             </div>
