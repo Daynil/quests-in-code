@@ -1,6 +1,11 @@
 module.exports = {
   rules: {
-    'at-rule-no-unknown': true,
+    'at-rule-no-unknown': [
+      true,
+      {
+        ignoreAtRules: ['tailwind']
+      }
+    ],
     'block-no-empty': true,
     'color-no-invalid-hex': true,
     'comment-no-empty': true,
