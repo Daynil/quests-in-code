@@ -19,8 +19,9 @@ export default function Header({
 
   const navClassName =
     'transition duration-200 ease-in-out md:ml-4 mt-2 md:mt-0 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-500 hover:border-dblue-500 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none';
-  const activeClassName =
-    ' text-dblue-500 border-b-2 border-dblue-500 dk:border-dblue-500 dk:text-dblue-100';
+  const mobileNavClassName =
+    'transition duration-200 ease-in-out md:ml-4 mt-2 md:mt-0 px-3 py-2 text-xl font-medium text-gray-100 border-b-2 border-transparent hover:text-dblue-500 hover:border-dblue-500 focus:outline-none';
+  const activeClassName = ' border-b-2 border-dblue-500 dk:border-dblue-500';
 
   return (
     <header className="relative max-w-6xl mx-auto px-6 lg:px-8 text-xl">
@@ -33,10 +34,11 @@ export default function Header({
             >
               {'{⚔} JS Adventures'}
             </Link>
+            {/* Mobile Nav Button */}
             <div className="-mr-2 flex md:hidden">
               <button
                 onClick={handleMenuOpen}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none focus:text-white"
+                className="transition duration-200 ease-in-out inline-flex items-center justify-center p-2 rounded-md text-gray-900 dk:text-gray-100 hover:text-dblue-500 focus:outline-none focus:text-white"
               >
                 <svg
                   className="h-6 w-6"
@@ -62,6 +64,7 @@ export default function Header({
               </button>
             </div>
           </div>
+          {/* Desktop Nav Bar */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline">
               <Link
@@ -100,6 +103,7 @@ export default function Header({
               </button>
             </div>
           </div>
+          {/* Mobile Nav Menu */}
           <div
             className={
               'flex absolute inset-0 justify-center w-full h-screen text-center md:hidden ' +
@@ -111,7 +115,7 @@ export default function Header({
           >
             <button
               onClick={handleMenuOpen}
-              className="absolute right-0 top-0 mt-4 mr-4 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none focus:text-white"
+              className="transition duration-200 ease-in-out absolute right-0 top-0 mt-4 mr-4 inline-flex items-center justify-center p-2 rounded-md text-gray-100 hover:text-dblue-500 focus:outline-none focus:text-white"
             >
               <svg
                 className="h-6 w-6"
@@ -140,28 +144,28 @@ export default function Header({
                 to="/posts"
                 className={
                   path.match(/(^\/posts\/)/i)
-                    ? navClassName + activeClassName
-                    : navClassName
+                    ? mobileNavClassName + activeClassName
+                    : mobileNavClassName
                 }
               >
                 Posts
               </Link>
               <Link
                 to="/topics"
-                className={navClassName}
-                activeClassName={navClassName + activeClassName}
+                className={mobileNavClassName}
+                activeClassName={mobileNavClassName + activeClassName}
               >
                 Topics
               </Link>
               <Link
                 to="/about"
-                className={navClassName}
-                activeClassName={navClassName + activeClassName}
+                className={mobileNavClassName}
+                activeClassName={mobileNavClassName + activeClassName}
               >
                 About
               </Link>
               <button
-                className="transition duration-200 ease-in-out mt-2 px-3 py-2 text-xl font-medium border-b-2 border-transparent text-gray-100 dk-hover:text-dblue-400 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none self-center hover:border-transparent block"
+                className="transition duration-200 ease-in-out mt-2 px-3 py-2 text-xl font-medium border-b-2 border-transparent text-gray-100 hover:text-dblue-400 focus:outline-none self-center hover:border-transparent block"
                 onClick={handleDarkSwitch}
               >
                 {darkMode ? (
