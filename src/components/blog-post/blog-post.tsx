@@ -13,13 +13,11 @@ type Props = {
   data: BlogPostBySlugQuery;
 };
 
-export default function BlogPost(props: Props) {
+const BlogPost = (props: Props) => {
   const { excerpt, body, frontmatter, timeToRead } = props.data.mdx;
   // const { previous, next } = props.pageContext;
 
   const { menuOpen } = useContext(ThemeContext);
-
-  console.log(props);
 
   let tagString = '';
   frontmatter.tags.forEach((tag, index) => {
@@ -38,7 +36,7 @@ export default function BlogPost(props: Props) {
           title={frontmatter.title}
           description={frontmatter.description || excerpt}
         />
-        <div className={'mt-12 ' + (menuOpen ? 'overflow-hidden' : '')}>
+        <div className="mt-12">
           <div className="text-center">
             <div className="text-dblue-500 font-semibold">{tagString}</div>
             <h1 className="my-2">{frontmatter.title}</h1>
@@ -54,7 +52,7 @@ export default function BlogPost(props: Props) {
       </Layout>
     </MDXProvider>
   );
-}
+};
 
 export const query = graphql`
   query BlogPostBySlug($slug: String!) {
@@ -71,3 +69,5 @@ export const query = graphql`
     }
   }
 `;
+
+export default BlogPost;

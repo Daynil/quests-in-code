@@ -13,7 +13,7 @@ const defaultProps = {
   description: ''
 };
 
-export default function SEO({ description, lang, meta, title }: Props) {
+const SEO = ({ description, lang, meta, title }: Props) => {
   const { site } = useStaticQuery<SeoMetadataQuery>(
     graphql`
       query SEOMetadata {
@@ -73,5 +73,7 @@ export default function SEO({ description, lang, meta, title }: Props) {
       ].concat(meta)}
     />
   );
-}
+};
 SEO.defaultProps = defaultProps;
+
+export default SEO;

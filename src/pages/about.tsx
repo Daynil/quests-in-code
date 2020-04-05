@@ -7,7 +7,7 @@ type Props = {
   path: string;
 };
 
-export default function About({ path }: Props) {
+const About = ({ path }: Props) => {
   return (
     <Layout path={path}>
       <SEO title="About" />
@@ -16,4 +16,6 @@ export default function About({ path }: Props) {
       <Link to="/">Go back to the homepage</Link>
     </Layout>
   );
-}
+};
+
+export default About;
