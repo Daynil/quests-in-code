@@ -21,7 +21,8 @@ export default ({ path, data }: Props) => (
                 <span
                   key={index}
                   className={
-                    'py-1 px-4 ml-4 text-sm font-semibold tracking-widest rounded-full cursor-pointer transition duration-200 ease-in-out bg-dblue-100 text-dblue-700 hover:bg-dblue-200 dk:bg-blue-900 dk:text-dblue-100 dk-hover:bg-blue-700'
+                    'py-1 px-4 text-sm font-semibold tracking-widest rounded-full cursor-pointer transition duration-200 ease-in-out bg-dblue-100 text-dblue-700 hover:bg-dblue-200 dk:bg-blue-900 dk:text-dblue-100 dk-hover:bg-blue-700' +
+                    (index === 1 ? ' ml-4' : '')
                   }
                 >
                   {tag}
@@ -30,7 +31,7 @@ export default ({ path, data }: Props) => (
             ));
         return (
           <div className="mt-12" key={index}>
-            <div>{postTags}</div>
+            <div className="mb-4">{postTags}</div>
             <Link to={node.fields.slug}>
               <h2 className="my-2">{node.frontmatter.title}</h2>
               <div className="mb-8 text-gray-700 dk:text-gray-500">
