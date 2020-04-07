@@ -1,5 +1,5 @@
 import { MDXProvider } from '@mdx-js/react';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 import React from 'react';
 import { BlogPostBySlugQuery } from '../../../graphql-types';
@@ -17,11 +17,20 @@ const BlogPost = (props: Props) => {
   const { excerpt, body, frontmatter, timeToRead } = props.data.mdx;
   // const { previous, next } = props.pageContext;
 
-  let tagString = '';
-  frontmatter.tags.forEach((tag, index) => {
-    if (index === 0) tagString = tag;
-    else tagString = `${tagString}, ${tag}`;
-  });
+  const postTags = !frontmatter.tags.length
+    ? null
+    : frontmatter.tags.map((tag, index) => (
+        <Link to={'/topics'} state={{ topic: tag }}>
+          <span
+            key={index}
+            className={
+              'py-1 px-4 ml-4 text-sm font-semibold tracking-widest rounded-full cursor-pointer transition duration-200 ease-in-out bg-dblue-100 text-dblue-700 hover:bg-dblue-200 dk:bg-blue-900 dk:text-dblue-100 dk-hover:bg-blue-700'
+            }
+          >
+            {tag}
+          </span>
+        </Link>
+      ));
 
   return (
     <MDXProvider
@@ -36,7 +45,7 @@ const BlogPost = (props: Props) => {
         />
         <div className="mt-20">
           <div className="text-center">
-            <div className="text-dblue-500 font-semibold">{tagString}</div>
+            <div>{postTags}</div>
             <h1 className="my-2">{frontmatter.title}</h1>
             <div className="mb-8 text-gray-700 dk:text-gray-500">
               <span>{frontmatter.date} • </span>

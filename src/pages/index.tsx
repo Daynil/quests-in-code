@@ -20,14 +20,14 @@ export default ({ path, data }: Props) => (
       <p className="-mt-4">Bring your adventurous spirit! 🏹</p>
     </div>
     <div className="mt-20">
-      {data.allMdx.edges.map(({ node }) => {
+      {data.allMdx.edges.map(({ node }, index) => {
         let tagString = '';
         node.frontmatter.tags.forEach((tag, index) => {
           if (index === 0) tagString = tag;
           else tagString = `${tagString}, ${tag}`;
         });
         return (
-          <div className="mt-12">
+          <div className="mt-12" key={index}>
             <div className="text-dblue-500 font-semibold">{tagString}</div>
             <Link to={node.fields.slug}>
               <h2 className="my-2">{node.frontmatter.title}</h2>
