@@ -34,7 +34,7 @@ const BlogPost = (props: Props) => {
           title={frontmatter.title}
           description={frontmatter.description || excerpt}
         />
-        <div className="mt-12">
+        <div className="mt-20">
           <div className="text-center">
             <div className="text-dblue-500 font-semibold">{tagString}</div>
             <h1 className="my-2">{frontmatter.title}</h1>

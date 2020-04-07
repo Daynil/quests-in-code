@@ -32,7 +32,7 @@ export default ({ path, data }: Props) => {
       <div className="mt-20 text-center">
         <h1>Explore posts by topic</h1>
       </div>
-      <div>
+      <div className="text-center">
         {tagList.map(tag => (
           <span
             onClick={() => setSelectedTag(tag)}
@@ -40,7 +40,7 @@ export default ({ path, data }: Props) => {
               'py-1 px-4 ml-4 font-semibold rounded-full cursor-pointer transition duration-200 ease-in-out ' +
               (tag === selectedTag
                 ? 'bg-dblue-600 text-dblue-100'
-                : 'bg-dblue-100 text-dblue-700 hover:bg-dblue-200 dk:bg-blue-900 dk:text-dblue-100 dk-hover:bg-blue-800')
+                : 'bg-dblue-100 text-dblue-700 hover:bg-dblue-200 dk:bg-blue-900 dk:text-dblue-100 dk-hover:bg-blue-700')
             }
           >
             {tag}
