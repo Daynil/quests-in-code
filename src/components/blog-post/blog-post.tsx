@@ -43,7 +43,7 @@ const BlogPost = (props: Props) => {
           title={frontmatter.title}
           description={frontmatter.description || excerpt}
         />
-        <div className="mt-20">
+        <div className="mt-24">
           <div className="text-center">
             <div>{postTags}</div>
             <h1 className="my-2">{frontmatter.title}</h1>
@@ -52,7 +52,7 @@ const BlogPost = (props: Props) => {
               <span>{timeToRead} minute read</span>
             </div>
           </div>
-          <div className="mt-12">
+          <div className="mt-20">
             <MDXRenderer>{body}</MDXRenderer>
           </div>
         </div>

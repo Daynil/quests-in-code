@@ -37,7 +37,7 @@ export default function Header({
               {'{⚔} JS Adventures'}
             </Link>
             {/* Mobile Nav Button */}
-            <div className="-mr-2 flex md:hidden">
+            <div className="absolute right-0 top-0 mt-2 mr-5 flex md:hidden">
               <button
                 onClick={handleMenuOpen}
                 className="transition duration-200 ease-in-out inline-flex items-center justify-center p-2 rounded-md text-gray-900 dk:text-gray-100 hover:text-dblue-500 dk-hover:text-dblue-500 focus:outline-none focus:text-white"
@@ -117,7 +117,7 @@ export default function Header({
           >
             <button
               onClick={handleMenuOpen}
-              className="transition duration-200 ease-in-out absolute right-0 top-0 mt-4 mr-4 inline-flex items-center justify-center p-2 rounded-md text-gray-100 hover:text-dblue-500 focus:outline-none focus:text-white"
+              className="transition duration-200 ease-in-out absolute right-0 top-0 mt-2 mr-5 inline-flex items-center justify-center p-2 rounded-md text-gray-100 hover:text-dblue-500 focus:outline-none focus:text-white"
             >
               <svg
                 className="h-6 w-6"

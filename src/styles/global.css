@@ -1,5 +1,25 @@
 @tailwind base;
 
+body {
+  overflow-y: overlay !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 45%);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 60%);
+}
+
 @tailwind components;
 
 @tailwind utilities;
