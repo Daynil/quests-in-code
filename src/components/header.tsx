@@ -1,5 +1,6 @@
 import { Link } from 'gatsby';
 import React, { useContext } from 'react';
+import logoLarge from '../content/assets/images/logo-large.png';
 import MoonIcon from './blog-post/svg/MoonIcon';
 import SunIcon from './blog-post/svg/SunIcon';
 import { ThemeContext } from './layout';
@@ -34,7 +35,19 @@ export default function Header({
               to="/"
               className="px-3 py-2 rounded-md text-3xl font-medium text-gray-900 dk:text-dblue-100"
             >
-              {'{⚔} JS Adventures'}
+              {/* {'{⚔} JS Adventures'} */}
+              <span className="flex flex-row items-center">
+                <img src={logoLarge} alt="Javascript Adventures logo" />
+                <span
+                  className="ml-2"
+                  style={{
+                    fontFamily: 'PT Mono, monospace'
+                  }}
+                >
+                  {' '}
+                  Adventures
+                </span>
+              </span>
             </Link>
             {/* Mobile Nav Button */}
             <div className="absolute right-0 top-0 mt-2 mr-5 flex md:hidden">

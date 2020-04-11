@@ -3,6 +3,7 @@ import { graphql, Link } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 import React from 'react';
 import { BlogPostBySlugQuery } from '../../../graphql-types';
+import heart from '../../content/assets/images/heart-large.png';
 import Layout from '../layout';
 import SEO from '../seo';
 import TextLink from '../text-link';
@@ -16,6 +17,18 @@ type Props = {
 const BlogPost = (props: Props) => {
   const { excerpt, body, frontmatter, timeToRead } = props.data.mdx;
   // const { previous, next } = props.pageContext;
+
+  const hearts: JSX.IntrinsicElements['img'][] = [];
+  for (let i = 0; i < Math.ceil(timeToRead / 5); i++) {
+    hearts.push(
+      <img
+        src={heart}
+        alt="Pixel heart"
+        style={{ height: '24px' }}
+        className={i > 0 ? 'ml-1' : ''}
+      />
+    );
+  }
 
   const postTags = !frontmatter.tags.length
     ? null
@@ -47,9 +60,12 @@ const BlogPost = (props: Props) => {
           <div className="text-center">
             <div>{postTags}</div>
             <h1 className="my-2">{frontmatter.title}</h1>
-            <div className="mb-8 text-gray-700 dk:text-gray-500">
-              <span>{frontmatter.date} • </span>
-              <span>{timeToRead} minute read</span>
+            <div className="mb-8 text-gray-700 dk:text-gray-500 flex justify-center">
+              <span className="mr-2">{frontmatter.date} • </span>
+              <span className="flex items-center">
+                <span className="flex mr-2">{hearts}</span> {timeToRead} minute
+                read
+              </span>
             </div>
           </div>
           <div className="mt-20">

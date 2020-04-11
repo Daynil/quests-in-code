@@ -1,5 +1,6 @@
 module.exports = {
   siteMetadata: {
+    siteUrl: 'https://javascriptadventures.com',
     title: 'Javascript Adventures',
     description:
       'Exploring the vast javascript landscape with fun learning adventures',
@@ -7,6 +8,7 @@ module.exports = {
   },
   plugins: [
     'gatsby-plugin-react-helmet',
+    'gatsby-plugin-sitemap',
     'gatsby-plugin-postcss',
     {
       resolve: 'gatsby-source-filesystem',
@@ -42,18 +44,31 @@ module.exports = {
     'gatsby-plugin-typescript',
     'gatsby-plugin-graphql-codegen',
     {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        // The property ID; the tracking code won't be generated without it
+        trackingId: 'UA-163290364-1',
+        // Defines where to place the tracking script - `true` in the head and `false` in the body
+        head: false
+        // Avoids sending pageview hits from custom paths
+        //exclude: ["/preview/**", "/do-not-track/me/too/"],
+        // Delays sending pageview hits on route update (in milliseconds)
+        //pageTransitionDelay: 0,
+      }
+    },
+    {
       resolve: 'gatsby-plugin-manifest',
       options: {
         name: 'Javascript Adventures',
         short_name: 'JS Adventures',
         start_url: '/',
         background_color: '#white',
-        theme_color: '#663399',
+        theme_color: '#006aff',
         display: 'minimal-ui',
-        icon: 'src/images/gatsby-icon.png' // This path is relative to the root of the site.
+        icon: 'src/content/assets/images/logo.png' // This path is relative to the root of the site.
       }
-    }
+    },
     // Support for downloading or pre-caching pages, needed for PWAs
-    // "gatsby-plugin-offline",
+    'gatsby-plugin-offline'
   ]
 };

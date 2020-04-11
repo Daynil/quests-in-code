@@ -9,7 +9,7 @@ type Props = {
 
 const About = ({ path }: Props) => (
   <Layout path={path}>
-    <SEO title="About" />
+    <SEO title="About - JS Adventures" />
     <h1 className="mt-20 text-center">About JS Adventures</h1>
     <p>
       Javascript Adventures is a place to explore the expansive world of
