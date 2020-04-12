@@ -83,7 +83,7 @@ export default function Header({
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline">
               <Link
-                to="/posts"
+                to="/posts/"
                 className={
                   path.match(/(^\/posts\/)/i)
                     ? navClassName + activeClassName
@@ -93,14 +93,14 @@ export default function Header({
                 Posts
               </Link>
               <Link
-                to="/topics"
+                to="/topics/"
                 className={navClassName}
                 activeClassName={navClassName + activeClassName}
               >
                 Topics
               </Link>
               <Link
-                to="/about"
+                to="/about/"
                 className={navClassName}
                 activeClassName={navClassName + activeClassName}
               >
@@ -156,7 +156,7 @@ export default function Header({
             </button>
             <div className="flex flex-col justify-center">
               <Link
-                to="/posts"
+                to="/posts/"
                 className={
                   path.match(/(^\/posts\/)/i)
                     ? mobileNavClassName + activeClassName
@@ -166,14 +166,14 @@ export default function Header({
                 Posts
               </Link>
               <Link
-                to="/topics"
+                to="/topics/"
                 className={mobileNavClassName}
                 activeClassName={mobileNavClassName + activeClassName}
               >
                 Topics
               </Link>
               <Link
-                to="/about"
+                to="/about/"
                 className={mobileNavClassName}
                 activeClassName={mobileNavClassName + activeClassName}
               >

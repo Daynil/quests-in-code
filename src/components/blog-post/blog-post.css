@@ -17,7 +17,7 @@ ul {
 }
 
 /* Code highlight styling */
-
+/*! purgecss start ignore */
 .gatsby-code-title {
   @apply mb-2;
   display: inline-block;
@@ -136,6 +136,7 @@ pre[class*='language-'] {
 .dark-mode :not(pre) > code[class*='language-'] {
   @apply text-dblue-200 bg-gray-800;
 }
+/*! purgecss end ignore */
 
 .token.comment,
 .token.block-comment,

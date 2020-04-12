@@ -12,14 +12,17 @@ export const ThemeContext = React.createContext({
 });
 
 const Layout = ({ path, children }: Props) => {
-  const [darkMode, setDarkMode] = useDarkMode(false);
+  const { darkMode, setDarkMode } = useDarkMode(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const handleDarkSwitch = () => setDarkMode(!darkMode);
   const handleMenuOpen = () => setMenuOpen(!menuOpen);
 
   useEffect(() => {
-    if (menuOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = 'unset';
+    if (menuOpen) document.body.style.overflowY = 'hidden';
+    else {
+      document.body.style.overflowY = 'unset';
+      document.body.style.overflowY = 'overlay';
+    }
   }, [menuOpen]);
 
   return (

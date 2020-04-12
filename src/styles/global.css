@@ -1,7 +1,8 @@
+/*! purgecss start ignore */
 @tailwind base;
 
 body {
-  overflow-y: overlay !important;
+  overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {
@@ -23,5 +24,6 @@ body {
 @import url('https://fonts.googleapis.com/css?family=PT+Mono&display=swap&text=Adventures');
 
 @tailwind components;
+/*! purgecss end ignore */
 
 @tailwind utilities;

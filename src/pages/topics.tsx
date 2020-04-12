@@ -24,7 +24,9 @@ export default ({ path, data, location }: Props) => {
   tagList.unshift('All');
 
   const [selectedTag, setSelectedTag] = useState(
-    location.state.topic ? location.state.topic : 'All'
+    typeof location.state !== 'undefined' && location.state.topic
+      ? location.state.topic
+      : 'All'
   );
 
   const filteredEdges =
@@ -57,11 +59,12 @@ export default ({ path, data, location }: Props) => {
         ))}
       </div>
       <div className="mt-20">
-        {filteredEdges.map(({ node }) => {
+        {filteredEdges.map(({ node }, index) => {
           const hearts: JSX.IntrinsicElements['img'][] = [];
           for (let i = 0; i < Math.ceil(node.timeToRead / 5); i++) {
             hearts.push(
               <img
+                key={i}
                 src={heart}
                 alt="Pixel heart"
                 style={{ height: '24px' }}
@@ -71,7 +74,7 @@ export default ({ path, data, location }: Props) => {
           }
 
           return (
-            <div className="mt-12">
+            <div key={index} className="mt-12">
               <Link to={node.fields.slug}>
                 <h2 className="my-2">{node.frontmatter.title}</h2>
                 <div className="mb-8 text-gray-700 dk:text-gray-500 flex">

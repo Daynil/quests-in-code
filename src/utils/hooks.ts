@@ -7,21 +7,29 @@ import { useEffect, useState } from 'react';
  * @param defaultValue
  */
 export function useLocalStorage(key: string, defaultValue: any) {
-  const [state, setState] = useState(() => {
-    let value;
-    try {
-      value = JSON.parse(
-        window.localStorage.getItem(key) || String(defaultValue)
-      );
-    } catch (e) {
-      value = defaultValue;
+  const [usedDefault, setUsedDefault] = useState(true);
+  const [stored, setStored] = useState(() => {
+    let initialStored = defaultValue;
+    let existingStored =
+      typeof window !== 'undefined' ? window.localStorage.getItem(key) : null;
+
+    if (existingStored) {
+      try {
+        existingStored = JSON.parse(existingStored);
+        initialStored = existingStored;
+        setUsedDefault(false);
+      } catch (e) {} // If parse error, fall back to defaults
     }
-    return value;
+    return initialStored;
   });
+  const updateStored = value => {
+    setStored(value);
+    setUsedDefault(false);
+  };
   useEffect(() => {
-    window.localStorage.setItem(key, JSON.stringify(state));
-  }, [state]);
-  return [state, setState];
+    window.localStorage.setItem(key, JSON.stringify(stored));
+  }, [stored]);
+  return { stored, updateStored, usedDefault };
 }
 
 /**
@@ -31,12 +39,15 @@ export function useLocalStorage(key: string, defaultValue: any) {
  */
 export function useDarkMode(
   darkDefault: boolean
-): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
-  const [state, setState] = useLocalStorage(
+): { darkMode: boolean; setDarkMode: (value: boolean) => void } {
+  const { stored, updateStored, usedDefault } = useLocalStorage(
     'darkMode',
-    window.matchMedia
-      ? window.matchMedia('(prefers-color-scheme: dark)').matches
-      : darkDefault
+    darkDefault
   );
-  return [state, setState];
+  // On first render, only check user-preferred scheme if default value was used
+  useEffect(() => {
+    if (usedDefault)
+      updateStored(window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }, []);
+  return { darkMode: stored, setDarkMode: updateStored };
 }

@@ -49,3 +49,13 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
     });
   }
 };
+
+// For debugging purposes
+/** @type { import("gatsby").GatsbyNode["onCreateWebpackConfig"] } */
+exports.onCreateWebpackConfig = ({ actions }) => {
+  if (process.env.NODE_ENV === 'development') {
+    actions.setWebpackConfig({
+      devtool: 'eval-source-map'
+    });
+  }
+};

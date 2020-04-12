@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   siteMetadata: {
     siteUrl: 'https://javascriptadventures.com',
@@ -9,7 +11,6 @@ module.exports = {
   plugins: [
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-sitemap',
-    'gatsby-plugin-postcss',
     {
       resolve: 'gatsby-source-filesystem',
       options: {
@@ -66,6 +67,27 @@ module.exports = {
         theme_color: '#006aff',
         display: 'minimal-ui',
         icon: 'src/content/assets/images/logo.png' // This path is relative to the root of the site.
+      }
+    },
+    {
+      resolve: 'gatsby-plugin-postcss',
+      options: {
+        postCssPlugins: [
+          require(`tailwindcss`),
+          ...(process.env.NODE_ENV === 'production'
+            ? [require(`autoprefixer`), require(`cssnano`)]
+            : [])
+        ]
+      }
+    },
+    {
+      resolve: `gatsby-plugin-purgecss`,
+      options: {
+        tailwind: true,
+        content: [
+          path.join(process.cwd(), 'src/**/!(*.d).{ts,js,jsx,tsx,md,mdx}')
+        ]
+        //purgeOnly: [`src/css/style.css`]
       }
     },
     // Support for downloading or pre-caching pages, needed for PWAs
