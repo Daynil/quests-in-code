@@ -12,7 +12,7 @@ type Props = {
 
 export default ({ path, data }: Props) => (
   <Layout path={path}>
-    <SEO title="Posts - JS Adventures" />
+    <SEO title="Posts - Quests In Code" />
     <div className="mt-20">
       {data.allMdx.edges.map(({ node }, index) => {
         const hearts: JSX.IntrinsicElements['img'][] = [];

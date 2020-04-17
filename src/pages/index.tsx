@@ -13,8 +13,8 @@ type Props = {
 export default ({ path, data }: Props) => (
   <Layout path={path}>
     <SEO
-      title="Javascript Adventures - Create and explore with Javascript"
-      description="Exploring the vast javascript landscape with fun learning adventures"
+      title="Quests In Code - Create and explore with Code"
+      description="Exploring the vast coding landscape with fun learning adventures"
     />
     <div className="mt-20 text-center">
       <h2 className="text-3xl">Create and explore awesome stuff with code</h2>

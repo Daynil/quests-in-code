@@ -38,7 +38,7 @@ export default ({ path, data, location }: Props) => {
 
   return (
     <Layout path={path}>
-      <SEO title="Topics - JS Adventures" />
+      <SEO title="Topics - Quests In Code" />
       <div className="mt-20 text-center">
         <h1>Explore posts by topic</h1>
       </div>
