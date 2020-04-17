@@ -21,7 +21,7 @@ body {
   background: hsl(0, 0%, 60%);
 }
 
-@import url('https://fonts.googleapis.com/css?family=PT+Mono&display=swap&text=Adventures');
+@import url('https://fonts.googleapis.com/css?family=PT+Mono&display=swap&text=QuestsInCode');
 
 @tailwind components;
 /*! purgecss end ignore */

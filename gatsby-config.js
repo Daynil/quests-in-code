@@ -2,10 +2,10 @@ const path = require('path');
 
 module.exports = {
   siteMetadata: {
-    siteUrl: 'https://javascriptadventures.com',
-    title: 'Javascript Adventures',
+    siteUrl: 'https://questsincode.com',
+    title: 'Quests In Code',
     description:
-      'Exploring the vast javascript landscape with fun learning adventures',
+      'Exploring the vast coding landscape with fun learning adventures',
     author: 'Danny Libin'
   },
   plugins: [
@@ -60,8 +60,8 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-manifest',
       options: {
-        name: 'Javascript Adventures',
-        short_name: 'JS Adventures',
+        name: 'Quests In Code',
+        short_name: 'Quests In Code',
         start_url: '/',
         background_color: '#white',
         theme_color: '#006aff',

@@ -1,1 +1,1 @@
-Javascript adventures blog
+Quests in code blog

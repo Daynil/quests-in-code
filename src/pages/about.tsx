@@ -10,13 +10,12 @@ type Props = {
 const About = ({ path }: Props) => (
   <Layout path={path}>
     <SEO title="About - JS Adventures" />
-    <h1 className="mt-20 text-center">About JS Adventures</h1>
+    <h1 className="mt-20 text-center">About Quests In Code</h1>
     <p>
-      Javascript Adventures is a place to explore the expansive world of
-      Javascript. Javascript has become much more than a tool for web
-      development. You can build pretty much anything with it, only your
-      imagination is the limit! So don your cloak and equip your leather jerkin,
-      and let's venture into the world of Javascript! ⚔️🤠🛡️
+      Quests In Code is a place to explore the expansive world of software
+      development. You can build pretty much anything, only your imagination is
+      the limit! So don your cloak and equip your leather jerkin, and let's
+      venture into the world of Code! ⚔️🤠🛡️
     </p>
     <p>
       Written and created by{' '}

@@ -38,8 +38,7 @@ const Layout = ({ path, children }: Props) => {
           <div className="m-auto text-gray-900 dk:text-gray-300 text-lg px-6 md:max-w-3xl transition duration-200 ease-in-out">
             <main>{children}</main>
             <footer className="text-gray-600 mt-32 pb-12">
-              © {new Date().getFullYear()} Javascript Adventures. All Rights
-              Reserved.
+              © {new Date().getFullYear()} Quests In Code. All Rights Reserved.
             </footer>
           </div>
         </div>

@@ -1,8 +1,8 @@
 ---
 title: Gatsby Blog From Scratch
 tags: ['React', 'Gatsby']
-date: '2020-03-22'
-description: Building a GatsbyJS blog from scratch without plugins for a deeper understanding of Gatsby's core systems.
+date: '2020-04-17'
+description: Building a technical GatsbyJS blog from scratch without plugins for a deeper understanding of Gatsby's core systems.
 ---
 
 If you want to get started with Gatsby quickly, Gatsby has excellent [documentation](https://www.gatsbyjs.org/docs/). Have a look at their quick start, pick a nice starter template, create your app with the starter template, and you're off to the races!
@@ -41,7 +41,7 @@ In the end, they all achieve very similar things in different ways, so the choic
 
 I've played a bit with Gatsby in my experimentation, but I don't feel that I've learned it enough to be satisfied with my foundational knowledge. So, this post will be an exploration of learning Gatsby in depth by building a thing from scratch!
 
-The final version using our custom code is available at the [final-plugin-free](https://github.com/Daynil/javascript-adventures/tree/final-plugin-free) branch in the Github repository for this blog, if you ever want to see the full picture of the code.
+The final version using our custom code is available at the [final-plugin-free](https://github.com/Daynil/quests-in-code/tree/final-plugin-free) branch in the Github repository for this blog, if you ever want to see the full picture of the code.
 
 ## Starting From Scratch
 
@@ -49,13 +49,13 @@ To get started, let's use the gatsby CLI to generate the default blank starter.
 
 ```bash
 $ npm install -g gatsby-cli
-$ gatsby new javascript-adventures
+$ gatsby new quests-in-code
 ```
 
 The Gatsby CLI allows you to pass an optional parameter called `starter-url`, which can provide many useful defaults such as plugins for parsing markdown, for using typescript, etc. However, for our learning purposes we want to start with the minimum available option. If you do not pass anything for the starter-url, the default blank starter used, gatsby-starter-default. You can also pass `gatsby-starter-default` as the parameter, but that does the same thing as omitting it. Once Gatsby finishes installing everything, you'll see a success message. Let's explore what Gatsby has scaffolded out for us.
 
 ```bash
-$ cd javascript-adventures
+$ cd quests-in-code
 $ code .
 $ gatsby develop
 ```
@@ -828,7 +828,7 @@ That's how Gatsby's plugin system works. Plugins provide their own functionality
 
 Likewise, if we were to make our own plugin that we wanted to reuse in other projects, or even publish publicly, we could extract the relevant code from our `gatsby-node.js` file into a `/plugins/my-plugin` folder with its own `package.json` and `gatsby-node.js` file, and we'd pretty much be ready to use it. Neat!
 
-I created this post in order to learn Gatsby more deeply as I created this very blog! So, if you're interested in seeing the full code as it stands at the end of this post, you can visit the relevant branches in the Github repository. The final version using our custom code is available at the [final-plugin-free](https://github.com/Daynil/javascript-adventures/tree/final-plugin-free) branch, and the final version after we swapped everything for Gatsby plugins is available at [gatsby-plugins](https://github.com/Daynil/javascript-adventures/tree/gatsby-plugins).
+I created this post in order to learn Gatsby more deeply as I created this very blog! So, if you're interested in seeing the full code as it stands at the end of this post, you can visit the relevant branches in the Github repository. The final version using our custom code is available at the [final-plugin-free](https://github.com/Daynil/quests-in-code/tree/final-plugin-free) branch, and the final version after we swapped everything for Gatsby plugins is available at [gatsby-plugins](https://github.com/Daynil/quests-in-code/tree/gatsby-plugins).
 
 ## Conclusion
 

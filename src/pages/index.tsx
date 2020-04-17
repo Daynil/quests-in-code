@@ -17,10 +17,7 @@ export default ({ path, data }: Props) => (
       description="Exploring the vast javascript landscape with fun learning adventures"
     />
     <div className="mt-20 text-center">
-      <h1>Adventures in Javascript Development</h1>
-      <p className="text-xl -mt-4">
-        Create and explore awesome stuff with Javascript
-      </p>
+      <h2 className="text-3xl">Create and explore awesome stuff with code</h2>
       <p className="-mt-4">Bring your adventurous spirit! 🏹</p>
     </div>
     <div className="mt-20">

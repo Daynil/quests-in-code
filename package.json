@@ -1,9 +1,9 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "quests-in-code",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "description": "Coding blog",
   "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Danny Libin <dlibinrx@gmail.com>",
   "dependencies": {
     "@mdx-js/mdx": "^1.5.8",
     "@mdx-js/react": "^1.5.8",
@@ -42,9 +42,6 @@
     "prettier": "^1.19.1",
     "tailwindcss": "^1.2.0"
   },
-  "keywords": [
-    "gatsby"
-  ],
   "license": "MIT",
   "scripts": {
     "build": "gatsby build",
@@ -57,9 +54,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
-  },
-  "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+    "url": "https://github.com/Daynil/quests-in-code"
   }
 }

@@ -45,7 +45,7 @@ export default function Header({
                   }}
                 >
                   {' '}
-                  Adventures
+                  Quests In Code
                 </span>
               </span>
             </Link>
