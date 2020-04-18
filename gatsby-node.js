@@ -1,5 +1,6 @@
 const path = require('path');
 const { createFilePath } = require('gatsby-source-filesystem');
+const fs = require('fs');
 
 /** @type { import("gatsby").GatsbyNode["createPages"] } */
 exports.createPages = async ({ graphql, actions }) => {
@@ -10,18 +11,27 @@ exports.createPages = async ({ graphql, actions }) => {
       allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
         edges {
           node {
+            excerpt
+            timeToRead
+            frontmatter {
+              date(formatString: "MMMM DD, YYYY")
+              description
+              title
+              tags
+            }
             fields {
               slug
-            }
-            frontmatter {
-              title
             }
           }
         }
       }
     }
   `);
+
+  // Create a page for each post
+  // Also stash metadata about each post in a JSON file for use by person site post index
   const posts = mdxPages.data.allMdx.edges;
+  let postsMetadata = [];
   posts.forEach((post, index) => {
     const previous = index === posts.length - 1 ? null : posts[index + 1].node;
     const next = index === 0 ? null : posts[index - 1].node;
@@ -34,7 +44,21 @@ exports.createPages = async ({ graphql, actions }) => {
         next
       }
     });
+    postsMetadata.push({
+      excerpt: post.node.excerpt,
+      timeToRead: post.node.timeToRead,
+      date: post.node.frontmatter.date,
+      description: post.node.frontmatter.description,
+      title: post.node.frontmatter.title,
+      tags: post.node.frontmatter.tags,
+      slug: post.node.fields.slug
+    });
   });
+
+  fs.writeFileSync(
+    './public/postsMetaData.json',
+    JSON.stringify(postsMetadata)
+  );
 };
 
 /** @type { import("gatsby").GatsbyNode["onCreateNode"] } */

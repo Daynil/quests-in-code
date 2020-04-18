@@ -1,9 +1,9 @@
 import { Link } from 'gatsby';
 import React, { useContext } from 'react';
 import logoLarge from '../content/assets/images/logo-large.png';
-import MoonIcon from './blog-post/svg/MoonIcon';
-import SunIcon from './blog-post/svg/SunIcon';
 import { ThemeContext } from './layout';
+import MoonIcon from './svg/moon-icon';
+import SunIcon from './svg/sun-icon';
 
 type Props = {
   path: string;
