@@ -6,17 +6,23 @@ import { BlogPostBySlugQuery } from '../../../graphql-types';
 import heart from '../../content/assets/images/heart-large.png';
 import Layout from '../layout';
 import SEO from '../seo';
+import TwitterIcon from '../svg/twitter-icon';
 import TextLink from '../text-link';
 import './blog-post.css';
 
 type Props = {
   path: string;
   data: BlogPostBySlugQuery;
+  pageContext: {
+    slug: string;
+  };
 };
 
 const BlogPost = (props: Props) => {
   const { excerpt, body, frontmatter, timeToRead } = props.data.mdx;
   // const { previous, next } = props.pageContext;
+
+  const twitterShareUrl = `https://twitter.com/share?url=https://questsincode.com${props.pageContext.slug}&text=“${frontmatter.title}”, a post from Danny Libin.&via=Dayn1l`;
 
   const hearts: JSX.IntrinsicElements['img'][] = [];
   for (let i = 0; i < Math.ceil(timeToRead / 5); i++) {
@@ -71,6 +77,16 @@ const BlogPost = (props: Props) => {
           <div className="mt-20">
             <MDXRenderer>{body}</MDXRenderer>
           </div>
+          <a
+            href={twitterShareUrl}
+            target="_blank"
+            className="flex flex-row mt-12"
+          >
+            <TwitterIcon className="text-dblue-500 hover:text-dblue-300 transition-colors ease-in-out duration-300 w-24" />
+            <span className="ml-4 p-4 bg-dblue-200 dk:bg-dblue-800 text-dblue-800 dk:text-dblue-200 text-2xl rounded-md">
+              Found this article useful? Please share it to spread the word!! 🎉
+            </span>
+          </a>
         </div>
       </Layout>
     </MDXProvider>
