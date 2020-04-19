@@ -38,11 +38,11 @@ export default ({ path, data }: Props) => (
         const postTags = !node.frontmatter.tags.length
           ? null
           : node.frontmatter.tags.map((tag, index) => (
-              <Link key={index} to={'/topics'} state={{ topic: tag }}>
+              <Link key={index} to={`/topics?topic=${tag}`}>
                 <span
                   className={
                     'py-1 px-4 text-sm font-semibold tracking-widest rounded-full cursor-pointer transition duration-200 ease-in-out bg-dblue-100 text-dblue-700 hover:bg-dblue-200 dk:bg-blue-900 dk:text-dblue-100 dk-hover:bg-blue-700' +
-                    (index === 1 ? ' ml-4' : '')
+                    (index >= 1 ? ' ml-4' : '')
                   }
                 >
                   {tag}

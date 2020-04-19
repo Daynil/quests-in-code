@@ -1,4 +1,5 @@
 import { graphql, Link } from 'gatsby';
+import { parse } from 'query-string';
 import React, { useState } from 'react';
 import { PostsIndexTopicsQuery } from '../../graphql-types';
 import Layout from '../components/layout';
@@ -9,9 +10,7 @@ type Props = {
   path: string;
   data: PostsIndexTopicsQuery;
   location: {
-    state: {
-      topic?: string;
-    };
+    search?: string;
   };
 };
 
@@ -23,11 +22,14 @@ export default ({ path, data, location }: Props) => {
   tagList.sort();
   tagList.unshift('All');
 
-  const [selectedTag, setSelectedTag] = useState(
-    typeof location.state !== 'undefined' && location.state.topic
-      ? location.state.topic
-      : 'All'
-  );
+  let initialTopic = 'All';
+  if (typeof location !== 'undefined' && location?.search) {
+    initialTopic = parse(location.search).topic as string;
+    initialTopic = tagList.find(tag => tag === initialTopic);
+    if (!initialTopic) initialTopic = 'All';
+  }
+
+  const [selectedTag, setSelectedTag] = useState(initialTopic);
 
   const filteredEdges =
     selectedTag === 'All'

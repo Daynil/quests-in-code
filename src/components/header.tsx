@@ -94,8 +94,11 @@ export default function Header({
               </Link>
               <Link
                 to="/topics/"
-                className={navClassName}
-                activeClassName={navClassName + activeClassName}
+                className={
+                  path.match(/(^\/topics)/i)
+                    ? navClassName + activeClassName
+                    : navClassName
+                }
               >
                 Topics
               </Link>
