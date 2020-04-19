@@ -35,7 +35,6 @@ export default function Header({
               to="/"
               className="px-3 py-2 rounded-md text-3xl font-medium text-gray-900 dk:text-dblue-100"
             >
-              {/* {'{⚔} JS Adventures'} */}
               <span className="flex flex-row items-center">
                 <img src={logoLarge} alt="Javascript Adventures logo" />
                 <span
@@ -124,7 +123,7 @@ export default function Header({
           {/* Mobile Nav Menu */}
           <div
             className={
-              'flex absolute inset-0 justify-center w-full h-screen text-center md:hidden ' +
+              'flex absolute inset-0 -mt-3 justify-center w-full h-screen text-center md:hidden ' +
               (menuOpen ? '' : 'hidden')
             }
             style={{
@@ -133,7 +132,7 @@ export default function Header({
           >
             <button
               onClick={handleMenuOpen}
-              className="transition duration-200 ease-in-out absolute right-0 top-0 mt-2 mr-5 inline-flex items-center justify-center p-2 rounded-md text-gray-100 hover:text-dblue-500 focus:outline-none focus:text-white"
+              className="transition duration-200 ease-in-out absolute right-0 top-0 mt-5 mr-5 inline-flex items-center justify-center p-2 rounded-md text-gray-100 hover:text-dblue-500 focus:outline-none focus:text-white"
             >
               <svg
                 className="h-6 w-6"
