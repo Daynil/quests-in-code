@@ -27,7 +27,7 @@ export default function Header({
   const activeClassName = ' border-b-2 border-dblue-500 dk:border-dblue-500';
 
   return (
-    <header className="relative max-w-6xl mx-auto px-6 lg:px-8 text-xl">
+    <header className="relative max-w-6xl mx-auto px-6 lg:px-8 text-xl mt-3">
       <div className="flex items-center justify-between md:h-16">
         <div className="w-full justify-between flex flex-col md:flex-row md:items-center">
           <div className="flex justify-between">

@@ -28,7 +28,7 @@ const Layout = ({ path, children }: Props) => {
   return (
     <ThemeContext.Provider value={{ darkMode }}>
       <div className={darkMode ? 'dark-mode' : ''}>
-        <div className="min-h-screen dk:bg-gray-900 transition duration-200 ease-in-out">
+        <div className="min-h-screen dk:bg-gray-900 transition duration-200 ease-in-out  border-t-4 border-dblue-500">
           <Header
             path={path}
             handleDarkSwitch={handleDarkSwitch}
