@@ -38,7 +38,7 @@ export default function Header({
               <span className="flex flex-row items-center">
                 <img src={logoLarge} alt="Javascript Adventures logo" />
                 <span
-                  className="ml-2"
+                  className="ml-2 hidden sm:inline-block"
                   style={{
                     fontFamily: 'PT Mono, monospace'
                   }}

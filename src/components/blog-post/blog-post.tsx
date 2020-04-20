@@ -40,7 +40,7 @@ const BlogPost = (props: Props) => {
   const postTags = !frontmatter.tags.length
     ? null
     : frontmatter.tags.map((tag, index) => (
-        <Link key={index} to={`/topics?topic=${tag}`}>
+        <Link key={index} to={`/topics?topic=${tag}`} className="my-1">
           <span
             className={
               'py-1 px-4 ml-4 text-sm font-semibold tracking-widest rounded-full cursor-pointer transition duration-200 ease-in-out bg-dblue-100 text-dblue-700 hover:bg-dblue-200 dk:bg-blue-900 dk:text-dblue-100 dk-hover:bg-blue-700'
@@ -64,11 +64,14 @@ const BlogPost = (props: Props) => {
         />
         <div className="mt-24">
           <div className="text-center">
-            <div>{postTags}</div>
+            <div className="flex flex-wrap justify-center">{postTags}</div>
             <h1 className="my-2">{frontmatter.title}</h1>
-            <div className="mb-8 text-gray-700 dk:text-gray-500 flex justify-center">
-              <span className="mr-2">{frontmatter.date} • </span>
-              <span className="flex items-center">
+            <div className="mb-8 text-gray-700 dk:text-gray-500 flex justify-center flex-col sm:flex-row sm:text-center">
+              <span className="mr-2">
+                {frontmatter.date}{' '}
+                <span className="hidden sm:inline-block">•</span>{' '}
+              </span>
+              <span className="flex items-center justify-center">
                 <span className="flex mr-2">{hearts}</span> {timeToRead} minute
                 read
               </span>

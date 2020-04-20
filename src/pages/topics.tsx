@@ -44,13 +44,13 @@ export default ({ path, data, location }: Props) => {
       <div className="mt-20 text-center">
         <h1>Explore posts by topic</h1>
       </div>
-      <div className="text-center">
+      <div className="text-center flex flex-wrap">
         {tagList.map((tag, index) => (
           <span
             key={index}
             onClick={() => setSelectedTag(tag)}
             className={
-              'py-1 px-4 ml-4 font-semibold tracking-wider rounded-full cursor-pointer transition duration-200 ease-in-out ' +
+              'my-1 py-1 px-4 ml-4 font-semibold tracking-wider rounded-full cursor-pointer transition duration-200 ease-in-out ' +
               (tag === selectedTag
                 ? 'bg-dblue-600 text-dblue-100'
                 : 'bg-dblue-100 text-dblue-700 hover:bg-dblue-200 dk:bg-blue-900 dk:text-dblue-100 dk-hover:bg-blue-700')
@@ -79,8 +79,11 @@ export default ({ path, data, location }: Props) => {
             <div key={index} className="mt-12">
               <Link to={node.fields.slug}>
                 <h2 className="my-2">{node.frontmatter.title}</h2>
-                <div className="mb-8 text-gray-700 dk:text-gray-500 flex">
-                  <span className="mr-2">{node.frontmatter.date} • </span>
+                <div className="mb-8 text-gray-700 dk:text-gray-500 flex flex-col sm:flex-row sm:text-center">
+                  <span className="mr-2">
+                    {node.frontmatter.date}{' '}
+                    <span className="hidden sm:inline-block">•</span>{' '}
+                  </span>
                   <span className="flex items-center">
                     <span className="flex mr-2">{hearts}</span>{' '}
                     {node.timeToRead} minute read
