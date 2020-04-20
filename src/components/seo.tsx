@@ -10,10 +10,11 @@ type Props = {
 const defaultProps = {
   lang: 'en',
   meta: [],
-  description: ''
+  description: '',
+  featuredImage: ''
 };
 
-const SEO = ({ description, lang, meta, title }: Props) => {
+const SEO = ({ description, lang, meta, title, featuredImage }: Props) => {
   const { site } = useStaticQuery<SeoMetadataQuery>(
     graphql`
       query SEOMetadata {
@@ -22,6 +23,7 @@ const SEO = ({ description, lang, meta, title }: Props) => {
             title
             description
             author
+            siteUrl
           }
         }
       }
@@ -29,6 +31,19 @@ const SEO = ({ description, lang, meta, title }: Props) => {
   );
 
   const metaDescription = description || site.siteMetadata.description;
+
+  if (featuredImage) {
+    meta.push(
+      {
+        property: 'og:image',
+        content: `${site.siteMetadata.siteUrl}${featuredImage}`
+      },
+      {
+        name: 'twitter:image',
+        content: `${site.siteMetadata.siteUrl}${featuredImage}`
+      }
+    );
+  }
 
   return (
     <Helmet
@@ -56,7 +71,7 @@ const SEO = ({ description, lang, meta, title }: Props) => {
         },
         {
           name: 'twitter:card',
-          content: 'summary'
+          content: 'summary_large_image'
         },
         {
           name: 'twitter:creator',

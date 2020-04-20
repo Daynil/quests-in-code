@@ -1,5 +1,6 @@
 import { MDXProvider } from '@mdx-js/react';
 import { graphql, Link } from 'gatsby';
+import Image from 'gatsby-image';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 import React from 'react';
 import { BlogPostBySlugQuery } from '../../../graphql-types';
@@ -20,6 +21,7 @@ type Props = {
 
 const BlogPost = (props: Props) => {
   const { excerpt, body, frontmatter, timeToRead } = props.data.mdx;
+  const { featuredImage } = props.data;
   // const { previous, next } = props.pageContext;
 
   const twitterShareUrl = `https://twitter.com/share?url=https://questsincode.com${props.pageContext.slug}&text=“${frontmatter.title}”, a post from Danny Libin.&via=Dayn1l`;
@@ -61,6 +63,7 @@ const BlogPost = (props: Props) => {
         <SEO
           title={frontmatter.title}
           description={frontmatter.description || excerpt}
+          featuredImage={featuredImage.childImageSharp.fluid.originalImg || ''}
         />
         <div className="mt-24">
           <div className="text-center">
@@ -77,6 +80,13 @@ const BlogPost = (props: Props) => {
               </span>
             </div>
           </div>
+          <div className="w-full">
+            <Image
+              className="z-0 rounded-md"
+              fluid={featuredImage.childImageSharp.fluid}
+              alt={frontmatter.title}
+            />
+          </div>
           <div className="mt-20">
             <MDXRenderer>{body}</MDXRenderer>
           </div>
@@ -87,7 +97,8 @@ const BlogPost = (props: Props) => {
           >
             <TwitterIcon className="text-dblue-500 hover:text-dblue-300 transition-colors ease-in-out duration-300 w-24" />
             <span className="ml-4 p-4 bg-dblue-200 dk:bg-dblue-800 text-dblue-800 dk:text-dblue-200 text-2xl rounded-md">
-              Found this article useful? Please share it to spread the word!! 🎉
+              Found this article useful? Please click share it to spread the
+              word!! 🎉
             </span>
           </a>
         </div>
@@ -97,7 +108,7 @@ const BlogPost = (props: Props) => {
 };
 
 export const query = graphql`
-  query BlogPostBySlug($slug: String!) {
+  query BlogPostBySlug($slug: String!, $featuredImage: String!) {
     mdx(fields: { slug: { eq: $slug } }) {
       body
       excerpt(pruneLength: 160)
@@ -107,6 +118,14 @@ export const query = graphql`
         tags
         date(formatString: "MMMM DD, YYYY")
         description
+      }
+    }
+    featuredImage: file(absolutePath: { regex: $featuredImage }) {
+      childImageSharp {
+        fluid {
+          ...GatsbyImageSharpFluid
+          originalImg
+        }
       }
     }
   }

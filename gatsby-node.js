@@ -40,6 +40,7 @@ exports.createPages = async ({ graphql, actions }) => {
       component: path.resolve('./src/components/blog-post/blog-post.tsx'),
       context: {
         slug: post.node.fields.slug,
+        featuredImage: `${post.node.fields.slug}featuredImage.png/`,
         previous,
         next
       }
