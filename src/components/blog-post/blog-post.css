@@ -1,5 +1,5 @@
 /* Markdown output styling */
-
+/*! purgecss start ignore */
 h1 {
   @apply text-4xl mb-8 font-bold;
 }
@@ -17,7 +17,7 @@ ul {
 }
 
 /* Code highlight styling */
-/*! purgecss start ignore */
+
 .gatsby-code-title {
   @apply mb-2;
   display: inline-block;
