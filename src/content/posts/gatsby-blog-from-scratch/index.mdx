@@ -54,7 +54,7 @@ $ npm install -g gatsby-cli
 $ gatsby new quests-in-code
 ```
 
-The Gatsby CLI allows you to pass an optional parameter called `starter-url`, which can provide many useful defaults such as plugins for parsing markdown, for using typescript, etc. However, for our learning purposes we want to start with the minimum available option. If you do not pass anything for the starter-url, the default blank starter used, gatsby-starter-default. You can also pass `gatsby-starter-default` as the parameter, but that does the same thing as omitting it. Once Gatsby finishes installing everything, you'll see a success message. Let's explore what Gatsby has scaffolded out for us.
+The Gatsby CLI allows you to pass an optional parameter called `starter-url`, which can provide many useful defaults such as plugins for parsing markdown, for using typescript, etc. However, for our learning purposes we want to start with the minimum available option. If you do not pass anything for the starter-url, the default blank starter used, `gatsby-starter-default`. You can also pass `gatsby-starter-default` as the parameter, but that does the same thing as omitting it. Once Gatsby finishes installing everything, you'll see a success message. Let's explore what Gatsby has scaffolded out for us.
 
 ```bash
 $ cd quests-in-code
@@ -105,7 +105,7 @@ module.exports = {
 
 We will be needing all of these eventually, but we will start building out our blog without them so we can understand what they are for.
 
-First, let's create a simple page ourselves just to make sure we understand the very basics. Create a file called blog-post.js in the pages folder. Gatsby automatically builds a page with the URL as the file name for files in this folder. Throw an image called `cat-1.jpg` into the images folder so we can explore how to use our own images.
+First, let's create a simple page ourselves just to make sure we understand the very basics. Create a file called `blog-post.js` in the pages folder. Gatsby automatically builds a page with the URL as the file name for files in this folder. Throw an image called `cat-1.jpg` into the images folder so we can explore how to use our own images.
 
 ```jsx:title=src/pages/blog-post.js
 import React from 'react';
@@ -162,7 +162,7 @@ This is where our adventure really begins to get interesting!
 
 Right now, Gatsby doesn't know anything about our markdown files. We need to tell Gatsby how to process and display these markdown files. Our current `blog-post.js` page file just displays some hard-coded strings and we're not creating any pages for the markdown files.
 
-Let's start fix this by teaching Gatsby how to parse a markdown file into HTML so that we can use it in our site. First, let's install a markdown parser. There are several options, but we'll use (remark)[https://remark.js.org/] since that's what Gatsby's main markdown plugin uses, which we will switch to once we understand what it is doing under the hood.
+Let's start fix this by teaching Gatsby how to parse a markdown file into HTML so that we can use it in our site. First, let's install a markdown parser. There are several options, but we'll use [remark](https://remark.js.org/) since that's what Gatsby's main markdown plugin uses, which we will switch to once we understand what it is doing under the hood.
 
 ```bash
 $ npm install remark remark-html
@@ -250,7 +250,7 @@ export default function BlogPost({ pageContext }) {
 
 Restart your development server and go back to our blog post URL. It works! However, there is one small issue - the image doesn't load, what gives?! The path is set correctly, but Gatsby doesn't know where to look for the image, since we have only told Gatsby how to process markdown files, not images.
 
-When you pass a relative path, by default Gatsby looks for images at the root static folder: `static/`. If we move our cat-1.jpg from `content/cat-1.jpg` to `static/cat-1.jpg` and refresh the development server, the image will show up as expected. This isn't ideal, since we're creating a conceptual gap between where a file's relative path is in your development environment's folder structure versus where it ends up in Gatsby's runtime environment.
+When you pass a relative path, by default Gatsby looks for images at the root static folder: `static/`. If we move our `cat-1.jpg` from `content/cat-1.jpg` to `static/cat-1.jpg` and refresh the development server, the image will show up as expected. This isn't ideal, since we're creating a conceptual gap between where a file's relative path is in your development environment's folder structure versus where it ends up in Gatsby's runtime environment.
 
 Gatsby's plugins solve this by registering the relative paths and mapping them to the static folder in the output directory. For example, you'll see with one of the default images from the starter, in the source directory, it lives under `src/images/gatsby-astronaut.png`, but upon running `$ gatsby build`, the image gets moved to `public/static/{generatedId}/{generatedId}/gatsby-astronaut.png`. Gatsby's plugin also generates different image sizes for each image, which is what the various subfolders for each image contain.
 
@@ -258,7 +258,7 @@ Gatsby's plugins solve this by registering the relative paths and mapping them t
 
 ![Gatsby public static build folder structure](./astronaut-build.png)
 
-We'll also note that once we put our cat-1.jpg into the static folder, during the build Gatsby puts it in the root directory, not the static directory, so we can access it directly using what appears to be a relative path: `/cat-1.jpg`.
+We'll also note that once we put our `cat-1.jpg` into the static folder, during the build Gatsby puts it in the root directory, not the static directory, so we can access it directly using what appears to be a relative path: `/cat-1.jpg`.
 
 ![Gatsby source static build folder structure](./cat-build.png)
 
