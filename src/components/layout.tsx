@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDarkMode } from '../utils/hooks';
 import Header from './header';
+import TextLink from './text-link';
 
 type Props = {
   path: string;
@@ -39,6 +40,8 @@ const Layout = ({ path, children }: Props) => {
             <main>{children}</main>
             <footer className="text-gray-600 mt-32 pb-12">
               © {new Date().getFullYear()} Quests In Code. All Rights Reserved.
+              Created by{' '}
+              <TextLink href="https://dlibin.net">Danny Libin</TextLink>.
             </footer>
           </div>
         </div>
