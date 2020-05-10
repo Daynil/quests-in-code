@@ -136,7 +136,6 @@ pre[class*='language-'] {
 .dark-mode :not(pre) > code[class*='language-'] {
   @apply text-dblue-200 bg-gray-800;
 }
-/*! purgecss end ignore */
 
 .token.comment,
 .token.block-comment,
@@ -211,3 +210,5 @@ pre[class*='language-'] {
 .token.inserted {
   color: green;
 }
+
+/*! purgecss end ignore */
