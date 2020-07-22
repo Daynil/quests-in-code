@@ -1,0 +1,173 @@
+---
+title: 'Create an API from your Static Site'
+tags: ['JavaScript', 'Gatsby']
+date: '2020-07-22'
+description: 'Create an API using data from your static site so you can read data from it in another application without resorting to web scraping.'
+---
+
+Normally you can't publicly expose structured data from a static site via an [API (Application Programming Interface)](https://en.wikipedia.org/wiki/Application_programming_interface) because you don't control the server (assuming you're taking advantage of an excellent [static site CDN like Netlify](https://www.netlify.com/jamstack/)), so you can't build an API route to access it.
+
+But what if there was a way to have your static site cake, and eat it too? 🍰 Let's create a way to access some structured content from your static site without having to host your own server or use a hosted CMS!
+
+## What's the Point?
+
+You may, rightfully, be wondering why you would even bother doing something like this. The point of a static site is to allow pages to be loaded very quickly and cheaply from an edge-hosted CDN, without needing to maintain any servers.
+
+But what if you have other sites that want to access the data from your site? Usually, if you have lots of complex data or have multiple contributors, you'd already be using a CMS like [Contentful](https://www.contentful.com/), or perhaps [headless WordPress](https://developer.wordpress.org/rest-api/), in which case you already have an API. But if you're building something simple, you can save yourself some complexity by just using local files to store your content.
+
+If you have your own server to serve your static site, then you can just add an API route which serves the data however you need it. But to me, that defeats the purpose of the simplicity static sites can provide. It's nice to avoid servers until you actually really need them, right?!
+
+For this blog, I currently use markdown files to stash my posts right in my [github repository](https://github.com/Daynil/quests-in-code/tree/master/src/content/posts). Whenever I add a post, Gatsby builds the blog posts into pages, and everything gets pushed and updated on my Netlify account.
+
+However, I wanted to show a list of information about my blog posts from this site on my [personal website](https://dlibin.net/posts/) as well. So how do we access just the metadata of each post on one website from another?
+
+Typically, if a website doesn't have an API, you'd be stuck with web scraping, an inefficient and error-prone way of getting information from a website at the best of times, but sometimes it's all we've got. But we can do better!
+
+## Static Site vs. Server API
+
+I like to think of static site generators like [compile time servers](https://joshwcomeau.com/gatsby/a-static-future/). Once you wrap your head around this concept, you realize that it's not a great conceptual leap between a traditional Node server and the Node APIs that Gatsby uses (or [any other static site generator](https://www.staticgen.com/) for that matter).
+
+So with that perspective in mind, let's consider with a framework that may be more familiar. How would we approach this if we had our own server?
+
+One good way to do it might be to grab all of your post's metadata, bundle it into JSON, then expose it via a REST API route. For example, if you hit `MyBlogAPI.com/posts` with a `GET` request, we could send over the list of all posts in the body of the response as JSON.
+
+So how would you do this with Gatsby? As it turns out, just about the exact same way! There are two key differences, however.
+
+## Generate Structured Metadata at Build Time
+
+First, instead of dynamically looking up all posts whenever the API is hit, then sending a response, we can take advantage of the build time efficiency of creating a JSON metadata file for all of our posts just once and allowing our CDN to cache it to the edge, whenever we publish a new post.
+
+Second, the `GET` request will no longer go to any separate "API", per se. Instead, we can just save the JSON file in the root public build folder that Gatsby generates when our site is being built, and you can now simply access it by hitting your website's base url plus the name of the JSON file! `MyGatsbyBlog.com/PostsMetadata.json`
+
+Gatsby exposes its build time Node API in the `gatsby-node.js` file, so let's look at what we need for this to work.
+
+```javascript:title=gatsby-node.js
+const path = require('path');
+const fs = require('fs');
+
+exports.createPages = async ({ graphql, actions }) => {
+  const { createPage } = actions;
+
+  const mdxPages = await graphql(`
+    query AllMdxPages {
+      allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
+        edges {
+          node {
+            excerpt
+            timeToRead
+            frontmatter {
+              date(formatString: "MMMM DD, YYYY")
+              description
+              title
+              tags
+            }
+            fields {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  // Create a page for each post
+  // Also stash metadata about each post in a JSON file for use by personal site post index
+  const posts = mdxPages.data.allMdx.edges;
+
+  let postsMetadata = [];
+
+  posts.forEach((post, index) => {
+    const previous = index === posts.length - 1 ? null : posts[index + 1].node;
+    const next = index === 0 ? null : posts[index - 1].node;
+    createPage({
+      path: post.node.fields.slug,
+      component: path.resolve('./src/components/blog-post/blog-post.tsx'),
+      context: {
+        slug: post.node.fields.slug,
+        featuredImage: `${post.node.fields.slug}featuredImage.png/`,
+        previous,
+        next
+      }
+    });
+
+    postsMetadata.push({
+      excerpt: post.node.excerpt,
+      timeToRead: post.node.timeToRead,
+      date: post.node.frontmatter.date,
+      description: post.node.frontmatter.description,
+      title: post.node.frontmatter.title,
+      tags: post.node.frontmatter.tags,
+      slug: post.node.fields.slug
+    });
+  });
+
+  fs.writeFileSync(
+    './public/postsMetaData.json',
+    JSON.stringify(postsMetadata)
+  );
+};
+```
+
+In this function, first we're querying our GraphQL layer for all the data about our posts. Then, we loop over each post and create a page for it. If you want to understand this part more deeply, I have a post [diving into the details of the inner workings of Gatsby, GraphQL, and how the build process happens](/posts/gatsby-blog-from-scratch/).
+
+The more relevant bit to this discussion is what we do after we build a page for each post - we create an object with metadata details about the post and add it to an array. Once we've got our full array of metadata about our posts, we use Node's `writeFileSync` function to serialize and write the entire array out into a JSON file, which we put directly into the public build folder for Gatsy.
+
+That's it, we're done! Now, any time we rebuild the site with a new post, the metadata file gets updated with that file's new JSON data.
+
+So now, as soon as we hit our blog's url and add `/postsMetaData.json`, we'll get a body of just the [raw JSON string](https://questsincode.com/postsMetaData.json).
+
+Great! All we have to do is jump over to wherever else we want to access this data programmatically and issue a `GET` request using our HTTP request library of choice.
+
+```javascript
+fetch('https://questsincode.com/postsMetaData.json')
+  .then(res => res.json())
+  .then(data => {
+    // Do something creative
+  });
+```
+
+But wait, I hear you saying already. What about...[CORS](https://stackoverflow.com/questions/tagged/cors)?! 😱
+
+## Addressing the CORS Issue
+
+If you've been coding for the web for any length of time, you'll likely have run into the dreaded CORS issue from time to time. [Cross-origin resource sharing (CORS)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) is a security mechanism that prevents making requests to external domains from within the javascript of the domain your requesting code is served from.
+
+If you had your own server for your static site and created an API route for the metadata, this wouldn't be a problem, since they would be on the same domain. If you were using a CMS, CORS would likely already be set up.
+
+However, in our situation, we're making a request from one domain to another within the javascript of our site, so the fetch request will immediately fail with a CORS error.
+
+If you were running an [express server](https://expressjs.com/en/resources/middleware/cors.html), you might be familiar with allowing cross-origin requests with a bit of configuration.
+
+```javascript:title=my-blog-server.js
+var express = require('express');
+var cors = require('cors');
+var app = express();
+
+app.use(cors());
+```
+
+However, if we're hosting on a CDN like Netlify, we don't have access to the code that serves our site. So I guess we can't do this after all? 😢
+
+Not so fast! Netlify is pretty awesome, so it provides a [wealth of configuration options](https://docs.netlify.com/configure-builds/common-configurations/) available for most use cases you can imagine.
+
+For our case, we are interested in the [file-based configuration options, which are stored in the `netlify.toml` file](https://docs.netlify.com/configure-builds/file-based-configuration/). We can allow cross-origin requests right in the toml file. In fact, since we only care about cross-origin requests to the metadata file, we can restrict this option to just that route!
+
+```text:title=netlify.toml
+[[headers]]
+  # Define which paths this specific [[headers]] block will cover.
+  for = "/postsMetaData.json"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
+```
+
+If you're using Gatsby, make sure to place the `netlify.toml` file in the [root static folder](https://www.gatsbyjs.org/docs/static-folder/) of your site. This basically just tells Gatsby to do nothing to this file at build time except move it to the root public build directory, which is exactly where Netlify expects it.
+
+Now, if we go back and make our HTTP request for our blog metadata on our other site, we'll get the data as expected!
+
+## Conclusion
+
+This example uses Gatsby, but you could do the same with other static site generators. During the step where you would typically generate the site from your local data, hook in with your code to expose any data you need in a structured file like JSON, then link it to a route on your website. Here's an example of [creating an API for your static Jekyll site](https://www.raymondcamden.com/2016/03/01/adding-an-api-to-a-static-site).
+
+If you're using something other than Netlify as your CDN host, search their documentation for configuration instructions. CORS is a common enough configuration for most hosts to allow adjustment. For example, [Firebase allows you to define CORS behavior in your `firebase.json` file](https://firebase.google.com/docs/hosting/full-config#headers).
+
+It requires a bit of a perspective shift, but thinking this way unlocks many new capabilities for your static site generator!

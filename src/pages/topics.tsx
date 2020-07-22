@@ -19,6 +19,7 @@ export default ({ path, data, location }: Props) => {
 
   let tagList: string[] = [];
   edges.map(({ node }) => (tagList = tagList.concat(node.frontmatter.tags)));
+  tagList = [...new Set(tagList)];
   tagList.sort();
   tagList.unshift('All');
 
@@ -63,7 +64,7 @@ export default ({ path, data, location }: Props) => {
       <div className="mt-20">
         {filteredEdges.map(({ node }, index) => {
           const hearts: JSX.IntrinsicElements['img'][] = [];
-          for (let i = 0; i < Math.ceil(node.timeToRead / 5); i++) {
+          for (let i = 0; i < Math.ceil(node.timeToRead / 3); i++) {
             hearts.push(
               <img
                 key={i}
@@ -105,7 +106,7 @@ export default ({ path, data, location }: Props) => {
 
 export const query = graphql`
   query PostsIndexTopics {
-    allMdx {
+    allMdx(sort: { fields: frontmatter___date, order: DESC }) {
       edges {
         node {
           excerpt

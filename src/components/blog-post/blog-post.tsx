@@ -27,7 +27,7 @@ const BlogPost = (props: Props) => {
   const twitterShareUrl = `https://twitter.com/share?url=https://questsincode.com${props.pageContext.slug}&text=“${frontmatter.title}”, a post from Danny Libin.&via=Dayn1l`;
 
   const hearts: JSX.IntrinsicElements['img'][] = [];
-  for (let i = 0; i < Math.ceil(timeToRead / 5); i++) {
+  for (let i = 0; i < Math.ceil(timeToRead / 3); i++) {
     hearts.push(
       <img
         key={i}
@@ -97,7 +97,7 @@ const BlogPost = (props: Props) => {
           >
             <TwitterIcon className="text-dblue-500 hover:text-dblue-300 transition-colors ease-in-out duration-300 w-24" />
             <span className="ml-4 p-4 bg-dblue-200 dk:bg-dblue-800 text-dblue-800 dk:text-dblue-200 text-2xl rounded-md">
-              Found this article useful? Please click share it to spread the
+              Found this article useful? Click to share, discuss and spread the
               word!! 🎉
             </span>
           </a>

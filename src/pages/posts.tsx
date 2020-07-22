@@ -16,7 +16,7 @@ export default ({ path, data }: Props) => (
     <div className="mt-20">
       {data.allMdx.edges.map(({ node }, index) => {
         const hearts: JSX.IntrinsicElements['img'][] = [];
-        for (let i = 0; i < Math.ceil(node.timeToRead / 5); i++) {
+        for (let i = 0; i < Math.ceil(node.timeToRead / 3); i++) {
           hearts.push(
             <img
               key={i}
@@ -73,7 +73,7 @@ export default ({ path, data }: Props) => (
 
 export const query = graphql`
   query PostsIndexPosts {
-    allMdx {
+    allMdx(sort: { fields: frontmatter___date, order: DESC }) {
       edges {
         node {
           excerpt
