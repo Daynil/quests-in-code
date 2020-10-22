@@ -95,18 +95,18 @@ const SEO = ({
         }
       ].concat(meta)}
     >
+      {index ? <link href="dlibinrx@gmail.com" rel="me" /> : null}
       {index ? (
-        <>
-          <link href="dlibinrx@gmail.com" rel="me" />
-          <link
-            rel="webmention"
-            href="https://webmention.io/questsincode.com/webmention"
-          />
-          <link
-            rel="pingback"
-            href="https://webmention.io/questsincode.com/xmlrpc"
-          />
-        </>
+        <link
+          rel="webmention"
+          href="https://webmention.io/questsincode.com/webmention"
+        />
+      ) : null}
+      {index ? (
+        <link
+          rel="pingback"
+          href="https://webmention.io/questsincode.com/xmlrpc"
+        />
       ) : null}
     </Helmet>
   );
