@@ -95,7 +95,7 @@ const SEO = ({
         }
       ].concat(meta)}
     >
-      {email ? <link href="mailto:dlibinrx@gmail.com" rel="me" /> : null}
+      {email ? <link href={`mailto:${email}`} rel="me" /> : null}
     </Helmet>
   );
 };
