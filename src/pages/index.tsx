@@ -15,7 +15,7 @@ export default ({ path, data }: Props) => (
     <SEO
       title="Quests In Code - Create and explore with Code"
       description="Exploring the vast coding landscape with fun learning adventures"
-      email="dlibinrx@gmail.com"
+      index={true}
     />
     <div className="mt-20 text-center">
       <h2 className="text-3xl">Create and explore awesome stuff with code</h2>

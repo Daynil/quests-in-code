@@ -12,7 +12,7 @@ const defaultProps = {
   meta: [],
   description: '',
   featuredImage: '',
-  email: ''
+  index: false
 };
 
 const SEO = ({
@@ -21,7 +21,7 @@ const SEO = ({
   meta,
   title,
   featuredImage,
-  email
+  index
 }: Props) => {
   const { site } = useStaticQuery<SeoMetadataQuery>(
     graphql`
@@ -95,7 +95,19 @@ const SEO = ({
         }
       ].concat(meta)}
     >
-      {email ? <link href={`mailto:${email}`} rel="me" /> : null}
+      {index ? (
+        <>
+          <link href="dlibinrx@gmail.com" rel="me" />
+          <link
+            rel="webmention"
+            href="https://webmention.io/questsincode.com/webmention"
+          />
+          <link
+            rel="pingback"
+            href="https://webmention.io/questsincode.com/xmlrpc"
+          />
+        </>
+      ) : null}
     </Helmet>
   );
 };
