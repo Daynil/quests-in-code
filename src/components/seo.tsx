@@ -11,10 +11,18 @@ const defaultProps = {
   lang: 'en',
   meta: [],
   description: '',
-  featuredImage: ''
+  featuredImage: '',
+  email: ''
 };
 
-const SEO = ({ description, lang, meta, title, featuredImage }: Props) => {
+const SEO = ({
+  description,
+  lang,
+  meta,
+  title,
+  featuredImage,
+  email
+}: Props) => {
   const { site } = useStaticQuery<SeoMetadataQuery>(
     graphql`
       query SEOMetadata {
@@ -86,7 +94,9 @@ const SEO = ({ description, lang, meta, title, featuredImage }: Props) => {
           content: metaDescription
         }
       ].concat(meta)}
-    />
+    >
+      {email ? <link href="mailto:dlibinrx@gmail.com" rel="me" /> : null}
+    </Helmet>
   );
 };
 SEO.defaultProps = defaultProps;
