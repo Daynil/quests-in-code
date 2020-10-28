@@ -1,13 +1,12 @@
 import { graphql, Link } from 'gatsby';
 import React from 'react';
-import { PostsIndexIndexQuery } from '../../graphql-types';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import heart from '../content/assets/images/heart-large.png';
 
 type Props = {
   path: string;
-  data: PostsIndexIndexQuery;
+  data: any;
 };
 
 export default ({ path, data }: Props) => (

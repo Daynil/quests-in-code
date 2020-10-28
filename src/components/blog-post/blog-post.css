@@ -16,6 +16,14 @@ ul {
   @apply list-disc list-inside mb-6;
 }
 
+.comments-text a {
+  @apply text-dblue-500 transition duration-200 ease-in-out;
+}
+
+.comments-text a:hover {
+  @apply text-dblue-400;
+}
+
 /* Code highlight styling */
 
 .gatsby-code-title {

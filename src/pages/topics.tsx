@@ -1,14 +1,13 @@
 import { graphql, Link } from 'gatsby';
 import { parse } from 'query-string';
 import React, { useState } from 'react';
-import { PostsIndexTopicsQuery } from '../../graphql-types';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import heart from '../content/assets/images/heart-large.png';
 
 type Props = {
   path: string;
-  data: PostsIndexTopicsQuery;
+  data: any;
   location: {
     search?: string;
   };
