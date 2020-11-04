@@ -1,4 +1,4 @@
-import { Link } from 'gatsby';
+import Link from 'next/Link';
 import React from 'react';
 
 type Props = React.PropsWithRef<JSX.IntrinsicElements['a']>;
@@ -28,7 +28,7 @@ export default function TextLink({
         {children}
       </a>
     ) : (
-      <Link to={href}>{children}</Link>
+      <Link href={href}>{children}</Link>
     );
 
   return (

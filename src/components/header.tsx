@@ -1,6 +1,6 @@
-import { Link } from 'gatsby';
+import Link from 'next/Link';
 import React, { useContext } from 'react';
-import logoLarge from '../content/assets/images/logo-large.png';
+// import logoLarge from '../content/assets/images/logo-large.png';
 import { ThemeContext } from './layout';
 import MoonIcon from './svg/moon-icon';
 import SunIcon from './svg/sun-icon';
@@ -31,12 +31,12 @@ export default function Header({
       <div className="flex items-center justify-between md:h-16">
         <div className="w-full justify-between flex flex-col md:flex-row md:items-center">
           <div className="flex justify-between">
-            <Link
-              to="/"
-              className="px-3 py-2 rounded-md text-3xl font-medium text-gray-900 dk:text-dblue-100"
-            >
+            <Link href="/">
               <span className="flex flex-row items-center">
-                <img src={logoLarge} alt="Javascript Adventures logo" />
+                <img
+                  src="/images/logo-large.png"
+                  alt="Javascript Adventures logo"
+                />
                 <span
                   className="ml-2 hidden sm:inline-block"
                   style={{
@@ -81,30 +81,33 @@ export default function Header({
           {/* Desktop Nav Bar */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline">
-              <Link
-                to="/posts/"
-                className={
-                  path.match(/(^\/posts\/)/i)
-                    ? navClassName + activeClassName
-                    : navClassName
-                }
-              >
-                Posts
+              <Link href="/posts/">
+                <a
+                  className="navClassName"
+                  // className={
+                  //   path.match(/(^\/posts\/)/i)
+                  //     ? navClassName + activeClassName
+                  //     : navClassName
+                  // }
+                >
+                  Posts
+                </a>
+              </Link>
+              <Link href="/topics/">
+                <a
+                  className="navClassName"
+                  // className={
+                  //   path.match(/(^\/topics)/i)
+                  //     ? navClassName + activeClassName
+                  //     : navClassName
+                  // }
+                >
+                  Topics
+                </a>
               </Link>
               <Link
-                to="/topics/"
-                className={
-                  path.match(/(^\/topics)/i)
-                    ? navClassName + activeClassName
-                    : navClassName
-                }
-              >
-                Topics
-              </Link>
-              <Link
-                to="/about/"
-                className={navClassName}
-                activeClassName={navClassName + activeClassName}
+                href="/about/"
+                // activeClassName={navClassName + activeClassName}
               >
                 About
               </Link>
@@ -157,29 +160,30 @@ export default function Header({
               </svg>
             </button>
             <div className="flex flex-col justify-center">
-              <Link
-                to="/posts/"
-                className={
-                  path.match(/(^\/posts\/)/i)
-                    ? mobileNavClassName + activeClassName
-                    : mobileNavClassName
-                }
-              >
-                Posts
+              <Link href="/posts/">
+                <a
+                  className="mobileNavClassName"
+                  // className={
+                  //   path.match(/(^\/posts\/)/i)
+                  //     ? mobileNavClassName + activeClassName
+                  //     : mobileNavClassName
+                  // }
+                >
+                  Posts
+                </a>
               </Link>
               <Link
-                to="/topics/"
-                className={mobileNavClassName}
-                activeClassName={mobileNavClassName + activeClassName}
+                href="/topics/"
+
+                // activeClassName={mobileNavClassName + activeClassName}
               >
-                Topics
+                <a className={mobileNavClassName}>Topics</a>
               </Link>
               <Link
-                to="/about/"
-                className={mobileNavClassName}
-                activeClassName={mobileNavClassName + activeClassName}
+                href="/about/"
+                // activeClassName={mobileNavClassName + activeClassName}
               >
-                About
+                <a className={mobileNavClassName}>About</a>
               </Link>
               <button
                 className="transition duration-200 ease-in-out mt-2 px-3 py-2 text-xl font-medium border-b-2 border-transparent text-gray-100 hover:text-dblue-400 focus:outline-none self-center hover:border-transparent block"

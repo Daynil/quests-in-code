@@ -1,4 +1,5 @@
 /*! purgecss start ignore */
+@import url('https://fonts.googleapis.com/css?family=PT+Mono&display=swap&text=QuestsInCode');
 @tailwind base;
 
 body {
@@ -20,8 +21,6 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(0, 0%, 60%);
 }
-
-@import url('https://fonts.googleapis.com/css?family=PT+Mono&display=swap&text=QuestsInCode');
 
 @tailwind components;
 /*! purgecss end ignore */

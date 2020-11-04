@@ -1,19 +1,18 @@
-import { graphql, Link } from 'gatsby';
 import React from 'react';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import heart from '../content/assets/images/heart-large.png';
 
 type Props = {
   path: string;
   data: any;
 };
 
-export default ({ path, data }: Props) => (
-  <Layout path={path}>
-    <SEO title="Posts - Quests In Code" />
-    <div className="mt-20">
-      {data.allMdx.edges.map(({ node }, index) => {
+export default function Posts({ path, data }: Props) {
+  return (
+    <Layout path={path}>
+      <SEO title="Posts - Quests In Code" />
+      <div className="mt-20">
+        {/* {data.allMdx.edges.map(({ node }, index) => {
         const hearts: JSX.IntrinsicElements['img'][] = [];
         for (let i = 0; i < Math.ceil(node.timeToRead / 3); i++) {
           hearts.push(
@@ -65,29 +64,30 @@ export default ({ path, data }: Props) => (
             </Link>
           </div>
         );
-      })}
-    </div>
-  </Layout>
-);
+      })} */}
+      </div>
+    </Layout>
+  );
+}
 
-export const query = graphql`
-  query PostsIndexPosts {
-    allMdx(sort: { fields: frontmatter___date, order: DESC }) {
-      edges {
-        node {
-          excerpt
-          timeToRead
-          frontmatter {
-            date(formatString: "MMMM DD, YYYY")
-            description
-            title
-            tags
-          }
-          fields {
-            slug
-          }
-        }
-      }
-    }
-  }
-`;
+// export const query = graphql`
+//   query PostsIndexPosts {
+//     allMdx(sort: { fields: frontmatter___date, order: DESC }) {
+//       edges {
+//         node {
+//           excerpt
+//           timeToRead
+//           frontmatter {
+//             date(formatString: "MMMM DD, YYYY")
+//             description
+//             title
+//             tags
+//           }
+//           fields {
+//             slug
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;

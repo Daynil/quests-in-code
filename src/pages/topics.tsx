@@ -1,9 +1,6 @@
-import { graphql, Link } from 'gatsby';
-import { parse } from 'query-string';
-import React, { useState } from 'react';
+import React from 'react';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import heart from '../content/assets/images/heart-large.png';
 
 type Props = {
   path: string;
@@ -13,30 +10,30 @@ type Props = {
   };
 };
 
-export default ({ path, data, location }: Props) => {
-  const { edges } = data.allMdx;
+export default function Topics({ path, data, location }: Props) {
+  // const { edges } = data.allMdx;
 
-  let tagList: string[] = [];
-  edges.map(({ node }) => (tagList = tagList.concat(node.frontmatter.tags)));
-  tagList = [...new Set(tagList)];
-  tagList.sort();
-  tagList.unshift('All');
+  // let tagList: string[] = [];
+  // edges.map(({ node }) => (tagList = tagList.concat(node.frontmatter.tags)));
+  // tagList = [...new Set(tagList)];
+  // tagList.sort();
+  // tagList.unshift('All');
 
-  let initialTopic = 'All';
-  if (typeof location !== 'undefined' && location?.search) {
-    initialTopic = parse(location.search).topic as string;
-    initialTopic = tagList.find(tag => tag === initialTopic);
-    if (!initialTopic) initialTopic = 'All';
-  }
+  // let initialTopic = 'All';
+  // if (typeof location !== 'undefined' && location?.search) {
+  //   initialTopic = parse(location.search).topic as string;
+  //   initialTopic = tagList.find(tag => tag === initialTopic);
+  //   if (!initialTopic) initialTopic = 'All';
+  // }
 
-  const [selectedTag, setSelectedTag] = useState(initialTopic);
+  // const [selectedTag, setSelectedTag] = useState(initialTopic);
 
-  const filteredEdges =
-    selectedTag === 'All'
-      ? edges
-      : edges.filter(({ node }) =>
-          node.frontmatter.tags.find(tag => tag === selectedTag)
-        );
+  // const filteredEdges =
+  //   selectedTag === 'All'
+  //     ? edges
+  //     : edges.filter(({ node }) =>
+  //         node.frontmatter.tags.find(tag => tag === selectedTag)
+  //       );
 
   return (
     <Layout path={path}>
@@ -44,7 +41,7 @@ export default ({ path, data, location }: Props) => {
       <div className="mt-20 text-center">
         <h1>Explore posts by topic</h1>
       </div>
-      <div className="text-center flex flex-wrap">
+      {/* <div className="text-center flex flex-wrap">
         {tagList.map((tag, index) => (
           <span
             key={index}
@@ -98,29 +95,29 @@ export default ({ path, data, location }: Props) => {
             </div>
           );
         })}
-      </div>
+      </div> */}
     </Layout>
   );
-};
+}
 
-export const query = graphql`
-  query PostsIndexTopics {
-    allMdx(sort: { fields: frontmatter___date, order: DESC }) {
-      edges {
-        node {
-          excerpt
-          timeToRead
-          frontmatter {
-            date(formatString: "MMMM DD, YYYY")
-            description
-            title
-            tags
-          }
-          fields {
-            slug
-          }
-        }
-      }
-    }
-  }
-`;
+// export const query = graphql`
+//   query PostsIndexTopics {
+//     allMdx(sort: { fields: frontmatter___date, order: DESC }) {
+//       edges {
+//         node {
+//           excerpt
+//           timeToRead
+//           frontmatter {
+//             date(formatString: "MMMM DD, YYYY")
+//             description
+//             title
+//             tags
+//           }
+//           fields {
+//             slug
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
