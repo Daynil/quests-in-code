@@ -1,17 +1,17 @@
+import fs from 'fs';
+import hydrate from 'next-mdx-remote/hydrate';
+import renderToString from 'next-mdx-remote/render-to-string';
+import { join } from 'path';
 import React from 'react';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 
-type Props = {
-  path: string;
-  data: any;
-};
-
-export default function Posts({ path, data }: Props) {
+export default function Posts({ source }) {
   return (
-    <Layout path={path}>
+    <Layout path={''}>
       <SEO title="Posts - Quests In Code" />
       <div className="mt-20">
+        {hydrate(source)}
         {/* {data.allMdx.edges.map(({ node }, index) => {
         const hearts: JSX.IntrinsicElements['img'][] = [];
         for (let i = 0; i < Math.ceil(node.timeToRead / 3); i++) {
@@ -91,3 +91,24 @@ export default function Posts({ path, data }: Props) {
 //     }
 //   }
 // `;
+
+export async function getStaticProps() {
+  const fileContents = fs.readFileSync(
+    join(
+      process.cwd(),
+      'src',
+      'content',
+      'posts',
+      // 'test.mdx'
+      'create-api-from-static-site',
+      'index.mdx'
+    ),
+    'utf-8'
+  );
+  const mdxSource = await renderToString(fileContents);
+  return {
+    props: {
+      source: mdxSource
+    }
+  };
+}
