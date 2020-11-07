@@ -26,7 +26,155 @@ ul {
 
 /* Code highlight styling */
 
-.gatsby-code-title {
+/*
+Atom One Dark by Daniel Gamage
+Original One Dark Syntax theme from https://github.com/atom/one-dark-syntax
+base:    #282c34
+mono-1:  #abb2bf
+mono-2:  #818896
+mono-3:  #5c6370
+hue-1:   #56b6c2
+hue-2:   #61aeee
+hue-3:   #c678dd
+hue-4:   #98c379
+hue-5:   #e06c75
+hue-5-2: #be5046
+hue-6:   #d19a66
+hue-6-2: #e6c07b
+*/
+
+code {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+.remark-code-title {
+  @apply mb-2;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 0.375rem 0.375rem 0 0;
+  padding: 8px 18px;
+  margin-bottom: -8px;
+  background-color: hsl(240, 13%, 12%);
+  color: hsl(0, 0%, 80%);
+  border-bottom: 2px hsl(215, 100%, 65%) solid;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+/* Don't round upper left corner if there's a title */
+.remark-code-title + pre code {
+  border-radius: 0 0.375rem 0.375rem 0.375rem;
+}
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em;
+  color: #abb2bf;
+  background: hsl(240, 13%, 12%);
+  @apply my-2;
+  overflow: auto;
+  border-radius: 0.375rem;
+}
+
+.hljs::-webkit-scrollbar {
+  height: 8px;
+}
+
+.hljs::-webkit-scrollbar-track {
+  background: hsl(0, 0%, 25%);
+}
+
+.hljs::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 45%);
+}
+
+.hljs::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 60%);
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-keyword,
+.hljs-formula {
+  color: hsl(299, 34%, 70%);
+}
+
+.hljs-section,
+.hljs-name,
+.hljs-selector-tag,
+.hljs-deletion,
+.hljs-subst {
+  color: #e06c75;
+}
+
+.hljs-literal {
+  color: #56b6c2;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta-string {
+  color: hsl(142deg 39% 64%);
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title {
+  color: hsl(215, 100%, 65%);
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-number {
+  color: #d19a66;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-title {
+  color: #61aeee;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-link {
+  text-decoration: underline;
+}
+
+/* Inline code */
+:not(pre) > code {
+  @apply text-dblue-900 bg-dblue-100;
+  padding: 0.15rem 0.45rem 0.15rem 0.45rem;
+  border-radius: 0.375rem;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.dark-mode :not(pre) > code {
+  @apply text-dblue-200 bg-gray-800;
+}
+
+/* .gatsby-code-title {
   @apply mb-2;
   display: inline-block;
   font-size: 16px;
@@ -50,13 +198,13 @@ ul {
   padding-right: 1em;
   padding-left: 0.75em;
   border-left: 0.25em solid hsl(215, 100%, 65%);
-}
+} */
 
 /**
  * Add back the container background-color, border-radius, padding, margin
  * and overflow that we removed from <pre>.
  */
-.gatsby-highlight {
+/* .gatsby-highlight {
   @apply mb-8 mt-2;
   background-color: hsl(240, 13%, 12%);
   padding: 1em;
@@ -76,10 +224,10 @@ ul {
 
 .gatsby-highlight::-webkit-scrollbar-thumb {
   background: hsl(0, 0%, 45%);
-}
+} */
 
 /* Code blocks */
-pre[class*='language-'] {
+/* pre[class*='language-'] {
   @apply my-2;
   padding: 1em;
   overflow: auto;
@@ -102,7 +250,7 @@ pre[class*='language-'] {
   text-align: left;
   white-space: pre;
   word-spacing: normal;
-  word-break: normal;
+  word-break: normal;R
   word-wrap: normal;
   line-height: 1.5;
 
@@ -114,7 +262,7 @@ pre[class*='language-'] {
   -moz-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-}
+} */
 
 /**
  * Remove the default PrismJS theme background-color, border-radius, margin,
@@ -123,29 +271,29 @@ pre[class*='language-'] {
  * 2. Always fill the visible space in .gatsby-highlight.
  * 3. Adjust the position of the line numbers
  */
-.gatsby-highlight pre[class*='language-'] {
+/* .gatsby-highlight pre[class*='language-'] {
   background-color: transparent;
   margin: 0;
   padding: 0;
   overflow: initial;
-  float: left; /* 1 */
-  min-width: 100%; /* 2 */
-}
+  float: left;
+  min-width: 100%;
+} */
 
 /* Inline code */
-:not(pre) > code[class*='language-'] {
+/* :not(pre) > code[class*='language-'] {
   @apply text-dblue-900 bg-dblue-100;
   padding: 0.15rem 0.45rem 0.15rem 0.45rem;
   border-radius: 0.375rem;
   white-space: normal;
   word-break: break-word;
-}
+} */
 
-.dark-mode :not(pre) > code[class*='language-'] {
+/* .dark-mode :not(pre) > code[class*='language-'] {
   @apply text-dblue-200 bg-gray-800;
-}
+} */
 
-.token.comment,
+/* .token.comment,
 .token.block-comment,
 .token.prolog,
 .token.doctype,
@@ -217,6 +365,6 @@ pre[class*='language-'] {
 
 .token.inserted {
   color: green;
-}
+} */
 
 /*! purgecss end ignore */

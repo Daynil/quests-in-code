@@ -1,10 +1,20 @@
 import fs from 'fs';
+import matter from 'gray-matter';
 import hydrate from 'next-mdx-remote/hydrate';
 import renderToString from 'next-mdx-remote/render-to-string';
 import { join } from 'path';
 import React from 'react';
+import highlight from 'rehype-highlight';
+import visit from 'unist-util-visit';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+
+export type PostMatter = {
+  title: string;
+  tags: string[];
+  date: string;
+  description: string;
+};
 
 export default function Posts({ source }) {
   return (
@@ -105,10 +115,41 @@ export async function getStaticProps() {
     ),
     'utf-8'
   );
-  const mdxSource = await renderToString(fileContents);
+
+  const matterResult = matter(fileContents);
+
+  const mdxSource = await renderToString(matterResult.content, {
+    mdxOptions: {
+      remarkPlugins: [
+        function(options) {
+          return tree =>
+            visit(tree, 'code', (node, index) => {
+              const [language, title] = ((node.lang || '') as string).split(
+                ':title='
+              );
+              if (!title) {
+                return;
+              }
+
+              const className = 'remark-code-title';
+
+              const titleNode = {
+                type: 'html',
+                value: `<div class="${className}">${title}</div>`.trim()
+              };
+
+              tree.children.splice(index, 0, titleNode);
+              node.lang = language;
+            });
+        }
+      ],
+      rehypePlugins: [highlight]
+    }
+  });
   return {
     props: {
-      source: mdxSource
+      source: mdxSource,
+      ...(matterResult.data as PostMatter)
     }
   };
 }
