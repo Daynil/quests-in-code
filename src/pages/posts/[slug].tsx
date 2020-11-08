@@ -53,9 +53,9 @@ export default function BlogPost(
 ) {
   const [webmentions, setWebmentions] = useState<Webmention[]>(null);
 
-  const postUrl = `https://questsincode.com/${props.slug}`;
+  const postUrl = `https://questsincode.com/posts/${props.slug}/`;
   const twitterShareUrl = `https://twitter.com/share?url=${postUrl}&text=“${props.title}”, a post from Danny Libin.&via=Dayn1l`;
-  const twitterSearchUrl = `https://twitter.com/search?q=${postUrl}`;
+  const twitterSearchUrl = `https://twitter.com/search?q=${postUrl}/`;
 
   useEffect(() => {
     async function getWebmentions() {
@@ -65,6 +65,11 @@ export default function BlogPost(
             `https://webmention.io/api/mentions.json?per-page=1000&page=0&target=${postUrl}`
           )
         ).json();
+        console.log(postUrl);
+        console.log(
+          `https://webmention.io/api/mentions.json?per-page=1000&page=0&target=${postUrl}`
+        );
+        console.log(res);
         setWebmentions(res.links);
       } catch (e) {
         console.log('Failed to get webmentions', e);

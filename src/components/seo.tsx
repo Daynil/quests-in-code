@@ -101,7 +101,7 @@ const SEO = ({
 //         }
 //       ].concat(meta)}
 //     >
-//       {index ? <link href="dlibinrx@gmail.com" rel="me" /> : null}
+//       {index ? <link href="mailto:dlibinrx@gmail.com" rel="me" /> : null}
 //       <link
 //         rel="webmention"
 //         href="https://webmention.io/questsincode.com/webmention"
