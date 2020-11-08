@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import fs from 'fs';
 import matter from 'gray-matter';
 import { InferGetStaticPropsType } from 'next';
@@ -58,7 +59,7 @@ export default function Posts({
                   <h2 className="my-2">{post.title}</h2>
                   <div className="mb-8 text-gray-700 dk:text-gray-500 flex flex-col sm:flex-row sm:text-center">
                     <span className="mr-2">
-                      {post.date}{' '}
+                      {format(new Date(post.date), 'MMMM d, yyyy')}{' '}
                       <span className="hidden sm:inline-block">•</span>{' '}
                     </span>
                     <span className="flex items-center">

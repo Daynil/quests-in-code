@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import DOMPurify from 'dompurify';
 import fs from 'fs';
 import matter from 'gray-matter';
@@ -47,16 +48,16 @@ interface Webmention {
   target: string;
 }
 
-export default function BlogPost(
-  props: InferGetStaticPropsType<typeof getStaticProps>
-) {
+export default function BlogPost({
+  post
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const [webmentions, setWebmentions] = useState<Webmention[]>(null);
 
-  const postUrl = `https://questsincode.com/posts/${props.slug}/`;
-  const twitterShareUrl = `https://twitter.com/share?url=${postUrl}&text=“${props.title}”, a post from Danny Libin.&via=Dayn1l`;
+  const postUrl = `https://questsincode.com/posts/${post.slug}/`;
+  const twitterShareUrl = `https://twitter.com/share?url=${postUrl}&text=“${post.title}”, a post from Danny Libin.&via=Dayn1l`;
   const twitterSearchUrl = `https://twitter.com/search?q=${postUrl}/`;
 
-  const hydratedPost = hydrate(props.source);
+  const hydratedPost = hydrate(post.source);
 
   useEffect(() => {
     async function getWebmentions() {
@@ -88,9 +89,9 @@ export default function BlogPost(
     );
   }
 
-  const postTags = !props.tags.length
+  const postTags = !post.tags.length
     ? null
-    : props.tags.map((tag, index) => (
+    : post.tags.map((tag, index) => (
         <Link key={index} href={`/topics?topic=${tag}`}>
           <span
             className={
@@ -167,14 +168,15 @@ export default function BlogPost(
 
   return (
     <div>
-      <SEO title={props.title} description={props.description} />
+      <SEO title={post.title} description={post.description} />
       <div className="mt-24">
         <div className="text-center">
           <div className="flex flex-wrap justify-center">{postTags}</div>
-          <h1 className="my-2">{props.title}</h1>
+          <h1 className="my-2">{post.title}</h1>
           <div className="mb-8 text-gray-700 dk:text-gray-500 flex justify-center flex-col sm:flex-row sm:text-center">
             <span className="mr-2">
-              {props.date} <span className="hidden sm:inline-block">•</span>{' '}
+              {format(new Date(post.date), 'MMMM d, yyyy')}{' '}
+              <span className="hidden sm:inline-block">•</span>{' '}
             </span>
             <span className="flex items-center justify-center">
               <span className="flex mr-2">{hearts}</span> {3} minute read
@@ -322,9 +324,11 @@ export async function getStaticProps({ params }) {
   });
   return {
     props: {
-      source: mdxSource,
-      slug: params.slug,
-      ...(matterResult.data as PostMatter)
+      post: {
+        slug: params.slug,
+        source: mdxSource,
+        ...(matterResult.data as PostMatter)
+      }
     }
   };
 }
