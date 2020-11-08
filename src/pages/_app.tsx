@@ -6,7 +6,7 @@ import '../styles/blog-post.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Layout path="">
+    <Layout>
       {' '}
       <Component {...pageProps} />
     </Layout>

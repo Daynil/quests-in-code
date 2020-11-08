@@ -1,3 +1,4 @@
+import { useRouter } from 'next/dist/client/router';
 import Link from 'next/Link';
 import React, { useContext } from 'react';
 // import logoLarge from '../content/assets/images/logo-large.png';
@@ -6,25 +7,41 @@ import MoonIcon from './svg/moon-icon';
 import SunIcon from './svg/sun-icon';
 
 type Props = {
-  path: string;
   handleDarkSwitch: () => void;
   menuOpen: boolean;
   handleMenuOpen: () => void;
 };
 
+const navClassName =
+  'transition duration-200 ease-in-out md:ml-4 mt-2 md:mt-0 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-500 hover:border-dblue-500 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none';
+const mobileNavClassName =
+  'transition duration-200 ease-in-out md:ml-4 mt-2 md:mt-0 px-3 py-2 text-xl font-medium text-gray-100 border-b-2 border-transparent hover:text-dblue-500 hover:border-dblue-500 focus:outline-none';
+const activeClassName = ' border-b-2 border-dblue-500 dk:border-dblue-500';
+
+type HeaderLinkProps = {
+  href: string;
+  isActive: boolean;
+  isMobile: boolean;
+  children: React.ReactNode;
+};
+
+function HeaderLink({ href, isActive, isMobile, children }: HeaderLinkProps) {
+  let linkClass = isMobile ? mobileNavClassName : navClassName;
+  if (isActive) linkClass += activeClassName;
+  return (
+    <Link href={href}>
+      <a className={linkClass}>{children}</a>
+    </Link>
+  );
+}
+
 export default function Header({
-  path,
   handleDarkSwitch,
   menuOpen,
   handleMenuOpen
 }: Props) {
   const { darkMode } = useContext(ThemeContext);
-
-  const navClassName =
-    'transition duration-200 ease-in-out md:ml-4 mt-2 md:mt-0 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-500 hover:border-dblue-500 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none';
-  const mobileNavClassName =
-    'transition duration-200 ease-in-out md:ml-4 mt-2 md:mt-0 px-3 py-2 text-xl font-medium text-gray-100 border-b-2 border-transparent hover:text-dblue-500 hover:border-dblue-500 focus:outline-none';
-  const activeClassName = ' border-b-2 border-dblue-500 dk:border-dblue-500';
+  const router = useRouter();
 
   return (
     <header className="relative max-w-6xl mx-auto px-6 lg:px-8 text-xl mt-3">
@@ -32,7 +49,7 @@ export default function Header({
         <div className="w-full justify-between flex flex-col md:flex-row md:items-center">
           <div className="flex justify-between">
             <Link href="/">
-              <a className={navClassName}>
+              <a className="px-3 py-2 rounded-md text-3xl font-medium text-gray-900 dk:text-dblue-100">
                 <span className="flex flex-row items-center">
                   <img
                     src="/images/logo-large.png"
@@ -83,38 +100,27 @@ export default function Header({
           {/* Desktop Nav Bar */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline">
-              <Link href="/posts/">
-                <a
-                  className={navClassName}
-                  // className={
-                  //   path.match(/(^\/posts\/)/i)
-                  //     ? navClassName + activeClassName
-                  //     : navClassName
-                  // }
-                >
-                  Posts
-                </a>
-              </Link>
-              <Link href="/topics/">
-                <a
-                  className={navClassName}
-                  // className={
-                  //   path.match(/(^\/topics)/i)
-                  //     ? navClassName + activeClassName
-                  //     : navClassName
-                  // }
-                >
-                  Topics
-                </a>
-              </Link>
-              <Link
-                href="/about/"
-                // activeClassName={navClassName + activeClassName}
+              <HeaderLink
+                href="/posts/"
+                isMobile={false}
+                isActive={router.asPath.match(/(^\/posts)/i)?.length > 0}
               >
-                <a href="" className={navClassName}>
-                  About
-                </a>
-              </Link>
+                Posts
+              </HeaderLink>
+              <HeaderLink
+                href="/topics/"
+                isMobile={false}
+                isActive={router.asPath.match(/(^\/topics)/i)?.length > 0}
+              >
+                Topics
+              </HeaderLink>
+              <HeaderLink
+                href="/about/"
+                isMobile={false}
+                isActive={router.asPath.match(/(^\/about)/i)?.length > 0}
+              >
+                About
+              </HeaderLink>
               <button
                 className="transition duration-200 ease-in-out ml-4 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-400 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none self-center hover:border-transparent"
                 onClick={handleDarkSwitch}
@@ -164,31 +170,27 @@ export default function Header({
               </svg>
             </button>
             <div className="flex flex-col justify-center">
-              <Link href="/posts/">
-                <a
-                  className="mobileNavClassName"
-                  // className={
-                  //   path.match(/(^\/posts\/)/i)
-                  //     ? mobileNavClassName + activeClassName
-                  //     : mobileNavClassName
-                  // }
-                >
-                  Posts
-                </a>
-              </Link>
-              <Link
+              <HeaderLink
+                href="/posts/"
+                isMobile={true}
+                isActive={router.asPath.match(/(^\/posts)/i)?.length > 0}
+              >
+                Posts
+              </HeaderLink>
+              <HeaderLink
                 href="/topics/"
-
-                // activeClassName={mobileNavClassName + activeClassName}
+                isMobile={true}
+                isActive={router.asPath.match(/(^\/topics)/i)?.length > 0}
               >
-                <a className={mobileNavClassName}>Topics</a>
-              </Link>
-              <Link
+                Topics
+              </HeaderLink>
+              <HeaderLink
                 href="/about/"
-                // activeClassName={mobileNavClassName + activeClassName}
+                isMobile={true}
+                isActive={router.asPath.match(/(^\/about)/i)?.length > 0}
               >
-                <a className={mobileNavClassName}>About</a>
-              </Link>
+                About
+              </HeaderLink>
               <button
                 className="transition duration-200 ease-in-out mt-2 px-3 py-2 text-xl font-medium border-b-2 border-transparent text-gray-100 hover:text-dblue-400 focus:outline-none self-center hover:border-transparent block"
                 onClick={handleDarkSwitch}

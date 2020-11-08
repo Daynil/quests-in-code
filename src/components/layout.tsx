@@ -4,7 +4,6 @@ import Header from './header';
 import TextLink from './text-link';
 
 type Props = {
-  path: string;
   children: React.ReactNode;
 };
 
@@ -12,7 +11,7 @@ export const ThemeContext = React.createContext({
   darkMode: false
 });
 
-const Layout = ({ path, children }: Props) => {
+const Layout = ({ children }: Props) => {
   const { darkMode, setDarkMode } = useDarkMode(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const handleDarkSwitch = () => setDarkMode(!darkMode);
@@ -31,7 +30,6 @@ const Layout = ({ path, children }: Props) => {
       <div className={darkMode ? 'dark-mode' : ''}>
         <div className="min-h-screen dk:bg-gray-900 transition duration-200 ease-in-out border-t-4 border-dblue-500">
           <Header
-            path={path}
             handleDarkSwitch={handleDarkSwitch}
             menuOpen={menuOpen}
             handleMenuOpen={handleMenuOpen}

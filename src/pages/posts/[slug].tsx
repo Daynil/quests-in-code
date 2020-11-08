@@ -56,9 +56,7 @@ export default function BlogPost(
   const twitterShareUrl = `https://twitter.com/share?url=${postUrl}&text=“${props.title}”, a post from Danny Libin.&via=Dayn1l`;
   const twitterSearchUrl = `https://twitter.com/search?q=${postUrl}/`;
 
-  console.time('postHydration');
   const hydratedPost = hydrate(props.source);
-  console.timeEnd('postHydration');
 
   useEffect(() => {
     async function getWebmentions() {
@@ -268,11 +266,9 @@ export default function BlogPost(
 }
 
 export async function getStaticPaths() {
-  console.time('staticPaths');
   const folderNames = fs.readdirSync(
     join(process.cwd(), 'src', 'content', 'posts')
   );
-  console.timeEnd('staticPaths');
   return {
     paths: folderNames.map(name => ({ params: { slug: name } })),
     fallback: false
@@ -280,7 +276,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  console.time('staticProps');
   const fileContents = fs.readFileSync(
     join(process.cwd(), 'src', 'content', 'posts', params.slug, 'index.mdx'),
     'utf-8'
@@ -325,7 +320,6 @@ export async function getStaticProps({ params }) {
       rehypePlugins: [highlight]
     }
   });
-  console.timeEnd('staticProps');
   return {
     props: {
       source: mdxSource,

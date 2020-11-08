@@ -13,14 +13,14 @@ export type PostMatter = {
   description: string;
 };
 
-export default function Posts(
-  props: InferGetStaticPropsType<typeof getStaticProps>
-) {
+export default function Posts({
+  posts
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div>
       <SEO title="Posts - Quests In Code" />
       <div className="mt-20">
-        {props.posts.map((post, index) => {
+        {posts.map((post, index) => {
           const hearts: JSX.IntrinsicElements['img'][] = [];
           //for (let i = 0; i < Math.ceil(timeToRead / 3); i++) {
           for (let i = 0; i < 3; i++) {
