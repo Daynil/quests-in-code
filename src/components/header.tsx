@@ -32,21 +32,23 @@ export default function Header({
         <div className="w-full justify-between flex flex-col md:flex-row md:items-center">
           <div className="flex justify-between">
             <Link href="/">
-              <span className="flex flex-row items-center">
-                <img
-                  src="/images/logo-large.png"
-                  alt="Javascript Adventures logo"
-                />
-                <span
-                  className="ml-2 hidden sm:inline-block"
-                  style={{
-                    fontFamily: 'PT Mono, monospace'
-                  }}
-                >
-                  {' '}
-                  Quests In Code
+              <a className={navClassName}>
+                <span className="flex flex-row items-center">
+                  <img
+                    src="/images/logo-large.png"
+                    alt="Javascript Adventures logo"
+                  />
+                  <span
+                    className="ml-2 hidden text-3xl sm:inline-block"
+                    style={{
+                      fontFamily: 'PT Mono, monospace'
+                    }}
+                  >
+                    {' '}
+                    Quests In Code
+                  </span>
                 </span>
-              </span>
+              </a>
             </Link>
             {/* Mobile Nav Button */}
             <div className="absolute right-0 top-0 mt-2 mr-5 flex md:hidden">
@@ -83,7 +85,7 @@ export default function Header({
             <div className="ml-10 flex items-baseline">
               <Link href="/posts/">
                 <a
-                  className="navClassName"
+                  className={navClassName}
                   // className={
                   //   path.match(/(^\/posts\/)/i)
                   //     ? navClassName + activeClassName
@@ -95,7 +97,7 @@ export default function Header({
               </Link>
               <Link href="/topics/">
                 <a
-                  className="navClassName"
+                  className={navClassName}
                   // className={
                   //   path.match(/(^\/topics)/i)
                   //     ? navClassName + activeClassName
@@ -109,7 +111,9 @@ export default function Header({
                 href="/about/"
                 // activeClassName={navClassName + activeClassName}
               >
-                About
+                <a href="" className={navClassName}>
+                  About
+                </a>
               </Link>
               <button
                 className="transition duration-200 ease-in-out ml-4 px-3 py-2 text-xl font-medium text-gray-900 border-b-2 border-transparent dk:text-gray-100 dk-hover:text-dblue-400 hover:text-dblue-500 hover:text-dblue-500 focus:outline-none self-center hover:border-transparent"

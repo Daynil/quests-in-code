@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TextLink from '../components/text-link';
 
@@ -8,7 +7,7 @@ type Props = {
 };
 
 const About = ({ path }: Props) => (
-  <Layout path={path}>
+  <div>
     <SEO title="About - Quests In Code" />
     <h1 className="mt-20 text-center">About Quests In Code</h1>
     <p>
@@ -21,7 +20,7 @@ const About = ({ path }: Props) => (
       Written and created by{' '}
       <TextLink href="https://dlibin.net">Danny Libin</TextLink>
     </p>
-  </Layout>
+  </div>
 );
 
 export default About;

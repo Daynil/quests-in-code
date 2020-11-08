@@ -9,7 +9,6 @@ import { join } from 'path';
 import React, { useEffect, useState } from 'react';
 import highlight from 'rehype-highlight';
 import visit from 'unist-util-visit';
-import Layout from '../../components/layout';
 import SEO from '../../components/seo';
 import CommentsIcon from '../../components/svg/comments-icon';
 import LikeIcon from '../../components/svg/like-icon';
@@ -57,6 +56,10 @@ export default function BlogPost(
   const twitterShareUrl = `https://twitter.com/share?url=${postUrl}&text=“${props.title}”, a post from Danny Libin.&via=Dayn1l`;
   const twitterSearchUrl = `https://twitter.com/search?q=${postUrl}/`;
 
+  console.time('postHydration');
+  const hydratedPost = hydrate(props.source);
+  console.timeEnd('postHydration');
+
   useEffect(() => {
     async function getWebmentions() {
       try {
@@ -65,11 +68,6 @@ export default function BlogPost(
             `https://webmention.io/api/mentions.json?per-page=1000&page=0&target=${postUrl}`
           )
         ).json();
-        console.log(postUrl);
-        console.log(
-          `https://webmention.io/api/mentions.json?per-page=1000&page=0&target=${postUrl}`
-        );
-        console.log(res);
         setWebmentions(res.links);
       } catch (e) {
         console.log('Failed to get webmentions', e);
@@ -170,7 +168,7 @@ export default function BlogPost(
         });
 
   return (
-    <Layout path={''}>
+    <div>
       <SEO title={props.title} description={props.description} />
       <div className="mt-24">
         <div className="text-center">
@@ -192,7 +190,7 @@ export default function BlogPost(
                alt={frontmatter.title}
              /> */}
         </div>
-        <div className="mt-20">{hydrate(props.source)}</div>
+        <div className="mt-20">{hydratedPost}</div>
         <a
           href={twitterShareUrl}
           target="_blank"
@@ -265,14 +263,16 @@ export default function BlogPost(
           </div>
         )}
       </div>
-    </Layout>
+    </div>
   );
 }
 
 export async function getStaticPaths() {
+  console.time('staticPaths');
   const folderNames = fs.readdirSync(
     join(process.cwd(), 'src', 'content', 'posts')
   );
+  console.timeEnd('staticPaths');
   return {
     paths: folderNames.map(name => ({ params: { slug: name } })),
     fallback: false
@@ -280,6 +280,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  console.time('staticProps');
   const fileContents = fs.readFileSync(
     join(process.cwd(), 'src', 'content', 'posts', params.slug, 'index.mdx'),
     'utf-8'
@@ -324,6 +325,7 @@ export async function getStaticProps({ params }) {
       rehypePlugins: [highlight]
     }
   });
+  console.timeEnd('staticProps');
   return {
     props: {
       source: mdxSource,
