@@ -48,6 +48,10 @@ interface Webmention {
   target: string;
 }
 
+const mdxComponents = {
+  a: TextLink
+};
+
 export default function BlogPost({
   post
 }: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -57,7 +61,7 @@ export default function BlogPost({
   const twitterShareUrl = `https://twitter.com/share?url=${postUrl}&text=“${post.title}”, a post from Danny Libin.&via=Dayn1l`;
   const twitterSearchUrl = `https://twitter.com/search?q=${postUrl}/`;
 
-  const hydratedPost = hydrate(post.source);
+  const hydratedPost = hydrate(post.source, { components: mdxComponents });
 
   useEffect(() => {
     async function getWebmentions() {
@@ -286,6 +290,7 @@ export async function getStaticProps({ params }) {
   const matterResult = matter(fileContents);
 
   const mdxSource = await renderToString(matterResult.content, {
+    components: mdxComponents,
     mdxOptions: {
       remarkPlugins: [
         function(options) {
