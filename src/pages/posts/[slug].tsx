@@ -11,6 +11,9 @@ import highlight from 'rehype-highlight';
 import visit from 'unist-util-visit';
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
+import CommentsIcon from '../../components/svg/comments-icon';
+import LikeIcon from '../../components/svg/like-icon';
+import RetweetIcon from '../../components/svg/retweet-icon';
 import TwitterIcon from '../../components/svg/twitter-icon';
 import TextLink from '../../components/text-link';
 import { humanDateFromEpoch } from '../../utils/format';
@@ -196,6 +199,66 @@ export default function BlogPost(
             word!! 🎉
           </span>
         </a>
+        <h2>
+          Webmentions (
+          <TextLink
+            href="https://indieweb.org/Webmention"
+            className="text-lg border-b-0"
+          >
+            ❔
+          </TextLink>
+          )
+        </h2>
+        {!webmentions || !webmentions.length ? (
+          <div>
+            No comments yet.{' '}
+            <TextLink href={twitterShareUrl}>Start the conversation!</TextLink>{' '}
+            Your post will show up here.
+          </div>
+        ) : (
+          <div className="mt-10">
+            <a href={twitterSearchUrl} target="_blank">
+              <div className="flex">
+                <div className="flex">
+                  <LikeIcon className="w-6 text-red-600" />{' '}
+                  <span className="ml-2">
+                    {
+                      webmentions.filter(
+                        mention => mention.activity.type === 'like'
+                      ).length
+                    }
+                  </span>
+                </div>
+                <div className="flex ml-6">
+                  <RetweetIcon className="w-8 text-blue-500" />{' '}
+                  <span className="ml-2">
+                    {
+                      webmentions.filter(
+                        mention => mention.activity.type === 'repost'
+                      ).length
+                    }
+                  </span>
+                </div>
+                <div className="flex ml-6">
+                  <CommentsIcon className="w-6 text-blue-500" />{' '}
+                  <span className="ml-2">
+                    {
+                      webmentions.filter(
+                        mention => mention.activity.type === 'reply'
+                      ).length
+                    }
+                  </span>
+                </div>
+              </div>
+            </a>
+            <div className="mt-6">
+              <TextLink href={twitterSearchUrl}>
+                Join the conversation!
+              </TextLink>
+            </div>
+            <div className="mt-6">{webmentionContent}</div>
+          </div>
+        )}
       </div>
     </Layout>
   );
