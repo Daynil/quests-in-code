@@ -5,6 +5,7 @@ import matter from 'gray-matter';
 import { InferGetStaticPropsType } from 'next';
 import hydrate from 'next-mdx-remote/hydrate';
 import renderToString from 'next-mdx-remote/render-to-string';
+import { useRouter } from 'next/dist/client/router';
 import Link from 'next/Link';
 import { join } from 'path';
 import React, { useEffect, useState } from 'react';
@@ -48,8 +49,21 @@ interface Webmention {
   target: string;
 }
 
+function BlogImage({ src }: { src: string }) {
+  let modifiedSrc = src;
+  const router = useRouter();
+  if (!router) return null;
+  const postSlug = router.asPath.split('/')[2];
+  // If relative path, replace with static folder associated with post
+  if (src.startsWith('.')) {
+    modifiedSrc = `/images/posts/${postSlug}/${src.split('./')[1]}`;
+  }
+  return <img src={modifiedSrc} />;
+}
+
 const mdxComponents = {
-  a: TextLink
+  a: TextLink,
+  img: BlogImage
 };
 
 export default function BlogPost({
@@ -188,11 +202,11 @@ export default function BlogPost({
           </div>
         </div>
         <div className="w-full">
-          {/* <Image
-               className="z-0 rounded-md"
-               fluid={featuredImage.childImageSharp.fluid}
-               alt={frontmatter.title}
-             /> */}
+          <img
+            className="z-0 rounded-md"
+            src={`/images/posts/${post.slug}/featuredImage.png`}
+            alt={post.title}
+          />
         </div>
         <div className="mt-20">{hydratedPost}</div>
         <a
