@@ -14,6 +14,14 @@ export type PostMatter = {
   description: string;
 };
 
+export interface ImageMeta {
+  fileName: string;
+  relativePath: string;
+  width: number;
+  height: number;
+  imgBase64: string;
+}
+
 export default function Posts({
   posts
 }: InferGetStaticPropsType<typeof getStaticProps>) {
