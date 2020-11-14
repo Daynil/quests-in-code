@@ -286,18 +286,23 @@ export default function BlogPost({
 }
 
 export async function getStaticPaths() {
-  const folderNames = fs.readdirSync(
-    join(process.cwd(), 'src', 'content', 'posts')
-  );
+  const mdxFileNames = fs.readdirSync(join(process.cwd(), 'src', '_posts'));
+
+  mdxFileNames.map(name => {
+    console.log(name);
+    console.log(name.replace('.mdx', ''));
+  });
   return {
-    paths: folderNames.map(name => ({ params: { slug: name } })),
+    paths: mdxFileNames.map(name => ({
+      params: { slug: name.replace('.mdx', '') }
+    })),
     fallback: false
   };
 }
 
 export async function getStaticProps({ params }) {
   const fileContents = fs.readFileSync(
-    join(process.cwd(), 'src', 'content', 'posts', params.slug, 'index.mdx'),
+    join(process.cwd(), 'src', '_posts', `${params.slug}.mdx`),
     'utf-8'
   );
 

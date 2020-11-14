@@ -20,8 +20,6 @@ export default function Topics({
 
   const router = useRouter();
 
-  console.log(router);
-
   let initialTopic = 'All';
   if (router.query) {
     initialTopic = router.query.topic as string;
@@ -101,18 +99,16 @@ export default function Topics({
 }
 
 export async function getStaticProps() {
-  const folderNames = fs.readdirSync(
-    join(process.cwd(), 'src', 'content', 'posts')
-  );
+  const mdxFileNames = fs.readdirSync(join(process.cwd(), 'src', '_posts'));
 
-  const allPostsMeta = folderNames.map(name => {
+  const allPostsMeta = mdxFileNames.map(name => {
     const fileContents = fs.readFileSync(
-      join(process.cwd(), 'src', 'content', 'posts', name, 'index.mdx'),
+      join(process.cwd(), 'src', '_posts', name),
       'utf-8'
     );
     const matterResult = matter(fileContents);
     return {
-      slug: name,
+      slug: name.replace('.mdx', ''),
       ...(matterResult.data as PostMatter)
     };
   });
