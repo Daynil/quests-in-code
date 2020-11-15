@@ -5,12 +5,12 @@ import matter from 'gray-matter';
 import { InferGetStaticPropsType } from 'next';
 import hydrate from 'next-mdx-remote/hydrate';
 import renderToString from 'next-mdx-remote/render-to-string';
-import { useRouter } from 'next/dist/client/router';
 import Link from 'next/Link';
 import { join } from 'path';
 import React, { useEffect, useState } from 'react';
 import highlight from 'rehype-highlight';
 import visit from 'unist-util-visit';
+import BlurImage from '../../components/blur-image';
 import SEO from '../../components/seo';
 import CommentsIcon from '../../components/svg/comments-icon';
 import LikeIcon from '../../components/svg/like-icon';
@@ -18,7 +18,7 @@ import RetweetIcon from '../../components/svg/retweet-icon';
 import TwitterIcon from '../../components/svg/twitter-icon';
 import TextLink from '../../components/text-link';
 import { humanDateFromEpoch } from '../../utils/format';
-import { PostMatter } from '../posts';
+import { ImageMeta, PostMatter } from '../posts';
 
 interface Webmention {
   source: string;
@@ -49,21 +49,9 @@ interface Webmention {
   target: string;
 }
 
-function BlogImage({ src }: { src: string }) {
-  let modifiedSrc = src;
-  const router = useRouter();
-  if (!router) return null;
-  const postSlug = router.asPath.split('/')[2];
-  // If relative path, replace with static folder associated with post
-  if (src.startsWith('.')) {
-    modifiedSrc = `/images/posts/${postSlug}/${src.split('./')[1]}`;
-  }
-  return <img src={modifiedSrc} />;
-}
-
 const mdxComponents = {
   a: TextLink,
-  img: BlogImage
+  BlurImage: BlurImage
 };
 
 export default function BlogPost({
@@ -201,13 +189,15 @@ export default function BlogPost({
             </span>
           </div>
         </div>
-        <div className="w-full">
-          <img
-            className="z-0 rounded-md"
-            src={`/images/posts/${post.slug}/featuredImage.png`}
-            alt={post.title}
-          />
-        </div>
+        {!post.featuredImageMeta ? null : (
+          <div className="w-full">
+            <BlurImage
+              className="z-0 rounded-md"
+              {...post.featuredImageMeta}
+              alt={post.title}
+            />
+          </div>
+        )}
         <div className="mt-20">{hydratedPost}</div>
         <a
           href={twitterShareUrl}
@@ -288,10 +278,6 @@ export default function BlogPost({
 export async function getStaticPaths() {
   const mdxFileNames = fs.readdirSync(join(process.cwd(), 'src', '_posts'));
 
-  mdxFileNames.map(name => {
-    console.log(name);
-    console.log(name.replace('.mdx', ''));
-  });
   return {
     paths: mdxFileNames.map(name => ({
       params: { slug: name.replace('.mdx', '') }
@@ -301,6 +287,29 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  const sharedImgMeta = JSON.parse(
+    fs.readFileSync(
+      join(process.cwd(), 'public', 'images', 'imgMeta.json'),
+      'utf-8'
+    )
+  ) as { [key: string]: ImageMeta };
+
+  const pathImgMeta = JSON.parse(
+    fs.readFileSync(
+      join(
+        process.cwd(),
+        'public',
+        'images',
+        'posts',
+        params.slug,
+        'imgMeta.json'
+      ),
+      'utf-8'
+    )
+  ) as { [key: string]: ImageMeta };
+
+  const imgMeta = { ...sharedImgMeta, ...pathImgMeta };
+
   const fileContents = fs.readFileSync(
     join(process.cwd(), 'src', '_posts', `${params.slug}.mdx`),
     'utf-8'
@@ -341,6 +350,30 @@ export async function getStaticProps({ params }) {
               }
               // TODO Find and highlight lines if hasHighlights
             });
+        },
+        function(options) {
+          return tree =>
+            visit(tree, 'image', (node, index) => {
+              // { type: 'jsx',
+              // value: '<BlogImage src="./cat-test.png" />',
+              // position:
+              //  Position {
+              //    start: { line: 6, column: 1, offset: 53 },
+              //    end: { line: 6, column: 35, offset: 87 },
+              //    indent: [] } }
+
+              console.log(node);
+
+              const meta = imgMeta[(node.url as string).split('./')[1]];
+
+              node.type = 'jsx';
+              node.value = `<BlurImage
+                              fileName="${meta.fileName}"
+                              relativePath="${meta.relativePath}"
+                              width={${meta.width}}
+                              height={${meta.height}}
+                              imgBase64="${meta.imgBase64}" />`;
+            });
         }
       ],
       rehypePlugins: [highlight]
@@ -351,6 +384,9 @@ export async function getStaticProps({ params }) {
       post: {
         slug: params.slug,
         source: mdxSource,
+        featuredImageMeta: imgMeta['featuredImage.png']
+          ? imgMeta['featuredImage.png']
+          : null,
         ...(matterResult.data as PostMatter)
       }
     }

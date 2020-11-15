@@ -14,7 +14,7 @@ export default function About({
     <div>
       <SEO title="About - Quests In Code" />
       <h1 className="mt-20 text-center">About Quests In Code</h1>
-      <BlurImage imageMeta={imgMeta['cat-test.png']} />
+      <BlurImage {...imgMeta['cat-test.png']} />
       <p>
         Quests In Code is a place to explore the expansive world of software
         development. You can build pretty much anything, only your imagination
