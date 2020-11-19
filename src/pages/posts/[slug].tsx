@@ -17,7 +17,7 @@ import LikeIcon from '../../components/svg/like-icon';
 import RetweetIcon from '../../components/svg/retweet-icon';
 import TwitterIcon from '../../components/svg/twitter-icon';
 import TextLink from '../../components/text-link';
-import { humanDateFromEpoch } from '../../utils/format';
+import { getTimeToRead, humanDateFromEpoch } from '../../utils/helpers';
 import { ImageMeta, PostMatter } from '../posts';
 
 interface Webmention {
@@ -82,8 +82,7 @@ export default function BlogPost({
   }, []);
 
   const hearts: JSX.IntrinsicElements['img'][] = [];
-  //for (let i = 0; i < Math.ceil(timeToRead / 3); i++) {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < Math.ceil(post.timeToRead / 3); i++) {
     hearts.push(
       <img
         key={i}
@@ -133,7 +132,7 @@ export default function BlogPost({
               key={i}
               className={
                 'flex justify-between mt-6 p-2' +
-                (mention.data.author.url === 'https://twitter.com/mxbck'
+                (mention.data.author.url === 'https://twitter.com/Dayn1l'
                   ? ' rounded-md bg-gray-200 dk:bg-gray-800'
                   : '')
               }
@@ -185,7 +184,8 @@ export default function BlogPost({
               <span className="hidden sm:inline-block">•</span>{' '}
             </span>
             <span className="flex items-center justify-center">
-              <span className="flex mr-2">{hearts}</span> {3} minute read
+              <span className="flex mr-2">{hearts}</span> {post.timeToRead}{' '}
+              minute read
             </span>
           </div>
         </div>
@@ -193,8 +193,8 @@ export default function BlogPost({
           <div className="w-full">
             <BlurImage
               className="z-0 rounded-md"
-              {...post.featuredImageMeta}
               alt={post.title}
+              {...post.featuredImageMeta}
             />
           </div>
         )}
@@ -362,9 +362,8 @@ export async function getStaticProps({ params }) {
               //    end: { line: 6, column: 35, offset: 87 },
               //    indent: [] } }
 
-              console.log(node);
-
               const meta = imgMeta[(node.url as string).split('./')[1]];
+              if (!meta) return;
 
               node.type = 'jsx';
               node.value = `<BlurImage
@@ -387,6 +386,7 @@ export async function getStaticProps({ params }) {
         featuredImageMeta: imgMeta['featuredImage.png']
           ? imgMeta['featuredImage.png']
           : null,
+        timeToRead: getTimeToRead(matterResult.content.length),
         ...(matterResult.data as PostMatter)
       }
     }

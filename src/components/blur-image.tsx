@@ -13,6 +13,7 @@ export default function BlurImage({
   const [isLoaded, setLoaded] = useState(false);
 
   return (
+    //TODO: change base path based on environment
     <a href={`http://localhost:3000${relativePath}`} target="_blank">
       <div
         className={

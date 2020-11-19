@@ -7,6 +7,7 @@ import Link from 'next/Link';
 import { join } from 'path';
 import React, { useState } from 'react';
 import SEO from '../components/seo';
+import { getTimeToRead } from '../utils/helpers';
 import { PostMatter } from './posts';
 
 export default function Topics({
@@ -59,8 +60,7 @@ export default function Topics({
       <div className="mt-20">
         {filteredPosts.map((post, index) => {
           const hearts: JSX.IntrinsicElements['img'][] = [];
-          //for (let i = 0; i < Math.ceil(node.timeToRead / 3); i++) {
-          for (let i = 0; i < 3; i++) {
+          for (let i = 0; i < Math.ceil(post.timeToRead / 3); i++) {
             hearts.push(
               <img
                 key={i}
@@ -83,8 +83,8 @@ export default function Topics({
                       <span className="hidden sm:inline-block">•</span>{' '}
                     </span>
                     <span className="flex items-center">
-                      <span className="flex mr-2">{hearts}</span> {3} minute
-                      read
+                      <span className="flex mr-2">{hearts}</span>{' '}
+                      {post.timeToRead} minute read
                     </span>
                   </div>
                   <p className="-mt-2">{post.description}</p>
@@ -109,6 +109,7 @@ export async function getStaticProps() {
     const matterResult = matter(fileContents);
     return {
       slug: name.replace('.mdx', ''),
+      timeToRead: getTimeToRead(matterResult.content.length),
       ...(matterResult.data as PostMatter)
     };
   });
