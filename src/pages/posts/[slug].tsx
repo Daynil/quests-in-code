@@ -173,7 +173,13 @@ export default function BlogPost({
 
   return (
     <div>
-      <SEO title={post.title} description={post.description} />
+      <SEO
+        title={post.title}
+        description={post.description}
+        featuredImagePath={
+          post.featuredImageMeta && post.featuredImageMeta.relativePath
+        }
+      />
       <div className="mt-24">
         <div className="text-center">
           <div className="flex flex-wrap justify-center">{postTags}</div>
@@ -294,21 +300,24 @@ export async function getStaticProps({ params }) {
     )
   ) as { [key: string]: ImageMeta };
 
-  const pathImgMeta = JSON.parse(
-    fs.readFileSync(
-      join(
-        process.cwd(),
-        'public',
-        'images',
-        'posts',
-        params.slug,
-        'imgMeta.json'
-      ),
-      'utf-8'
-    )
-  ) as { [key: string]: ImageMeta };
+  let imgMeta: { [key: string]: ImageMeta };
 
-  const imgMeta = { ...sharedImgMeta, ...pathImgMeta };
+  const postImagePath = join(
+    process.cwd(),
+    'public',
+    'images',
+    'posts',
+    params.slug,
+    'imgMeta.json'
+  );
+
+  if (fs.existsSync(postImagePath)) {
+    const pathImgMeta = JSON.parse(fs.readFileSync(postImagePath, 'utf-8')) as {
+      [key: string]: ImageMeta;
+    };
+
+    imgMeta = { ...sharedImgMeta, ...pathImgMeta };
+  } else imgMeta = sharedImgMeta;
 
   const fileContents = fs.readFileSync(
     join(process.cwd(), 'src', '_posts', `${params.slug}.mdx`),

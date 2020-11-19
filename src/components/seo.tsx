@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 
 type Props = {
@@ -6,113 +7,57 @@ type Props = {
 
 const defaultProps = {
   lang: 'en',
-  meta: [],
   description: '',
-  featuredImage: '',
+  featuredImagePath: '',
   index: false
 };
 
-const SEO = ({
-  description,
-  lang,
-  meta,
-  title,
-  featuredImage,
-  index
-}: Props) => <div></div>;
-
-// const SEO = ({
-//   description,
-//   lang,
-//   meta,
-//   title,
-//   featuredImage,
-//   index
-// }: Props) => {
-//   const { site } = useStaticQuery(
-//     graphql`
-//       query SEOMetadata {
-//         site {
-//           siteMetadata {
-//             title
-//             description
-//             author
-//             siteUrl
-//           }
-//         }
-//       }
-//     `
-//   );
-
-//   const metaDescription = description || site.siteMetadata.description;
-
-//   if (featuredImage) {
-//     meta.push(
-//       {
-//         property: 'og:image',
-//         content: `${site.siteMetadata.siteUrl}${featuredImage}`
-//       },
-//       {
-//         name: 'twitter:image',
-//         content: `${site.siteMetadata.siteUrl}${featuredImage}`
-//       }
-//     );
-//   }
-
-//   return (
-//     <Helmet
-//       htmlAttributes={{
-//         lang
-//       }}
-//       title={title}
-//       titleTemplate={`%s | ${site.siteMetadata.title}`}
-//       meta={[
-//         {
-//           name: 'description',
-//           content: metaDescription
-//         },
-//         {
-//           property: 'og:title',
-//           content: title
-//         },
-//         {
-//           property: 'og:description',
-//           content: metaDescription
-//         },
-//         {
-//           property: 'og:type',
-//           content: 'website'
-//         },
-//         {
-//           name: 'twitter:card',
-//           content: 'summary_large_image'
-//         },
-//         {
-//           name: 'twitter:creator',
-//           content: site.siteMetadata.author
-//         },
-//         {
-//           name: 'twitter:title',
-//           content: title
-//         },
-//         {
-//           name: 'twitter:description',
-//           content: metaDescription
-//         }
-//       ].concat(meta)}
-//     >
-//       {index ? <link href="mailto:dlibinrx@gmail.com" rel="me" /> : null}
-//       <link
-//         rel="webmention"
-//         href="https://webmention.io/questsincode.com/webmention"
-//       />
-//       <link
-//         rel="pingback"
-//         href="https://webmention.io/questsincode.com/xmlrpc"
-//       />
-//     </Helmet>
-//   );
-// };
 SEO.defaultProps = defaultProps;
 
-export default SEO;
+export default function SEO({
+  description,
+  lang,
+  title,
+  featuredImagePath,
+  index
+}: Props) {
+  const metaDescription =
+    description ||
+    'Exploring the vast coding landscape with fun learning adventures';
+
+  return (
+    <Head>
+      <html lang={lang} />
+      <title>{title}</title>
+      <meta name="description" content={metaDescription} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={metaDescription} />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:creator" content="Danny Libin" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={metaDescription} />
+      {featuredImagePath && (
+        <meta
+          property="og:image"
+          content={`https://questsincode.com${featuredImagePath}`}
+        />
+      )}
+      {featuredImagePath && (
+        <meta
+          name="twitter:image"
+          content={`https://questsincode.com${featuredImagePath}`}
+        />
+      )}
+      {index ? <link href="mailto:dlibinrx@gmail.com" rel="me" /> : null}
+      <link
+        rel="webmention"
+        href="https://webmention.io/questsincode.com/webmention"
+      />
+      <link
+        rel="pingback"
+        href="https://webmention.io/questsincode.com/xmlrpc"
+      />
+    </Head>
+  );
+}
