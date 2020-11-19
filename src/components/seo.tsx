@@ -27,7 +27,6 @@ export default function SEO({
 
   return (
     <Head>
-      <html lang={lang} />
       <title>{title}</title>
       <meta name="description" content={metaDescription} />
       <meta property="og:title" content={title} />
