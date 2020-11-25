@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ImageMeta } from '../pages/posts';
+import { baseUrl } from '../utils/helpers';
 
 export default function BlurImage({
   fileName,
@@ -13,8 +14,7 @@ export default function BlurImage({
   const [isLoaded, setLoaded] = useState(false);
 
   return (
-    //TODO: change base path based on environment
-    <a href={`http://localhost:3000${relativePath}`} target="_blank">
+    <a href={`${baseUrl}${relativePath}`} target="_blank">
       <div
         className={
           'relative overflow-hidden' + (className ? ' ' + className : '')
