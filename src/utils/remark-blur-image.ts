@@ -17,7 +17,13 @@ export function blurImage(imgMeta: ImageMeta) {
     function visitor(node: Node) {
       if (!imgMeta) return;
       const meta = imgMeta[(node.url as string).split('./')[1]];
-      if (!meta) return;
+      if (!meta) {
+        console.error(
+          chalk.cyan('RemarkBlurImage - ') +
+            chalk.red('Image meta missing for: ' + node.url)
+        );
+        return;
+      }
 
       node.type = 'jsx';
       node.value = `<BlurImage
