@@ -8,6 +8,7 @@
     "@types/classnames": "^2.2.10",
     "@types/sharp": "^0.26.1",
     "autoprefixer": "^9.7.6",
+    "chalk": "^4.1.0",
     "classnames": "^2.2.6",
     "cssnano": "^4.1.10",
     "date-fns": "^2.16.1",
@@ -16,7 +17,6 @@
     "next": "^10.0.1",
     "next-mdx-remote": "^1.0.0",
     "postcss-import": "^13.0.0",
-    "prismjs": "^1.19.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.12.1",
     "react": "^16.14.0",
@@ -35,11 +35,11 @@
   },
   "license": "MIT",
   "scripts": {
+    "start": "next dev",
+    "develop": "npm run process-images && next dev",
     "build": "npm run process-images && next build && next export",
-    "develop": "next dev",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "start": "npm run develop",
-    "process-images": "ts-node \"./scripts/process-images.ts\""
+    "process-images": "ts-node \"./scripts/process-images.ts\"",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\""
   },
   "repository": {
     "type": "git",

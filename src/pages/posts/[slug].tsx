@@ -8,8 +8,6 @@ import renderToString from 'next-mdx-remote/render-to-string';
 import Link from 'next/Link';
 import { join } from 'path';
 import React, { useEffect, useState } from 'react';
-import highlight from 'rehype-highlight';
-import visit from 'unist-util-visit';
 import BlurImage from '../../components/blur-image';
 import SEO from '../../components/seo';
 import CommentsIcon from '../../components/svg/comments-icon';
@@ -18,6 +16,8 @@ import RetweetIcon from '../../components/svg/retweet-icon';
 import TwitterIcon from '../../components/svg/twitter-icon';
 import TextLink from '../../components/text-link';
 import { getTimeToRead, humanDateFromEpoch } from '../../utils/helpers';
+import { blurImage } from '../../utils/remark-blur-image';
+import { highlightCodeBlock } from '../../utils/remark-highlight';
 import { ImageMeta, PostMatter } from '../posts';
 
 interface Webmention {
@@ -329,62 +329,7 @@ export async function getStaticProps({ params }) {
   const mdxSource = await renderToString(matterResult.content, {
     components: mdxComponents,
     mdxOptions: {
-      remarkPlugins: [
-        function(options) {
-          return tree =>
-            visit(tree, 'code', (node, index) => {
-              // Split off the title from the language and insert at title above the code
-              const [languageHl, title] = ((node.lang || '') as string).split(
-                ':title='
-              );
-
-              const hasHighlights = languageHl.match(/{(.*)}/gm);
-
-              let language = languageHl;
-              if (hasHighlights) {
-                language = languageHl.replace(/{(.*)}/gm, '');
-              }
-
-              node.lang = language;
-
-              if (title) {
-                const className = 'remark-code-title';
-
-                const titleNode = {
-                  type: 'html',
-                  value: `<div class="${className}">${title}</div>`.trim()
-                };
-
-                tree.children.splice(index, 0, titleNode);
-              }
-              // TODO Find and highlight lines if hasHighlights
-            });
-        },
-        function(options) {
-          return tree =>
-            visit(tree, 'image', (node, index) => {
-              // { type: 'jsx',
-              // value: '<BlogImage src="./cat-test.png" />',
-              // position:
-              //  Position {
-              //    start: { line: 6, column: 1, offset: 53 },
-              //    end: { line: 6, column: 35, offset: 87 },
-              //    indent: [] } }
-
-              const meta = imgMeta[(node.url as string).split('./')[1]];
-              if (!meta) return;
-
-              node.type = 'jsx';
-              node.value = `<BlurImage
-                              fileName="${meta.fileName}"
-                              relativePath="${meta.relativePath}"
-                              width={${meta.width}}
-                              height={${meta.height}}
-                              imgBase64="${meta.imgBase64}" />`;
-            });
-        }
-      ],
-      rehypePlugins: [highlight]
+      remarkPlugins: [highlightCodeBlock, [blurImage, imgMeta]]
     }
   });
   return {

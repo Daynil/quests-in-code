@@ -506,7 +506,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
 Awesome, that dramatically simplifies our `createPages` function. Now we're just querying grabbing the slug for each post and create a page for it. However, you'll note we're no longer passing the parsed HTML in the context. Well, how will our template know what to render?! Well, that's the beauty of GraphQL. We can now colocate the query for the data the template needs with the template itself! The only thing we need when we're actually creating the pages is the slug.
 
-```jsx{5,8-14}:title=src/templates/blog-past.js
+```jsx{5,8-14}:title=src/templates/blog-post.js
 import { graphql } from 'gatsby';
 import React from 'react';
 
