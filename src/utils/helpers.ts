@@ -15,8 +15,8 @@ export function humanDateFromEpoch(epochSec: number): string {
   });
 }
 
-export function getTimeToRead(contentLengthChar: number): number {
+export function getTimeToRead(content: string): number {
   const avgWpmReadSpeed = 250;
-  const avgCharWordLength = 5;
-  return Math.round(contentLengthChar / avgCharWordLength / avgWpmReadSpeed);
+  const contentLengthWords = content.split(' ').length;
+  return Math.round(contentLengthWords / avgWpmReadSpeed);
 }

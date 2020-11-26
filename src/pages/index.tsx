@@ -5,6 +5,7 @@ import { InferGetStaticPropsType } from 'next';
 import Link from 'next/Link';
 import { join } from 'path';
 import React from 'react';
+import ReadHearts from '../components/read-hearts';
 import SEO from '../components/seo';
 import { getTimeToRead } from '../utils/helpers';
 import { PostMatter } from './posts';
@@ -26,19 +27,6 @@ export default function Home({
 
       <div className="mt-20">
         {posts.map((post, index) => {
-          const hearts: JSX.IntrinsicElements['img'][] = [];
-          for (let i = 0; i < Math.ceil(post.timeToRead / 5); i++) {
-            hearts.push(
-              <img
-                key={i}
-                src="/images/heart.png"
-                alt="Pixel heart"
-                style={{ height: '24px', imageRendering: 'pixelated' }}
-                className={i > 0 ? 'ml-1' : ''}
-              />
-            );
-          }
-
           const postTags = !post.tags.length
             ? null
             : post.tags.map((tag, index) => (
@@ -66,7 +54,9 @@ export default function Home({
                       <span className="hidden sm:inline-block">•</span>{' '}
                     </span>
                     <span className="flex items-center">
-                      <span className="flex mr-2">{hearts}</span>{' '}
+                      <span className="flex mr-2">
+                        <ReadHearts readTimeMins={post.timeToRead} />
+                      </span>{' '}
                       {post.timeToRead} minute read
                     </span>
                   </div>
@@ -93,7 +83,7 @@ export async function getStaticProps() {
     return {
       slug: name.replace('.mdx', ''),
       ...(matterResult.data as PostMatter),
-      timeToRead: getTimeToRead(matterResult.content.length)
+      timeToRead: getTimeToRead(matterResult.content)
     };
   });
 

@@ -805,7 +805,7 @@ That's the whole file now! That really cleans things up doesn't it?! 😌 One co
 
 The last change we made was to change our `allBlogHtml` node names in the query to `allMarkdownRemark`. It's important to note also that since we added the slug as a `field`, you need to access it with `node.fields.slug` rather than just `node.slug`. Finally, we just need to change the node names in our template file.
 
-```jsx:title=src/templates/blog-post.js{6,12}
+```jsx{6,12}:title=src/templates/blog-post.js
 import { graphql } from 'gatsby';
 import React from 'react';
 
