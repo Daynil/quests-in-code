@@ -141,7 +141,7 @@ code {
   overflow-x: auto;
   border-radius: 0.375rem;
   min-width: 100%;
-  @apply my-2;
+  @apply mt-2 mb-8;
 }
 
 /* Don't round upper left corner if there's a title */

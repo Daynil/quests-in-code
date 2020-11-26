@@ -4,7 +4,7 @@ type Props = {
   readTimeMins: number;
 };
 
-export default function ReadHearts({ readTimeMins }) {
+export default function ReadHearts({ readTimeMins }: Props) {
   let numHearts = Math.ceil(readTimeMins / 3);
   if (numHearts >= 10) numHearts = 10;
   const hearts: JSX.IntrinsicElements['img'][] = [];
