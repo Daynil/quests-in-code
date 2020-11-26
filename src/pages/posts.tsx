@@ -1,13 +1,10 @@
 import { format } from 'date-fns';
-import fs from 'fs';
-import matter from 'gray-matter';
 import { InferGetStaticPropsType } from 'next';
 import Link from 'next/Link';
-import { join } from 'path';
 import React from 'react';
 import ReadHearts from '../components/read-hearts';
 import SEO from '../components/seo';
-import { getTimeToRead } from '../utils/helpers';
+import { getPostsMeta } from '../utils/mdx-api';
 
 export type PostMatter = {
   title: string;
@@ -76,23 +73,8 @@ export default function Posts({
   );
 }
 
-export async function getStaticProps() {
-  const mdxFileNames = fs.readdirSync(join(process.cwd(), 'src', '_posts'));
-
-  const allPostsMeta = mdxFileNames.map(name => {
-    const fileContents = fs.readFileSync(
-      join(process.cwd(), 'src', '_posts', name),
-      'utf-8'
-    );
-    const matterResult = matter(fileContents);
-    return {
-      slug: name.replace('.mdx', ''),
-      timeToRead: getTimeToRead(matterResult.content),
-      ...(matterResult.data as PostMatter)
-    };
-  });
-
+export function getStaticProps() {
   return {
-    props: { posts: allPostsMeta.sort((a, b) => (a.date < b.date ? 1 : -1)) }
+    props: { posts: getPostsMeta() }
   };
 }

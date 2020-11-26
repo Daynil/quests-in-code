@@ -1,8 +1,3 @@
-export const baseUrl =
-  process.env.NODE_ENV === 'production'
-    ? 'https://questsincode.com'
-    : 'http://localhost:3000';
-
 export function humanDateFromEpoch(epochSec: number): string {
   const date = new Date(epochSec * 1000);
   return date.toLocaleDateString(undefined, {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ImageMeta } from '../pages/posts';
-import { baseUrl } from '../utils/helpers';
+import { baseUrl } from '../utils/constants';
 
 export default function BlurImage({
   fileName,

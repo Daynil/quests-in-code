@@ -1,12 +1,8 @@
 import { format } from 'date-fns';
 import DOMPurify from 'dompurify';
-import fs from 'fs';
-import matter from 'gray-matter';
 import { InferGetStaticPropsType } from 'next';
 import hydrate from 'next-mdx-remote/hydrate';
-import renderToString from 'next-mdx-remote/render-to-string';
 import Link from 'next/Link';
-import { join } from 'path';
 import React, { useEffect, useState } from 'react';
 import BlurImage from '../../components/blur-image';
 import ReadHearts from '../../components/read-hearts';
@@ -16,10 +12,9 @@ import LikeIcon from '../../components/svg/like-icon';
 import RetweetIcon from '../../components/svg/retweet-icon';
 import TwitterIcon from '../../components/svg/twitter-icon';
 import TextLink from '../../components/text-link';
-import { getTimeToRead, humanDateFromEpoch } from '../../utils/helpers';
-import { blurImage } from '../../utils/remark-blur-image';
-import { highlightCodeBlock } from '../../utils/remark-highlight';
-import { ImageMeta, PostMatter } from '../posts';
+import { mdxComponents } from '../../utils/constants';
+import { humanDateFromEpoch } from '../../utils/helpers';
+import { getPostBySlug, getPostSlugs } from '../../utils/mdx-api';
 
 interface Webmention {
   source: string;
@@ -49,11 +44,6 @@ interface Webmention {
   };
   target: string;
 }
-
-const mdxComponents = {
-  a: TextLink,
-  BlurImage: BlurImage
-};
 
 export default function BlogPost({
   post
@@ -272,67 +262,18 @@ export default function BlogPost({
 }
 
 export async function getStaticPaths() {
-  const mdxFileNames = fs.readdirSync(join(process.cwd(), 'src', '_posts'));
-
   return {
-    paths: mdxFileNames.map(name => ({
-      params: { slug: name.replace('.mdx', '') }
-    })),
+    paths: getPostSlugs().map(slug => ({ params: { slug } })),
     fallback: false
   };
 }
 
 export async function getStaticProps({ params }) {
-  const sharedImgMeta = JSON.parse(
-    fs.readFileSync(
-      join(process.cwd(), 'public', 'images', 'imgMeta.json'),
-      'utf-8'
-    )
-  ) as { [key: string]: ImageMeta };
+  const post = await getPostBySlug(params.slug);
 
-  let imgMeta: { [key: string]: ImageMeta };
-
-  const postImagePath = join(
-    process.cwd(),
-    'public',
-    'images',
-    'posts',
-    params.slug,
-    'imgMeta.json'
-  );
-
-  if (fs.existsSync(postImagePath)) {
-    const pathImgMeta = JSON.parse(fs.readFileSync(postImagePath, 'utf-8')) as {
-      [key: string]: ImageMeta;
-    };
-
-    imgMeta = { ...sharedImgMeta, ...pathImgMeta };
-  } else imgMeta = sharedImgMeta;
-
-  const fileContents = fs.readFileSync(
-    join(process.cwd(), 'src', '_posts', `${params.slug}.mdx`),
-    'utf-8'
-  );
-
-  const matterResult = matter(fileContents);
-
-  const mdxSource = await renderToString(matterResult.content, {
-    components: mdxComponents,
-    mdxOptions: {
-      remarkPlugins: [highlightCodeBlock, [blurImage, imgMeta]]
-    }
-  });
   return {
     props: {
-      post: {
-        slug: params.slug,
-        source: mdxSource,
-        featuredImageMeta: imgMeta['featuredImage.png']
-          ? imgMeta['featuredImage.png']
-          : null,
-        timeToRead: getTimeToRead(matterResult.content),
-        ...(matterResult.data as PostMatter)
-      }
+      post
     }
   };
 }
