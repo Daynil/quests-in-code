@@ -32,9 +32,9 @@ export default function CodeBlock({
         onClick={copyClick}
       >
         {copied ? (
-          <CheckIcon className="w-6 text-gray-600 hover:text-gray-400 transition-colors" />
+          <CheckIcon className="w-6 text-opacity-70 text-gray-600 hover:text-gray-400 transition-colors" />
         ) : (
-          <CopyIcon className="w-6 text-gray-600 hover:text-gray-400 transition-colors" />
+          <CopyIcon className="w-6 text-opacity-70 text-gray-600 hover:text-gray-400 transition-colors" />
         )}
       </button>
       <pre className="remark-highlight">
