@@ -1,4 +1,3 @@
-/*! purgecss start ignore */
 @import url('https://fonts.googleapis.com/css?family=PT+Mono&display=swap&text=QuestsInCode');
 @tailwind base;
 
@@ -23,6 +22,5 @@ body {
 }
 
 @tailwind components;
-/*! purgecss end ignore */
 
 @tailwind utilities;
