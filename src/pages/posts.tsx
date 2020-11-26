@@ -73,7 +73,7 @@ export default function Posts({
   );
 }
 
-export function getStaticProps() {
+export async function getStaticProps() {
   return {
     props: { posts: getPostsMeta() }
   };

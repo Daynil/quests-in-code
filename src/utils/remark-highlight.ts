@@ -96,8 +96,15 @@ export function highlightCodeBlock() {
         syntaxTokenizedHTMLString = highlightedCodeLineArray.join('\n');
       }
 
-      node.type = 'html';
-      node.value = `<pre class="remark-highlight"><code class="hljs language-${language}">${syntaxTokenizedHTMLString}</code></pre>`;
+      // node.type = 'html';
+      // node.value = `<pre class="remark-highlight"><code class="hljs language-${language}">${syntaxTokenizedHTMLString}</code></pre>`;
+
+      node.type = 'jsx';
+      // We want to let React handle setting the HTML here
+      // We need to force Babel to think the syntaxTokenizedHTMLString is just a string, not HTML to be parsed
+      node.value = `<CodeBlock language="${language}" syntaxTokenizedHTMLString={"${JSON.stringify(
+        syntaxTokenizedHTMLString
+      ).slice(1, -1)}"} />`;
     }
   }
 }

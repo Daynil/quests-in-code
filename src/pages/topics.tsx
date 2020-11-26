@@ -84,7 +84,7 @@ export default function Topics({
   );
 }
 
-export function getStaticProps() {
+export async function getStaticProps() {
   return {
     props: { posts: getPostsMeta() }
   };
