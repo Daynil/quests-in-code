@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import CheckIcon from './svg/check-icon';
 import CopyIcon from './svg/copy-icon';
 
 type Props = {
@@ -11,9 +12,15 @@ export default function CodeBlock({
   syntaxTokenizedHTMLString
 }: Props) {
   const refCodeBlock = useRef<HTMLElement>(null);
+  const [copied, setCopied] = useState(false);
 
   async function copyClick() {
-    navigator.clipboard.writeText(refCodeBlock.current.innerText);
+    navigator.clipboard.writeText(refCodeBlock.current.innerText).then(() => {
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    });
   }
 
   return (
@@ -24,7 +31,11 @@ export default function CodeBlock({
         title="Copy code block"
         onClick={copyClick}
       >
-        <CopyIcon className="w-6 text-gray-600 hover:text-gray-400 transition-colors" />
+        {copied ? (
+          <CheckIcon className="w-6 text-gray-600 hover:text-gray-400 transition-colors" />
+        ) : (
+          <CopyIcon className="w-6 text-gray-600 hover:text-gray-400 transition-colors" />
+        )}
       </button>
       <pre className="remark-highlight">
         <code
