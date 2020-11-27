@@ -25,16 +25,17 @@ export function highlightCodeBlock() {
 
       node.lang = language;
 
-      if (title) {
-        const className = 'remark-code-title';
+      // Old way to insert title, simplified with MDX
+      // if (title) {
+      //   const className = 'remark-code-title';
 
-        const titleNode = {
-          type: 'html',
-          value: `<div class="${className}">${title}</div>`.trim()
-        };
+      //   const titleNode = {
+      //     type: 'html',
+      //     value: `<div class="${className}">${title}</div>`.trim()
+      //   };
 
-        (tree.children as Node[]).splice(index, 0, titleNode);
-      }
+      //   (tree.children as Node[]).splice(index, 0, titleNode);
+      // }
 
       let syntaxTokenizedHTMLString = '';
 
@@ -55,7 +56,7 @@ export function highlightCodeBlock() {
           .split(',') // [ '2', '17-24' ]
           .map(rowString => {
             if (rowString.includes('-')) {
-              // Range highlight =>  17-24
+              // Range highlight => 17-24
               const [start, end] = rowString.split('-');
               // Subtract 1 since we'll use a 0-based array
               return {
@@ -102,9 +103,13 @@ export function highlightCodeBlock() {
       node.type = 'jsx';
       // We want to let React handle setting the HTML here
       // We need to force Babel to think the syntaxTokenizedHTMLString is just a string, not HTML to be parsed
-      node.value = `<CodeBlock language="${language}" syntaxTokenizedHTMLString={"${JSON.stringify(
-        syntaxTokenizedHTMLString
-      ).slice(1, -1)}"} />`;
+      node.value = title
+        ? `<CodeBlock language="${language}" syntaxTokenizedHTMLString={"${JSON.stringify(
+            syntaxTokenizedHTMLString
+          ).slice(1, -1)}"} title="${title}" />`
+        : `<CodeBlock language="${language}" syntaxTokenizedHTMLString={"${JSON.stringify(
+            syntaxTokenizedHTMLString
+          ).slice(1, -1)}"} />`;
     }
   }
 }

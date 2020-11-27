@@ -150,7 +150,7 @@ export default function BlogPost({
         });
 
   return (
-    <div>
+    <section>
       <SEO
         title={post.title}
         description={post.description}
@@ -159,32 +159,34 @@ export default function BlogPost({
         }
       />
       <div className="mt-24">
-        <div className="text-center">
-          <div className="flex flex-wrap justify-center">{postTags}</div>
-          <h1 className="my-2">{post.title}</h1>
-          <div className="mb-8 text-gray-700 dk:text-gray-500 flex justify-center flex-col sm:flex-row sm:text-center">
-            <span className="mr-2">
-              {format(new Date(post.date), 'MMMM d, yyyy')}{' '}
-              <span className="hidden sm:inline-block">•</span>{' '}
-            </span>
-            <span className="flex items-center justify-center">
-              <span className="flex mr-2">
-                <ReadHearts readTimeMins={post.timeToRead} />
-              </span>{' '}
-              {post.timeToRead} minute read
-            </span>
+        <header>
+          <div className="text-center">
+            <div className="flex flex-wrap justify-center">{postTags}</div>
+            <h1 className="my-2">{post.title}</h1>
+            <div className="mb-8 text-gray-700 dk:text-gray-500 flex justify-center flex-col sm:flex-row sm:text-center">
+              <span className="mr-2">
+                {format(new Date(post.date), 'MMMM d, yyyy')}{' '}
+                <span className="hidden sm:inline-block">•</span>{' '}
+              </span>
+              <span className="flex items-center justify-center">
+                <span className="flex mr-2">
+                  <ReadHearts readTimeMins={post.timeToRead} />
+                </span>{' '}
+                {post.timeToRead} minute read
+              </span>
+            </div>
           </div>
-        </div>
-        {!post.featuredImageMeta ? null : (
-          <div className="w-full">
-            <BlurImage
-              className="z-0 rounded-md"
-              alt={post.title}
-              {...post.featuredImageMeta}
-            />
-          </div>
-        )}
-        <div className="mt-20">{hydratedPost}</div>
+          {!post.featuredImageMeta ? null : (
+            <div className="lg:-mx-16 mt-16">
+              <BlurImage
+                className="z-0 rounded-md"
+                alt={post.title}
+                {...post.featuredImageMeta}
+              />
+            </div>
+          )}
+        </header>
+        <article className="mt-16">{hydratedPost}</article>
         <a
           href={twitterShareUrl}
           target="_blank"
@@ -257,7 +259,7 @@ export default function BlogPost({
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }
 
