@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDarkMode } from '../utils/hooks';
 import Header from './header';
 import TextLink from './text-link';
 
@@ -12,10 +11,32 @@ export const ThemeContext = React.createContext({
 });
 
 const Layout = ({ children }: Props) => {
-  const { darkMode, setDarkMode } = useDarkMode(false);
+  // const { darkMode, setDarkMode } = useDarkMode(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const handleDarkSwitch = () => setDarkMode(!darkMode);
+  // const handleDarkSwitch = () => setDarkMode(!darkMode);
   const handleMenuOpen = () => setMenuOpen(!menuOpen);
+
+  const [darkMode, rawSetDarkMode] = useState(undefined);
+
+  useEffect(() => {
+    // Retrieve initial darkmode after hydration
+    rawSetDarkMode(document.body.classList.contains('dark-mode'));
+  }, []);
+
+  function handleDarkSwitch() {
+    function getModeClass(darkMode: boolean): 'dark-mode' | 'light-mode' {
+      return darkMode ? 'dark-mode' : 'light-mode';
+    }
+
+    const newDarkMode = !darkMode;
+    rawSetDarkMode(newDarkMode);
+
+    // Swap dark mode classes
+    document.body.classList.remove(getModeClass(darkMode));
+    document.body.classList.add(getModeClass(newDarkMode));
+
+    localStorage.setItem('darkMode', getModeClass(newDarkMode));
+  }
 
   useEffect(() => {
     if (menuOpen) document.body.style.overflowY = 'hidden';
@@ -27,7 +48,7 @@ const Layout = ({ children }: Props) => {
 
   return (
     <ThemeContext.Provider value={{ darkMode }}>
-      <div className={darkMode ? 'dark-mode' : ''}>
+      <div>
         <div className="min-h-screen dk:bg-gray-900 transition duration-200 ease-in-out border-t-4 border-dblue-500">
           <Header
             handleDarkSwitch={handleDarkSwitch}
