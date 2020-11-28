@@ -43,8 +43,8 @@
   "scripts": {
     "start": "next dev",
     "develop": "npm run process-images && next dev",
-    "build": "npm run process-images && next build && next export",
-    "process-images": "ts-node \"./scripts/process-images.ts\"",
+    "build": "npm run full-rebuild && next build && next export",
+    "full-rebuild": "ts-node \"./scripts/full-rebuild.ts\"",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\""
   },
   "repository": {

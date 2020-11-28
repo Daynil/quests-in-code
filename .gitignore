@@ -58,6 +58,10 @@ typings/
 .next
 out
 
+# built files
+public/sitemap.xml
+public/postsMetaData.json
+
 # Mac files
 .DS_Store
 

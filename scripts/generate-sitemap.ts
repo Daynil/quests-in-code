@@ -5,6 +5,10 @@ import prettier from 'prettier';
 const pathToPages = 'src/pages';
 const pathToPosts = 'src/_posts';
 
+/**
+ * Generate sitemap for every navigable route.
+ * Based on Nextjs Pages folder, and markdown post files
+ */
 export async function generateSitemap() {
   const pages = await globby([
     `${pathToPages}/**/*.{tsx,jsx,ts,js}`,

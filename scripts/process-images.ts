@@ -57,6 +57,12 @@ async function processImages(folderName: string, recrusive: boolean) {
   return;
 }
 
+/**
+ * Take all images and generate meta for each,
+ * including a minimally sized base64 representation for load blur placeholder
+ */
 export async function processAllImages() {
   await processImages(join(process.cwd(), 'public', 'images'), true);
 }
+
+processAllImages();

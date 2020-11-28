@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import fs from 'fs';
 import { InferGetStaticPropsType } from 'next';
 import Link from 'next/Link';
 import React from 'react';
@@ -68,7 +69,19 @@ export default function Home({
 }
 
 export async function getStaticProps() {
+  const allPostMeta = getPostsMeta();
+
+  // Stash metadata about each post in a JSON file for use by person site post index
+  if (process.env.NODE_ENV === 'production') {
+    const jsonMeta = allPostMeta.map(postMeta => ({
+      ...postMeta,
+      date: format(new Date(postMeta.date), 'MMMM d, yyyy'),
+      excerpt: '' // Excerpt expected but not needed (always use description)
+    }));
+    fs.writeFileSync('public/postsMetaData.json', JSON.stringify(jsonMeta));
+  }
+
   return {
-    props: { posts: getPostsMeta() }
+    props: { posts: allPostMeta }
   };
 }
