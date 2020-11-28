@@ -57,4 +57,6 @@ async function processImages(folderName: string, recrusive: boolean) {
   return;
 }
 
-processImages(join(process.cwd(), 'public', 'images'), true);
+export async function processAllImages() {
+  await processImages(join(process.cwd(), 'public', 'images'), true);
+}

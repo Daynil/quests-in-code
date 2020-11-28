@@ -265,7 +265,9 @@ export default function BlogPost({
 
 export async function getStaticPaths() {
   return {
-    paths: getPostSlugs().map(slug => ({ params: { slug } })),
+    paths: getPostSlugs().map(slug => ({
+      params: { slug }
+    })),
     fallback: false
   };
 }
