@@ -1,7 +1,6 @@
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
 import React, { useContext } from 'react';
-// import logoLarge from '../content/assets/images/logo-large.png';
 import { ThemeContext } from './layout';
 import MoonIcon from './svg/moon-icon';
 import SunIcon from './svg/sun-icon';

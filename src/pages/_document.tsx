@@ -32,7 +32,7 @@ function setInitialColorScheme() {
  * Thus, it is ignored on initial server render
  * It is only processed upon rehydration on the client side
  */
-const codeToRunOnClient = `(${String(setInitialColorScheme)})()`;
+const colorSchemeIIFE = `(${String(setInitialColorScheme)})()`;
 
 export default class MyDocument extends Document {
   render() {
@@ -40,7 +40,23 @@ export default class MyDocument extends Document {
       <Html>
         <Head />
         <body>
-          <script dangerouslySetInnerHTML={{ __html: codeToRunOnClient }} />
+          {/* Global site tag (gtag.js) - Google Analytics */}
+          <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-NHBE25MN4B"
+          />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-NHBE25MN4B');
+          `
+            }}
+          />
+          <script dangerouslySetInnerHTML={{ __html: colorSchemeIIFE }} />
           <Main />
           <NextScript />
         </body>
