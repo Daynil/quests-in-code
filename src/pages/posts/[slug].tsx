@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import DOMPurify from 'dompurify';
 import { InferGetStaticPropsType } from 'next';
 import hydrate from 'next-mdx-remote/hydrate';
-import Link from 'next/Link';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import BlurImage from '../../components/blur-image';
 import ReadHearts from '../../components/read-hearts';

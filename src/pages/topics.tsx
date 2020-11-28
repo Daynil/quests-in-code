@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/dist/client/router';
-import Link from 'next/Link';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import ReadHearts from '../components/read-hearts';
 import SEO from '../components/seo';

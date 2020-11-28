@@ -1,5 +1,5 @@
-import Link from 'next/dist/client/link';
 import { useRouter } from 'next/dist/client/router';
+import Link from 'next/link';
 import React, { useContext } from 'react';
 // import logoLarge from '../content/assets/images/logo-large.png';
 import { ThemeContext } from './layout';

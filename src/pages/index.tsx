@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import fs from 'fs';
 import { InferGetStaticPropsType } from 'next';
-import Link from 'next/Link';
+import Link from 'next/link';
 import React from 'react';
 import ReadHearts from '../components/read-hearts';
 import SEO from '../components/seo';
