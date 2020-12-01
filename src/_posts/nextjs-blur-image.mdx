@@ -1,0 +1,19 @@
+---
+title: 'Create a Blur Up Image Pipeline with Nextjs using Static Rendering'
+tags: ['JavaScript', 'Nextjs']
+date: '2020-11-17'
+description: 'Create a blur up image pipeline with Nextjs using static rendering. Shrink and compress your images to a base64 string and display a blurred version of your images while they load.'
+draft: true
+---
+
+If you love the "blur up" placeholder effect when you see images loading on [Medium](https://medium.com/) or Gatsby sites and you've been just dying to figure out how they work, this article is for you!
+
+The beauty of Nextjs is its simplicity. It does exactly what it says on the tin and gets out of your way to code exactly how you'd like. Because of this, when you're writing code for Nextjs, you get that wonderful feeling that you're writing Just JavaScript<sup>TM</sup> again, like back when you learned React, except it's a production-ready workflow with built in static rendering and no configuration required. It feels like the Goldilocks abstraction layer for React.
+
+However, since it's not heavy handed with its abstractions, you also need to understand JavaScript more thoroughly in order to recreate some of the more complicated things that something like Gatsby provides with plugins. Great! This makes for an excellent learning experience!
+
+The general concept behind the blur up placeholder effect is (shrink image to tiny, load fast)
+
+This is also very helpful for our sites' user experience because (you can lazy load images without affecting the flow of the site, and instead of staring at a white canvas as the image loads you get an excellent idea of the image that will load)
+
+Nextjs now has a built-in `<Image />` component, which abstracts away image resizing.
