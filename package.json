@@ -26,6 +26,7 @@
     "unist-util-visit": "^2.0.3"
   },
   "devDependencies": {
+    "@types/react": "^17.0.0",
     "@types/node": "^14.14.6",
     "prettier": "^1.19.1",
     "tailwindcss": "^2.0.1",
