@@ -52,7 +52,7 @@ export default function BlogPost({
 
   const postUrl = `https://questsincode.com/posts/${post.slug}/`;
   const twitterShareUrl = `https://twitter.com/share?url=${postUrl}&text=“${post.title}”, a post from Danny Libin.&via=Dayn1l`;
-  const twitterSearchUrl = `https://twitter.com/search?q=${postUrl}/`;
+  const twitterSearchUrl = `https://twitter.com/search?q=${postUrl}`;
 
   const hydratedPost = hydrate(post.source, { components: mdxComponents });
 
@@ -88,8 +88,6 @@ export default function BlogPost({
           </span>
         </Link>
       ));
-
-  console.log(webmentions);
 
   const webmentionContent = !webmentions
     ? null
