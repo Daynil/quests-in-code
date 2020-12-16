@@ -1,3 +1,4 @@
+// Purge old Gatsby site's service worker chache
 self.addEventListener('install', function(e) {
   self.skipWaiting();
 });
