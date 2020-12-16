@@ -59,12 +59,15 @@ export default function BlogPost({
   useEffect(() => {
     async function getWebmentions() {
       try {
-        const res = await (
-          await fetch(
-            `https://webmention.io/api/mentions.json?per-page=1000&page=0&target=${postUrl}`
-          )
+        const webmentionUrl = `https://webmention.io/api/mentions.json?per-page=1000&page=0&target=${postUrl}`;
+        const res = await (await fetch(webmentionUrl)).json();
+        // Trailing slash issue is infuriating, just grab with and without slash results and combine
+        const res2 = await (
+          await fetch(webmentionUrl.substr(0, webmentionUrl.length - 1))
         ).json();
-        setWebmentions(res.links);
+        // Remove duplicates in case there are any
+        const webmentions = Array.from(new Set([...res.links, ...res2.links]));
+        setWebmentions(webmentions);
       } catch (e) {
         console.log('Failed to get webmentions', e);
       }
@@ -85,6 +88,8 @@ export default function BlogPost({
           </span>
         </Link>
       ));
+
+  console.log(webmentions);
 
   const webmentionContent = !webmentions
     ? null
