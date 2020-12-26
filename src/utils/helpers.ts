@@ -15,3 +15,19 @@ export function getTimeToRead(content: string): number {
   const contentLengthWords = content.split(' ').length;
   return Math.round(contentLengthWords / avgWpmReadSpeed);
 }
+
+/**
+ * Debounces a function
+ */
+export function debounced(delay: number, fn: any) {
+  let timerId: NodeJS.Timeout;
+  return function(...args: any) {
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+    timerId = setTimeout(() => {
+      fn(...args);
+      timerId = null;
+    }, delay);
+  };
+}
