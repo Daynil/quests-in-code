@@ -132,7 +132,7 @@ export function LinesChart<T>({
         key={i}
         d={linePathStringArray[i]}
         style={stylizeLine(line, !!selectedPoint, hoveringLine)}
-      ></path>
+      />
     );
   });
 
@@ -164,7 +164,7 @@ export function LinesChart<T>({
 
     // Transform current mouse coords to domain values, adjusting for svg position and scroll
     const ym = yScale.invert(
-      e.clientY - containerRect.top - dimensions.marginTop + window.pageYOffset
+      e.clientY - containerRect.top - dimensions.marginTop //+ window.pageYOffset
     );
     const xm = xScale.invert(
       e.clientX -
@@ -199,7 +199,7 @@ export function LinesChart<T>({
   return (
     dataSeries && (
       <div
-        className="w-full relative"
+        className="w-full relative bg-white rounded-md"
         style={{ maxWidth: `calc(60vh * ${aspectRatio})` }}
         onMouseMove={mouseMoved}
         onMouseOut={mouseOut}

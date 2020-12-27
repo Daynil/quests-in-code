@@ -1,6 +1,98 @@
 ---
-title: 'Monte Carlo Simulation with Javascript'
-tags: ['JavaScript', 'Finance']
+title: 'Estimate Pi with Monte Carlo Simulation in Javascript'
+tags: ['JavaScript', 'Math']
 date: '2020-12-25'
-description: 'Learning how to create Monte Carlos simulations using Javascript.'
+description: 'Learning how to estimate the value of Pi with Monte Carlos simulations using Javascript.'
 ---
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.css"
+  integrity="sha384-BdGj8xC2eZkQaxoQ8nSLefg4AV4/AwB3Fj+8SUSo7pnKP6Eoy18liIKTPn9oBYNG"
+  crossOrigin="anonymous"
+/>
+
+Have you ever thought "Boy, I wish there were a way to estimate the value of Pi by randomly throwing darts at a board"?
+
+Me neither! Until I learned about Monte Carlo simulation, and it turned out to be really fun.
+
+Monte Carlo simulation is a way of using repeated random sampling of input values to estimate another value. Granted, we know the formula for determining Pi from the diameter of a circle. However, Monte Carlo simulation is extremely useful to help with problems in math or physics that are impractical or impossible to solve deterministically. Solving for a know value like Pi using Monte Carlo is a great way to understand how it works.
+
+## Visualizing Pi
+
+So you may be wondering, how in the world does randomly throwing darts fit into all this?
+
+As it turns out, randomly throwing a bunch of darts at a board allows you to estimate Pi without even knowing the diameter of the board. It's easiest to understand how by visualizing it. So, let's draw a dartboard that has a square backboard the same width as the diameter of the target.
+
+<div className="flex flex-col items-center">
+  <PiEstimatorChart pointArray={[]} />
+</div>
+
+We know the formula for both the area of a circle and the area of a square.
+
+$$
+\frac{area of circle}{area of square} = \frac{\pi r^2}{4 r^2} = \frac{\pi}{4}
+$$
+
+In other words, we don't need to know the radius at all, since we can reduce it in the equation. The ratio of the area of a circle to the area of a square is $\frac{\pi}{4}$.
+
+## Dart Throws to Pi
+
+Ok, but how do we get Pi from dart throws? Well, assuming all of our throws hit _somewhere_ on the board, and we threw perfectly randomly, since most of the dartboard is the target itself, we know that the majority of our random throws will end up inside the target. Some remaining, smaller amount will end up outside of the target on the backboard.
+
+The odds of hitting the target with a random throw is the same as the ratio of the area of the circle to the area of the square. If our ratio of hits to total throws is better than this, we're probably good at darts, and we aren't throwing randomly at all! So now our formula is:
+
+$$
+\frac{area of circle}{area of square} = \frac{\pi}{4} = \frac{hit circle}{hit square}
+$$
+
+Let's say we threw 6 darts and they landed in the following positions:
+
+<div className="flex flex-col items-center">
+  <PiEstimatorChart
+    pointArray={[
+      { x: 10, y: 90 },
+      { x: 30, y: 80 },
+      { x: 25, y: 40 },
+      { x: 29, y: 65 },
+      { x: 77, y: 33 },
+      { x: 55, y: 77 }
+    ]}
+  />
+</div>
+
+Counting these up, we have 5 target hits and 1 miss on the backboard.
+
+$$
+\frac{\pi}{4} = \frac{hit circle}{hit square} = \frac{5}{6}
+$$
+
+$$
+\pi = \frac{4 * 5}{6} = 3.\overline{33}
+$$
+
+Wait, Pi is 3.14...so we threw just 6 darts, and were able to determine the value of $\pi$ within a small fraction without knowing anything about the size of the board just by counting our ratio of hits to total throws?! Amazing!
+
+I have a confession to make...those dart throws were not random, I totally cherry picked them. 😏
+
+Of course, you can imagine, you could have thrown 20 darts randomly and gotten really unlucky hitting the target with only 5 of them. That would leave you with a Pi estimate of...1.00. So how does this work?
+
+## Law of Large Numbers
+
+We know that randomly throwing and hitting only 5 out of 20 times is unlucky, because it's pretty clear from our fancy dartboard picture that there is far more space to hit the target on the board than to miss.
+
+In probability theory, the [law of large numbers](https://en.wikipedia.org/wiki/Law_of_large_numbers) indicates that the larger your sample size, the closer your sample's statistics will be to the population statistics.
+
+If we use a standard 6-sided die, we know the average dice roll is theoretically 3.5. But after just a dozen rolls, you could easily get lucky with several 6's and get an average much higher than that. But if we keep rolling, we know we will ultimately get an average much closer to 3.5.
+
+![Law of Large Number dice rolls average](./lln-dice.svg)
+
+In other words, we have a very low level of confidence in our estimate of Pi with just a few dice throws. The more we throw, the more confident we will be in our result.
+
+## Throw Lots of Darts
+
+So just how many darts do we have to throw to get a reasonable approximation?
+
+Now comes the fun part. Lets experiment!
+
+Use the button below to randomly throw some darts, and we'll use the same method as above to revise our estimate each time. Try increasing the volume you throw at once, and see how many it takes for the estimated value of Pi to approach 3.14159.

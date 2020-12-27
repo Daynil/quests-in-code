@@ -195,3 +195,7 @@ code {
 .dark-mode :not(pre) > code {
   @apply text-dblue-200 bg-gray-800;
 }
+
+.katex * {
+  @apply border-gray-900;
+}

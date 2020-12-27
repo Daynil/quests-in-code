@@ -7,6 +7,12 @@
   </url>
 
   <url>
+    <loc>https://questsincode.com/charts-tester/</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
     <loc>https://questsincode.com/</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -32,6 +38,12 @@
 
   <url>
     <loc>https://questsincode.com/posts/gatsby-blog-from-scratch/</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://questsincode.com/posts/monte-carlo-simulation-javascript/</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>

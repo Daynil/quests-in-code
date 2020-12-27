@@ -2,6 +2,8 @@ import fs from 'fs';
 import matter from 'gray-matter';
 import renderToString from 'next-mdx-remote/render-to-string';
 import { join } from 'path';
+import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math';
 import { ImageMeta, PostMatter } from '../pages/posts';
 import { mdxComponents } from './constants';
 import { getTimeToRead } from './helpers';
@@ -69,7 +71,8 @@ export async function getPostBySlug(slug: string) {
   const mdxSource = await renderToString(matterResult.content, {
     components: mdxComponents,
     mdxOptions: {
-      remarkPlugins: [highlightCodeBlock, [blurImage, imgMeta]]
+      remarkPlugins: [highlightCodeBlock, [blurImage, imgMeta], remarkMath],
+      rehypePlugins: [rehypeKatex]
     }
   });
   return {

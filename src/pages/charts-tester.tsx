@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LinesChart } from '../components/charts/lines-chart';
+import { PiEstimatorChart } from '../components/charts/pi-estimator-chart';
 
 type Props = {};
 
@@ -13,6 +14,20 @@ export default function ChartsTester({}: Props) {
       testLine.push({ x: pointNum, y: pointNum + lineNum });
     }
     testData.push(testLine);
+  }
+
+  const [scatterData, setScatterData] = useState([]);
+
+  function generateRandomPoints(numPoints: number) {
+    const generatedData = [];
+    const maxNum = 100;
+    for (let i = 0; i < numPoints; i++) {
+      generatedData.push({
+        x: Math.floor(Math.random() * maxNum + 1),
+        y: Math.floor(Math.random() * maxNum + 1)
+      });
+    }
+    setScatterData(scatterData.concat(generatedData));
   }
 
   function tooltip(d: DataPointType) {
@@ -33,6 +48,17 @@ export default function ChartsTester({}: Props) {
   }
   return (
     <div>
+      <h2>Pi scatter</h2>
+
+      <div className="flex flex-col items-center">
+        <button
+          className="btn btn-green w-36"
+          onClick={() => generateRandomPoints(1000)}
+        >
+          Throw Dart
+        </button>
+        <PiEstimatorChart pointArray={scatterData} />
+      </div>
       <h2>Chart 1</h2>
       <LinesChart
         dataSeries={testData}
