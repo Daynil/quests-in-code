@@ -5,13 +5,6 @@ import { clamp } from '../../utils/math';
 import { Axis } from './axis';
 import { Chart } from './chart';
 
-export type D3Selection<T extends d3.BaseType> = d3.Selection<
-  T,
-  unknown,
-  null,
-  undefined
->;
-
 const colors = {
   green: {
     normal: '#48BB78',
@@ -31,7 +24,7 @@ const colors = {
  * Uniquely identifies a point on a multi-line chart
  * E.g. line[lineIndex][xIndex]
  */
-export type Point = {
+export type PointCoords = {
   lineIndex: number;
   xIndex: number;
 };
@@ -41,15 +34,16 @@ type Props<T> = {
   dataSeries: T[][];
   xAccessor: (d: T) => number;
   yAccessor: (d: T) => number;
-  /** Stylize lines conditionally (just return 1 item if all same) */
   /** Chart's aspect ratio */
   aspectRatio: number;
+  /** Stylize lines conditionally */
   stylizeLine?: (
     line: T[],
     hovering: boolean,
     hoveringThisLine: boolean
   ) => React.CSSProperties;
-  handleSetSelectedPoint?: (point: Point) => void;
+  /** If selected point coordinates are needed */
+  handleSetSelectedPoint?: (point: PointCoords) => void;
   xFormatTick?: (d: number) => string;
   yFormatTick?: (d: number) => string;
   getTooltip?: (d: T) => React.ReactNode;
@@ -100,7 +94,7 @@ export function LinesChart<T>({
   const refGdot = useRef<SVGGElement>(null);
   const refTooltip = useRef<HTMLSpanElement>(null);
   const [tooltipLeftAdjust, setTooltipLeftAdjust] = useState(0);
-  const [selectedPoint, setSelectedPoint] = useState<Point>(null);
+  const [selectedPoint, setSelectedPoint] = useState<PointCoords>(null);
 
   const xScale = scaleLinear()
     .domain([
@@ -144,9 +138,7 @@ export function LinesChart<T>({
 
   function getCircleColor() {
     if (!selectedPoint) return;
-    return stylizeLine
-      ? stylizeLine(dataSeries[selectedPoint.lineIndex], true, true).stroke
-      : defaultLineStyles.stroke;
+    return stylizeLine(dataSeries[selectedPoint.lineIndex], true, true).stroke;
   }
 
   // https://observablehq.com/@d3/multi-line-chart
