@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import { mean } from 'd3';
+import React, { useRef, useState } from 'react';
 import { LinesChart } from '../components/charts/lines-chart';
 import { PiEstimatorChart } from '../components/charts/pi-estimator-chart';
+import TextInput from '../components/text-input';
 
 type Props = {};
 
@@ -24,6 +26,7 @@ export default function ChartsTester({}: Props) {
     for (let i = 0; i < numPoints; i++) {
       generatedData.push({
         x: Math.floor(Math.random() * maxNum + 1),
+
         y: Math.floor(Math.random() * maxNum + 1)
       });
     }
@@ -46,10 +49,116 @@ export default function ChartsTester({}: Props) {
       </div>
     );
   }
+
+  type DiceStats = { meanRoll: number; numRolls: number };
+
+  function getIterativeStats(rolls: number[]) {
+    const stats: DiceStats[] = [];
+    for (let i = 1; i <= rolls.length; i++) {
+      const currentSlice = rolls.slice(0, i);
+      stats.push({
+        meanRoll: mean(currentSlice),
+        numRolls: currentSlice.length
+      });
+    }
+    return stats;
+  }
+
+  function rollDie(priorStat: DiceStats) {
+    if (!priorStat) priorStat = { meanRoll: 0, numRolls: 0 };
+    const priorSum = priorStat.meanRoll * priorStat.numRolls;
+
+    const minRoll = 1;
+    const maxRoll = 6;
+    const newRoll = Math.floor(
+      Math.random() * (maxRoll - minRoll + 1) + minRoll
+    );
+
+    return {
+      meanRoll: (priorSum + newRoll) / (priorStat.numRolls + 1),
+      numRolls: priorStat.numRolls + 1
+    };
+  }
+
+  const refNumRolls = useRef<HTMLInputElement>(null);
+  const initialDiceRolls = [6, 4, 6, 1, 1, 2, 1];
+  const [diceRolls, setDiceRolls] = useState<DiceStats[]>(
+    getIterativeStats(initialDiceRolls)
+  );
+
+  function generateDiceRolls(numRolls: number) {
+    const generatedRolls: DiceStats[] = [];
+    for (let i = 0; i < numRolls; i++) {
+      let priorRoll: DiceStats;
+      if (i === 0) priorRoll = diceRolls[diceRolls.length - 1];
+      else priorRoll = generatedRolls[generatedRolls.length - 1];
+      generatedRolls.push(rollDie(priorRoll));
+    }
+    const newRolls = diceRolls.concat(generatedRolls);
+    setDiceRolls(newRolls);
+  }
+
+  function diceTooltip(d: DiceStats) {
+    if (!d) return;
+    return (
+      <div className="inline-block p-6 bg-gray-50 shadow-md rounded-md">
+        <div className="flex justify-evenly">
+          <div className="flex flex-col px-4">
+            <label className="font-semibold my-0">Total Rolls</label>
+            <span>{d.numRolls}</span>
+          </div>
+          <div className="flex flex-col px-4">
+            <label className="font-semibold my-0">Mean Roll Value</label>
+            <span>{d.meanRoll}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <h2>Pi scatter</h2>
+      <div className="flex flex-col items-center">
+        <div className="flex items-center">
+          <button
+            className="btn btn-green w-36 m-4"
+            onClick={() =>
+              generateDiceRolls(
+                (refNumRolls.current.value as unknown) as number
+              )
+            }
+          >
+            Roll Dice
+          </button>
+          <TextInput
+            className="m-4 pl-4 py-2"
+            type="number"
+            defaultValue={2}
+            min={2}
+            max={1000}
+            ref={refNumRolls}
+          />
+          <span className="my-4">times</span>
+          <button
+            className="btn btn-green-2 w-24 m-4 ml-16"
+            onClick={() => setDiceRolls([])}
+          >
+            Reset
+          </button>
+        </div>
+        <LinesChart
+          dataSeries={[diceRolls]}
+          xAccessor={d => d.numRolls}
+          yAccessor={d => d.meanRoll}
+          aspectRatio={1000 / 600}
+          options={{
+            getTooltip: diceTooltip,
+            yDomain: [1, 6]
+          }}
+        />
+      </div>
 
+      <h2>Pi scatter</h2>
       <div className="flex flex-col items-center">
         <button
           className="btn btn-green w-36"
@@ -65,7 +174,9 @@ export default function ChartsTester({}: Props) {
         xAccessor={d => d.x}
         yAccessor={d => d.y}
         aspectRatio={1000 / 600}
-        getTooltip={tooltip}
+        options={{
+          getTooltip: tooltip
+        }}
       />
       <h2>Chart 2</h2>
       <LinesChart
@@ -73,7 +184,9 @@ export default function ChartsTester({}: Props) {
         xAccessor={d => d.x}
         yAccessor={d => d.y}
         aspectRatio={1000 / 600}
-        getTooltip={tooltip}
+        options={{
+          getTooltip: tooltip
+        }}
       />
     </div>
   );

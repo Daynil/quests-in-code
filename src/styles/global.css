@@ -36,6 +36,17 @@ body {
   @apply bg-green-700 focus:ring-green-400;
 }
 
+.btn-green-2 {
+  @apply bg-green-200 text-green-700 focus:ring-green-400;
+}
+.btn-green-2:hover {
+  @apply bg-green-300 focus:ring-green-400;
+}
+
+.form-label {
+  @apply text-sm mb-2 text-gray-600 font-bold tracking-wider;
+}
+
 @tailwind components;
 
 @tailwind utilities;

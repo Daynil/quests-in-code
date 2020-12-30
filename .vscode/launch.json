@@ -2,6 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
       "name": "Gatsby develop",
       "type": "node",
       "request": "launch",
@@ -22,13 +29,6 @@
       "stopOnEntry": false,
       "runtimeArgs": ["--nolazy"],
       "sourceMaps": false
-    },
-    {
-      "type": "chrome",
-      "request": "launch",
-      "name": "Launch Chrome",
-      "url": "http://localhost:8000",
-      "webRoot": "${workspaceFolder}"
     }
   ]
 }

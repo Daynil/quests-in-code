@@ -16,7 +16,7 @@ Have you ever thought "Boy, I wish there were a way to estimate the value of Pi 
 
 Me neither! Until I learned about Monte Carlo simulation, and it turned out to be really fun.
 
-Monte Carlo simulation is a way of using repeated random sampling of input values to estimate another value. Granted, we know the formula for determining Pi from the diameter of a circle. However, Monte Carlo simulation is extremely useful to help with problems in math or physics that are impractical or impossible to solve deterministically. Solving for a know value like Pi using Monte Carlo is a great way to understand how it works.
+Monte Carlo simulation is a way of using repeated random sampling of input values to estimate another value. Granted, we know the formula for determining Pi from the diameter of a circle. However, Monte Carlo simulation is extremely useful to help with problems in math or physics that are impractical or impossible to solve deterministically. Solving for a known value like Pi using Monte Carlo is a great way to understand how it works.
 
 ## Visualizing Pi
 
@@ -84,6 +84,8 @@ We know that randomly throwing and hitting only 5 out of 20 times is unlucky, be
 In probability theory, the [law of large numbers](https://en.wikipedia.org/wiki/Law_of_large_numbers) indicates that the larger your sample size, the closer your sample's statistics will be to the population statistics.
 
 If we use a standard 6-sided die, we know the average dice roll is theoretically 3.5. But after just a dozen rolls, you could easily get lucky with several 6's and get an average much higher than that. But if we keep rolling, we know we will ultimately get an average much closer to 3.5.
+
+Let's write up a quick script to see how this looks with dice rolls.
 
 ![Law of Large Number dice rolls average](./lln-dice.svg)
 

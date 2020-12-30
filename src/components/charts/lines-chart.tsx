@@ -1,7 +1,6 @@
-import { leastIndex, line, max, maxIndex, min, scaleLinear } from 'd3';
+import { leastIndex, line, max, min, scaleLinear } from 'd3';
 import React, { useMemo, useRef, useState } from 'react';
 import { useChartDimensions } from '../../utils/hooks';
-import { clamp } from '../../utils/math';
 import { Axis } from './axis';
 import { Chart } from './chart';
 
@@ -36,17 +35,21 @@ type Props<T> = {
   yAccessor: (d: T) => number;
   /** Chart's aspect ratio */
   aspectRatio: number;
-  /** Stylize lines conditionally */
-  stylizeLine?: (
-    line: T[],
-    hovering: boolean,
-    hoveringThisLine: boolean
-  ) => React.CSSProperties;
-  /** If selected point coordinates are needed */
-  handleSetSelectedPoint?: (point: PointCoords) => void;
-  xFormatTick?: (d: number) => string;
-  yFormatTick?: (d: number) => string;
-  getTooltip?: (d: T) => React.ReactNode;
+  options: {
+    xDomain?: [number, number];
+    yDomain?: [number, number];
+    /** Stylize lines conditionally */
+    stylizeLine?: (
+      line: T[],
+      hovering: boolean,
+      hoveringThisLine: boolean
+    ) => React.CSSProperties;
+    /** If selected point coordinates are needed */
+    handleSetSelectedPoint?: (point: PointCoords) => void;
+    xFormatTick?: (d: number) => string;
+    yFormatTick?: (d: number) => string;
+    getTooltip?: (d: T) => React.ReactNode;
+  };
 };
 
 const defaultLineStyles: React.CSSProperties = {
@@ -84,39 +87,42 @@ export function LinesChart<T>({
   xAccessor,
   yAccessor,
   aspectRatio,
-  stylizeLine = defaultStylizeLine,
-  handleSetSelectedPoint,
-  xFormatTick,
-  yFormatTick,
-  getTooltip
+  options
 }: Props<T>) {
+  const stylizeLine = options.stylizeLine
+    ? options.stylizeLine
+    : defaultStylizeLine;
+
   const [ref, dimensions] = useChartDimensions({}, aspectRatio);
+
+  const noData = !dataSeries || !dataSeries[0]?.length;
+
   const refGdot = useRef<SVGGElement>(null);
   const refTooltip = useRef<HTMLSpanElement>(null);
   const [tooltipLeftAdjust, setTooltipLeftAdjust] = useState(0);
   const [selectedPoint, setSelectedPoint] = useState<PointCoords>(null);
 
-  const xScale = scaleLinear()
-    .domain([
+  const xScale = scaleLinear();
+  if (options.xDomain) xScale.domain(options.xDomain);
+  else
+    xScale.domain([
       min(dataSeries, line => min(line.map(d => xAccessor(d)))),
       max(dataSeries, line => max(line.map(d => xAccessor(d))))
-    ])
-    .nice()
-    .range([0, dimensions.boundedWidth]);
+    ]);
+  xScale.nice().range([0, dimensions.boundedWidth]);
 
-  const yScale = scaleLinear()
-    .domain([
+  const yScale = scaleLinear();
+  if (options.yDomain) yScale.domain(options.yDomain);
+  else
+    yScale.domain([
       min(dataSeries, line => min(line.map(d => yAccessor(d)))),
       max(dataSeries, line => max(line.map(d => yAccessor(d))))
-    ])
-    .nice()
-    .range([dimensions.boundedHeight, 0]);
+    ]);
+  yScale.nice().range([dimensions.boundedHeight, 0]);
 
   const chartLine = line<T>()
     .x(d => xScale(xAccessor(d)))
     .y(d => yScale(yAccessor(d)));
-
-  const longestLine = dataSeries[maxIndex(dataSeries, line => line.length)];
 
   // Bottleneck, should only run when data or dimensions change
   const linePathStringArray = useMemo(
@@ -144,6 +150,8 @@ export function LinesChart<T>({
   // https://observablehq.com/@d3/multi-line-chart
   function mouseMoved(e: React.MouseEvent<HTMLElement, MouseEvent>) {
     e.preventDefault();
+
+    if (noData) return;
 
     const containerRect = ref.current.getBoundingClientRect();
 
@@ -173,22 +181,26 @@ export function LinesChart<T>({
         window.pageXOffset
     );
 
-    // Get the array index of the closest x value to current hover
-    const i = clamp(Math.round(xm), 0, longestLine.length - 1);
+    const closestXIndex = leastIndex(
+      dataSeries[0],
+      (a, b) => Math.abs(xAccessor(a) - xm) - Math.abs(xAccessor(b) - xm)
+    );
 
     const closestLineIndex = leastIndex(
       dataSeries,
-      (a, b) => Math.abs(yAccessor(a[i]) - ym) - Math.abs(yAccessor(b[i]) - ym)
+      (a, b) =>
+        Math.abs(yAccessor(a[closestXIndex]) - ym) -
+        Math.abs(yAccessor(b[closestXIndex]) - ym)
     );
 
-    setSelectedPoint({ lineIndex: closestLineIndex, xIndex: i });
+    setSelectedPoint({ lineIndex: closestLineIndex, xIndex: closestXIndex });
 
     // Move selection dot indicator to that nearest point of cursor
     refGdot.current.setAttribute(
       'transform',
-      `translate(${xScale(xAccessor(dataSeries[closestLineIndex][i]))},${yScale(
-        yAccessor(dataSeries[closestLineIndex][i])
-      )})`
+      `translate(${xScale(
+        xAccessor(dataSeries[closestLineIndex][closestXIndex])
+      )},${yScale(yAccessor(dataSeries[closestLineIndex][closestXIndex]))})`
     );
   }
 
@@ -196,36 +208,20 @@ export function LinesChart<T>({
     setSelectedPoint(null);
   }
 
-  return (
-    dataSeries && (
-      <div
-        className="w-full relative bg-white rounded-md"
-        style={{ maxWidth: `calc(60vh * ${aspectRatio})` }}
-        onMouseMove={mouseMoved}
-        onMouseOut={mouseOut}
-        ref={ref}
-      >
-        {getTooltip && (
-          <span
-            ref={refTooltip}
-            style={{
-              left: `${tooltipLeftAdjust}px`,
-              width: 'fit-content',
-              height: 'fit-content',
-              opacity: selectedPoint ? '1' : '0'
-            }}
-            className="absolute inset-0 pointer-events-none"
-          >
-            {selectedPoint
-              ? getTooltip(
-                  dataSeries[selectedPoint.lineIndex][selectedPoint.xIndex]
-                )
-              : getTooltip(dataSeries[0][0])}
-          </span>
-        )}
+  function getChart() {
+    return (
+      <>
         <Chart dimensions={dimensions}>
-          <Axis orientation="left" scale={yScale} formatTick={yFormatTick} />
-          <Axis orientation="bottom" scale={xScale} formatTick={xFormatTick} />
+          <Axis
+            orientation="left"
+            scale={yScale}
+            formatTick={options.yFormatTick}
+          />
+          <Axis
+            orientation="bottom"
+            scale={xScale}
+            formatTick={options.xFormatTick}
+          />
           <g fill="none" strokeLinejoin="round" strokeLinecap="round">
             {linePaths}
           </g>
@@ -239,7 +235,57 @@ export function LinesChart<T>({
             />
           </g>
         </Chart>
-      </div>
-    )
+      </>
+    );
+  }
+
+  return (
+    <div
+      className="w-full relative bg-white rounded-md"
+      style={{ maxWidth: `calc(60vh * ${aspectRatio})` }}
+      onMouseMove={mouseMoved}
+      onMouseOut={mouseOut}
+      ref={ref}
+    >
+      {options.getTooltip && (
+        <span
+          ref={refTooltip}
+          style={{
+            left: `${tooltipLeftAdjust}px`,
+            width: 'fit-content',
+            height: 'fit-content',
+            opacity: selectedPoint ? '1' : '0'
+          }}
+          className="absolute inset-0 pointer-events-none"
+        >
+          {selectedPoint
+            ? options.getTooltip(
+                dataSeries[selectedPoint.lineIndex][selectedPoint.xIndex]
+              )
+            : null}
+        </span>
+      )}
+      {noData ? (
+        <div
+          className="bg-gray-100 text-gray-400 rounded-md flex justify-center align-middle"
+          style={{ width: dimensions.width, height: dimensions.height }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            width="10%"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
+      ) : (
+        getChart()
+      )}
+    </div>
   );
 }
