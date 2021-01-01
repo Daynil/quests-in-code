@@ -36,8 +36,18 @@ type Props<T> = {
   /** Chart's aspect ratio */
   aspectRatio: number;
   options: {
+    margins?: {
+      marginTop?: number;
+      marginRight?: number;
+      marginBottom?: number;
+      marginLeft?: number;
+    };
     xDomain?: [number, number];
     yDomain?: [number, number];
+    xDomainNice?: boolean;
+    yDomainNice?: boolean;
+    xLabel?: string;
+    yLabel?: string;
     /** Stylize lines conditionally */
     stylizeLine?: (
       line: T[],
@@ -52,7 +62,7 @@ type Props<T> = {
   };
 };
 
-const defaultLineStyles: React.CSSProperties = {
+export const defaultLineStyles: React.CSSProperties = {
   stroke: '#48BB78',
   opacity: '1',
   strokeWidth: '1.5',
@@ -93,7 +103,10 @@ export function LinesChart<T>({
     ? options.stylizeLine
     : defaultStylizeLine;
 
-  const [ref, dimensions] = useChartDimensions({}, aspectRatio);
+  const [ref, dimensions] = useChartDimensions(
+    options.margins ? { ...options.margins } : {},
+    aspectRatio
+  );
 
   const noData = !dataSeries || !dataSeries[0]?.length;
 
@@ -109,7 +122,8 @@ export function LinesChart<T>({
       min(dataSeries, line => min(line.map(d => xAccessor(d)))),
       max(dataSeries, line => max(line.map(d => xAccessor(d))))
     ]);
-  xScale.nice().range([0, dimensions.boundedWidth]);
+  if (options.xDomainNice) xScale.nice();
+  xScale.range([0, dimensions.boundedWidth]);
 
   const yScale = scaleLinear();
   if (options.yDomain) yScale.domain(options.yDomain);
@@ -118,7 +132,8 @@ export function LinesChart<T>({
       min(dataSeries, line => min(line.map(d => yAccessor(d)))),
       max(dataSeries, line => max(line.map(d => yAccessor(d))))
     ]);
-  yScale.nice().range([dimensions.boundedHeight, 0]);
+  if (options.yDomainNice) yScale.nice();
+  yScale.range([dimensions.boundedHeight, 0]);
 
   const chartLine = line<T>()
     .x(d => xScale(xAccessor(d)))
@@ -147,7 +162,6 @@ export function LinesChart<T>({
     return stylizeLine(dataSeries[selectedPoint.lineIndex], true, true).stroke;
   }
 
-  // https://observablehq.com/@d3/multi-line-chart
   function mouseMoved(e: React.MouseEvent<HTMLElement, MouseEvent>) {
     e.preventDefault();
 
@@ -216,11 +230,13 @@ export function LinesChart<T>({
             orientation="left"
             scale={yScale}
             formatTick={options.yFormatTick}
+            label={options.yLabel}
           />
           <Axis
             orientation="bottom"
             scale={xScale}
             formatTick={options.xFormatTick}
+            label={options.xLabel}
           />
           <g fill="none" strokeLinejoin="round" strokeLinecap="round">
             {linePaths}
@@ -265,7 +281,9 @@ export function LinesChart<T>({
             : null}
         </span>
       )}
-      {noData ? (
+      {!noData ? (
+        getChart()
+      ) : (
         <div
           className="bg-gray-100 text-gray-400 rounded-md flex justify-center align-middle"
           style={{ width: dimensions.width, height: dimensions.height }}
@@ -283,8 +301,6 @@ export function LinesChart<T>({
             />
           </svg>
         </div>
-      ) : (
-        getChart()
       )}
     </div>
   );

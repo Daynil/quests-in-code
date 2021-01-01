@@ -1,7 +1,7 @@
 ---
 title: 'Estimate Pi with Monte Carlo Simulation in Javascript'
-tags: ['JavaScript', 'Math']
-date: '2020-12-25'
+tags: ['JavaScript', 'Data Viz', 'Math']
+date: '2021-01-01'
 description: 'Learning how to estimate the value of Pi with Monte Carlos simulations using Javascript.'
 ---
 
@@ -16,7 +16,7 @@ Have you ever thought "Boy, I wish there were a way to estimate the value of Pi 
 
 Me neither! Until I learned about Monte Carlo simulation, and it turned out to be really fun.
 
-Monte Carlo simulation is a way of using repeated random sampling of input values to estimate another value. Granted, we know the formula for determining Pi from the diameter of a circle. However, Monte Carlo simulation is extremely useful to help with problems in math or physics that are impractical or impossible to solve deterministically. Solving for a known value like Pi using Monte Carlo is a great way to understand how it works.
+Monte Carlo simulation is a way of using repeated random sampling of input values to estimate another value. Granted, we know the formula for determining Pi from the diameter and circumference of a circle. However, Monte Carlo simulation is extremely useful to help with problems in math or physics that are impractical or impossible to solve deterministically. Solving for a known value like Pi using Monte Carlo is a great way to understand how it works.
 
 ## Visualizing Pi
 
@@ -61,7 +61,7 @@ Let's say we threw 6 darts and they landed in the following positions:
   />
 </div>
 
-Counting these up, we have 5 target hits and 1 miss on the backboard.
+Counting these up, we have 5 target hits and 1 miss on the backboard, so 6 total throws or "hits on the square". Hits on the square is basically just a proxy for total throws since we know all our throws will end up somewhere on it.
 
 $$
 \frac{\pi}{4} = \frac{hit circle}{hit square} = \frac{5}{6}
@@ -83,13 +83,61 @@ We know that randomly throwing and hitting only 5 out of 20 times is unlucky, be
 
 In probability theory, the [law of large numbers](https://en.wikipedia.org/wiki/Law_of_large_numbers) indicates that the larger your sample size, the closer your sample's statistics will be to the population statistics.
 
-If we use a standard 6-sided die, we know the average dice roll is theoretically 3.5. But after just a dozen rolls, you could easily get lucky with several 6's and get an average much higher than that. But if we keep rolling, we know we will ultimately get an average much closer to 3.5.
+To use a simpler example than our dart board, if we use a standard 6-sided die, we know the average dice roll is theoretically 3.5. But after just a dozen rolls, you could easily get lucky with several 6's and get an average much higher than that. But if we keep rolling, we know we will ultimately get an average much closer to 3.5.
 
 Let's write up a quick script to see how this looks with dice rolls.
 
-![Law of Large Number dice rolls average](./lln-dice.svg)
+```javascript
+const diceRolls = [];
 
-In other words, we have a very low level of confidence in our estimate of Pi with just a few dice throws. The more we throw, the more confident we will be in our result.
+function generateDiceRolls(numRolls) {
+  const generatedRolls = [];
+
+  function rollDie(priorRoll) {
+    if (!priorRoll) priorRoll = { meanRoll: 0, numRolls: 0 };
+    const priorSum = priorRoll.meanRoll * priorRoll.numRolls;
+
+    const minRoll = 1;
+    const maxRoll = 6;
+    const newRoll = Math.floor(
+      Math.random() * (maxRoll - minRoll + 1) + minRoll
+    );
+
+    return {
+      meanRoll: (priorSum + newRoll) / (priorRoll.numRolls + 1),
+      numRolls: priorRoll.numRolls + 1
+    };
+  }
+
+  for (let i = 0; i < numRolls; i++) {
+    let priorRoll;
+    if (i === 0) priorRoll = diceRolls[diceRolls.length - 1];
+    else priorRoll = generatedRolls[generatedRolls.length - 1];
+    generatedRolls.push(rollDie(priorRoll));
+  }
+  return diceRolls.concat(generatedRolls);
+}
+
+generateDiceRolls(1000);
+```
+
+We don't strictly need to explicitly track number of rolls, since the array length provides that information itself. However, this makes it easier to graph our data.
+
+Try rolling the the dice a few times below and see how the graph looks each time. I've seeded the first set of rolls with a lucky, then unlucky streak (rolls of 6, 5, 1, 1, 2, 1). This shows how unlikely we are to be confident that the statistics of a small sample size is an accurate representation of the population.
+
+Try it out and see how long it takes for the line to normalize around the theoretical mean. You can adjust the number of dice rolls per click.
+
+<div class="mb-8">
+  <LlnDiceRolls />
+</div>
+
+As you can see, depending on the initial rolls, it can sometimes take dozens or hundreds of throws to approach the mean line. In some cases, it takes thousands of rolls to really converge on the mean closely and consistently. But ultimatey, and unfailingly, it does converge.
+
+Fittingly, the Monte Carlo moniker reflects the importance of the law of large numbers in casinos, as it refers to the famous casino in Monaco. If the observation that the average dice roll will always be 3.5 with enough rolls didn't hold, casinos wouldn't be such profitable ventures! Lucky casino patrons may sometimes win big by throwing a series of sixes. But if they keep playing, or if they cash out and other, less fortunate patrons keep playing, the casino always wins.
+
+Another important piece of the law of large numbers is that, as the variance of a sample grows, we need a larger sample size to have the same confidence in our statistics. There are only 6 possible values with each of our dice rolls. However, there are a vast number of possible positions a dart can end up after it is thrown.
+
+In other words, we have a very low level of confidence in our estimate of Pi with just a few dart throws. The more we throw, the more confident we will be in our result.
 
 ## Throw Lots of Darts
 
@@ -97,4 +145,102 @@ So just how many darts do we have to throw to get a reasonable approximation?
 
 Now comes the fun part. Lets experiment!
 
-Use the button below to randomly throw some darts, and we'll use the same method as above to revise our estimate each time. Try increasing the volume you throw at once, and see how many it takes for the estimated value of Pi to approach 3.14159.
+With just a few throws, we can of course just count how many darts hit or missed the target. However, we already know from our law of large numbers experimentation above that it will take a massive amount of throws to approach a reasonable estimate. That doesn't sound very fun. What in the world could help us with a tremendous amount of tedious manual counting and calculating? 🤔
+
+Oh right, our computer. In fact, this is how the Monte Carlo method was concieved. As the story goes, Polish mathematician [Stanislaw Ulam](https://en.wikipedia.org/wiki/Stanislaw_Ulam) was playing solitaire and wondered what the chances were of winning a game. He quickly realized that purely combinatorial calculations were impractical, even by a proficient mathematician. However, he knew that if he could play enough games, he could create an estimate. Conveniently, the first general-purpose computer, the [ENIAC](https://en.wikipedia.org/wiki/ENIAC), was just recently completed, and Ulam's insight was that computers made such statistical methods very practical.
+
+So let's create a method of generating random throws of a dart, as well as determining whether or not we hit the target. From there, we can plug them into our earlier formula and dynamically regenerate an estimate of Pi based on the result of each set of throws.
+
+```javascript
+const diameter = 100;
+
+function checkIsHit(throwInfo) {
+  const xDistance = Math.abs(throwInfo.x - diameter / 2);
+  const yDistance = Math.abs(throwInfo.y - diameter / 2);
+  const totalDistance = Math.sqrt(
+    xDistance * xDistance + yDistance * yDistance
+  );
+  return totalDistance < diameter / 2;
+}
+
+function generateRandomThrows(numThrows) {
+  const throwCoords = [];
+  let hitCounter = 0;
+  for (let i = 0; i < numThrows; i++) {
+    const throwInfo = {
+      x: Math.random() * diameter,
+      y: Math.random() * diameter
+    };
+    if (checkIsHit(throwInfo)) hitCounter++;
+    throwCoords.push(throwInfo);
+  }
+  return {
+    throwCoords,
+    hits: hitCounter
+  };
+}
+
+const throws = generateRandomThrows(1000);
+const pi = (4 * throws.hits) / throws.throwCoords.length;
+```
+
+We select an arbitrary diameter here, just so we can calculate how close we are to the midpoint. We could have picked any diameter and the results would be the same, it's just a point of reference. After randomly generating each throw, we can use some good old fashioned trigonometry ([Pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem)) to determine if the total distance of our throw from the center of the circle was less than its radius, which means we're squarely (🤓) in the circle.
+
+Use the button below to randomly throw some darts, and we'll use this method to revise our estimate of Pi each time. Try increasing the volume you throw at once, and see how many it takes for the estimated value of Pi to approach 3.14159.
+
+<div class="mb-8">
+  <PiEstimator />
+</div>
+
+Ok, so it takes many thousands of throws to even start to approach 3.14 consistently. On occassion, you'll get lucky and hit 3.14 early, but until there are several thousands of throws, it will not remain there with any consistency.
+
+However, that's the beauty of Monte Carlo simulations. If you have a computer, you can run as many simulations as you want in mere seconds. Let's not take that for granted! Without the ENIAC, Ulam couldn't have answered his solitaire problem (much less the problems of neutron diffusion the Monte Carlo method was ultimately used for in the Manhattan Project). I don't know about you, but it usually takes me over 10 minutes to finish a solitaire game. If you're much better than me, maybe you can hit 5 minutes. If getting an estimate approaching reasonable takes at least 10,000 games, well...let's just say you'll have to spend your life playing solitaire if you want to estimate it the analog way.
+
+Of course, using this HTML Canvas illustration, we're dramatically limited by the speed of DOM rendering updates. Once we start throwing around 1,000 darts at a time, it takes a while to load (all calculations here are done client-side, so it depends on the speed of your computer).
+
+Now that we understand the concept visually, we can take it to the limit by removing the visualization and optimizing our computational algorithm for maximum speed, then see how close we can get.
+
+```javascript
+const diameter = 100;
+const radius = diameter / 2;
+
+function checkIsHit(x, y) {
+  const xDistance = Math.abs(x - radius);
+  const yDistance = Math.abs(y - radius);
+  const totalDistance = Math.sqrt(
+    xDistance * xDistance + yDistance * yDistance
+  );
+  return totalDistance < radius;
+}
+
+function generateRandomThrows(numThrows) {
+  let hitCounter = 0;
+  for (let i = 0; i < numThrows; i++) {
+    const x = Math.random() * diameter;
+    const y = Math.random() * diameter;
+    if (checkIsHit(x, y)) hitCounter++;
+  }
+  return hitCounter;
+}
+
+const numSimulations = 10000000000;
+
+// 1 billion runs in ~25 seconds, pi est 3.1417
+// 10 billion runs in ~4.5 minutes, pi est 3.141593
+const start = process.hrtime.bigint();
+const numHits = generateRandomThrows(numSimulations);
+const end = process.hrtime.bigint();
+
+const pi = (4 * numHits) / numSimulations;
+
+console.log('pi estimate', pi);
+console.log('total sim runtime', `${(end - start) / 1000000n}ms`);
+```
+
+Turns out, it didn't take much to dramatically improve this algorithm's performance. After removing the need for visualization, we can remove our array of "throws" entirely. All we need for the calculation is tracking the number of hits and total throws.
+
+I was able to run the code using Node.js on my machine with 10 billion simulations in around 4 minutes 30 seconds. This brought the estimate to 3.141593, which pushes our estimate to accurate within 5 decimal places. Pretty good for what is essentially a bunch of random number generation!
+
+Of course, it is woefully inefficient to use 10 billion simulations to esimate Pi when we could just measure the diameter and circumference and plug it into the formula $\pi = \frac{C}{d}$. This is just a convenient way to demonstrate how Monte Carlo simulation works.
+
+Its true power, however, lies in using it for when no other method is currently possible. In the next post on Monte Carlo simulation, we'll explore how to use it to simulate stocks in the stock market. Less abstract than this exercise, and certainly more useful. Stay tuned!
