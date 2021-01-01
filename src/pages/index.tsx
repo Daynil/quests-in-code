@@ -1,10 +1,10 @@
-import { format } from 'date-fns';
 import fs from 'fs';
 import { InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 import React from 'react';
 import ReadHearts from '../components/read-hearts';
 import SEO from '../components/seo';
+import { getFormattedDate } from '../utils/helpers';
 import { getPostsMeta } from '../utils/mdx-api';
 
 export default function Home({
@@ -47,7 +47,7 @@ export default function Home({
                   <h2 className="my-2">{post.title}</h2>
                   <div className="mb-8 text-gray-700 dk:text-gray-500 flex flex-col sm:flex-row sm:text-center">
                     <span className="mr-2">
-                      {format(new Date(post.date), 'MMMM d, yyyy')}{' '}
+                      {getFormattedDate(post.date)}{' '}
                       <span className="hidden sm:inline-block">•</span>{' '}
                     </span>
                     <span className="flex items-center">
@@ -75,7 +75,7 @@ export async function getStaticProps() {
   if (process.env.NODE_ENV === 'production') {
     const jsonMeta = allPostMeta.map(postMeta => ({
       ...postMeta,
-      date: format(new Date(postMeta.date), 'MMMM d, yyyy'),
+      date: getFormattedDate(postMeta.date),
       excerpt: '' // Excerpt expected but not needed (always use description)
     }));
     fs.writeFileSync('public/postsMetaData.json', JSON.stringify(jsonMeta));

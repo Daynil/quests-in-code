@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import DOMPurify from 'dompurify';
 import { InferGetStaticPropsType } from 'next';
 import hydrate from 'next-mdx-remote/hydrate';
@@ -13,7 +12,7 @@ import RetweetIcon from '../../components/svg/retweet-icon';
 import TwitterIcon from '../../components/svg/twitter-icon';
 import TextLink from '../../components/text-link';
 import { mdxComponents } from '../../utils/constants';
-import { humanDateFromEpoch } from '../../utils/helpers';
+import { getFormattedDate, humanDateFromEpoch } from '../../utils/helpers';
 import { getPostBySlug, getPostSlugs } from '../../utils/mdx-api';
 
 interface Webmention {
@@ -168,7 +167,7 @@ export default function BlogPost({
             <h1 className="my-2">{post.title}</h1>
             <div className="mb-8 text-gray-700 dk:text-gray-500 flex justify-center flex-col sm:flex-row sm:text-center">
               <span className="mr-2">
-                {format(new Date(post.date), 'MMMM d, yyyy')}{' '}
+                {getFormattedDate(post.date)}{' '}
                 <span className="hidden sm:inline-block">•</span>{' '}
               </span>
               <span className="flex items-center justify-center">

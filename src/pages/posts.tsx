@@ -1,9 +1,9 @@
-import { format } from 'date-fns';
 import { InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 import React from 'react';
 import ReadHearts from '../components/read-hearts';
 import SEO from '../components/seo';
+import { getFormattedDate } from '../utils/helpers';
 import { getPostsMeta } from '../utils/mdx-api';
 
 export type PostMatter = {
@@ -52,7 +52,7 @@ export default function Posts({
                   <h2 className="my-2">{post.title}</h2>
                   <div className="mb-8 text-gray-700 dk:text-gray-500 flex flex-col sm:flex-row sm:text-center">
                     <span className="mr-2">
-                      {format(new Date(post.date), 'MMMM d, yyyy')}{' '}
+                      {getFormattedDate(post.date)}{' '}
                       <span className="hidden sm:inline-block">•</span>{' '}
                     </span>
                     <span className="flex items-center">

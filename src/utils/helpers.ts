@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 export function humanDateFromEpoch(epochSec: number): string {
   const date = new Date(epochSec * 1000);
   return date.toLocaleDateString(undefined, {
@@ -14,6 +16,22 @@ export function getTimeToRead(content: string): number {
   const avgWpmReadSpeed = 250;
   const contentLengthWords = content.split(' ').length;
   return Math.round(contentLengthWords / avgWpmReadSpeed);
+}
+
+/**
+ * Returns human readable date
+ * @param dateString format YYYY-MM-DD
+ */
+export function getFormattedDate(dateString: string) {
+  const dateArr = dateString.split('-');
+  return format(
+    new Date(
+      parseInt(dateArr[0]),
+      parseInt(dateArr[1]) - 1,
+      parseInt(dateArr[2])
+    ),
+    'MMMM d, yyyy'
+  );
 }
 
 /**
