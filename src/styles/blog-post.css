@@ -199,3 +199,7 @@ code {
 .katex * {
   @apply border-gray-900;
 }
+
+.dark-mode .katex * {
+  @apply border-gray-300;
+}

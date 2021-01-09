@@ -12,7 +12,7 @@ function TextInput(
   const rawInput = (
     <input
       className={
-        'rounded-md shadow-sm bg-gray-100 border-gray-300 transition-colors duration-75 hover:border-green-300 focus:bg-transparent focus:border-green-400 focus:ring focus:ring-green-300 focus:ring-opacity-50' +
+        'rounded-md shadow-sm dk:text-gray-600 bg-gray-100 border-gray-300 transition-colors duration-75 hover:border-green-300 focus:border-green-400 focus:ring focus:ring-green-300 focus:ring-opacity-50' +
         (className ? ' ' + className : '')
       }
       ref={ref}
