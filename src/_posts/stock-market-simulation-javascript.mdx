@@ -1,0 +1,84 @@
+---
+title: 'Simulate Stocks with Javascript'
+tags: ['JavaScript', 'Data Viz', 'Math']
+date: '2021-01-01'
+description: 'Learning how to simulate stocks in the stock market using Javascript.'
+---
+
+<link rel="stylesheet" href="/katex.min.css" />
+
+The stock market is an extremely complex system influenced by a huge number of variables, so we can never predict with any certainty what will happen in the future.
+
+But that doesn't mean we can't make projections to assist with risk management!
+
+We learned [how to do Monte Carlo simulations in javascript](https://questsincode.com/posts/monte-carlo-simulation-javascript), now lets put it to some practical use.
+
+Monte Carlo simulations are very useful in [risk management](https://www.investopedia.com/articles/financial-theory/08/monte-carlo-multivariate-model.asp). We are aware we can't predict the future, but if we have enough data from the past, we can create a reasonable model for the future.
+
+An important feature of Monte Carlo simulations in particular is that we can run them many thousands of times, each resulting in a different outcome. Then, we can determine risk by considering how often failure occurs.
+
+## Get Statistics on Historical Data
+
+The first step in creating a model in Monte Carlo simulations is to gather historical data.
+
+There are [many options for using an API to access historical stock market data](http://www.columbia.edu/~tmd2142/best-6-stock-market-apis-for-2020.html). However, that's not our focus. To simplify, we will be using yahoo finance's historical data download options.
+
+To start, let's use Google's historical data. We can download the last 2 full years of [daily closing prices for Google as a CSV file](https://finance.yahoo.com/quote/GOOG/history?period1=1546300800&period2=1609372800&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true).
+
+<div className="mb-8">
+  <StockSim />
+</div>
+
+There are two statistics we need to get from our data for our simulation model: the mean and standard deviation of the daily change of our stock price.
+
+```javascript
+import { deviation, mean } from 'd3';
+
+function getStockStats(data) {
+  let stockDayPcntChange = [];
+
+  const data2019 = data.filter(
+    data => new Date(data.Date).getFullYear() === 2019
+  );
+
+  // Start at second day
+  for (let i = 1; i < data2019.length; i++) {
+    const curDayPrice = data2019[i].Close;
+    const prevDayPrice = data2019[i - 1].Close;
+    stockDayPcntChange.push((curDayPrice - prevDayPrice) / prevDayPrice);
+  }
+
+  return {
+    meanDailyChange: mean(stockDayPcntChange),
+    stdDevDailyChange: deviation(stockDayPcntChange)
+  };
+}
+```
+
+D3 provides functions that make this very straightforward. All we need to do is pass in an array of the daily market changes to get the statistics we need. We'll get the statistics for only 2019 so that we can use 2020 to compare against our simulations.
+
+Now we've got all the data and statistics we need, let's get to simulating!
+
+## Creating a Monte Carlo Model for Stocks
+
+In order to simulate our stock using the Monte Carlo method, we'll need to create a model. For simpler examples like rolling dice, just the random generation of a number between 1 and 6 was sufficent. However, just randomly generating a stock price would not create a useful simulation. We need to utilize historical data to create a realistic simulation of future prices, which is where our statistics come in.
+
+One of the most commonly used models for projecting stock prices is [geometric Brownian motion (GBM)](https://en.wikipedia.org/wiki/Geometric_Brownian_motion).
+
+$$
+S_t = S_0 e^{(\mu - \frac{\sigma^2}{2}) t + \sigma W_t}
+$$
+
+$S_t$ is our stock price at time "t", $S_0$ at the initial time, $\mu$ is the mean, and $\sigma$ is the standard deviation.
+
+In brief, GBM allows us to specify a "drift" for the stock, which we get from its mean. The drift represents the general direction the stock is moving. So, if a stock has been increasing consistently throughout our historical period, it will have a positive mean price change, with a magnitude depending on how much it increased on average. This is $\mu - \frac{\sigma^2}{2}$ in our formula.
+
+Even though our mean represents the general historical trend of the stock, we know it is completely unrealistic for a stock to increase a static amount each time day. We need to inject some volatility that we know is characteristic of the stock market. For this we turn our attention to the less straightforward portion of this equation: $\sigma W_t$.
+
+$W_t$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process), also known as [brownian motion](https://en.wikipedia.org/wiki/Brownian_motion). Essentially, we need to add a random amount of volatility (positive or negative) to a stock's average drift at every interval, and for this we can use a Wiener process. We can determine the magnitude of this volatility using the standard deviation of our stock data. The higher the standard deviation, the more volatile the stock, and the more the stock price can vary day to day, regardless of its average directional "drift".
+
+To generate this random volatility based on a standard deviation, we need to get a random amount of standard deviations. In a standard normal distribution, we know that 68.2% of values fall within 1 standard deviation of the mean, 95.4% of values fall within 2, and 99.7% fall within 3.
+
+So, when we get a "random" number of standard deviations, we can't just use a random number generator alone to get a random value between -3 and 3. We know we are far more likely to have a value around 1 standard deviation from the mean than we are to have a value around 3 standard deviations from it. A random number generator would produce any of these values with equal probability, so it does not suite our needs.
+
+Last piece should be showing the percentile bound graphs for stocks (min/max, 25%, mean, 75%, something like that)

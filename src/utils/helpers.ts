@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 
 export function humanDateFromEpoch(epochSec: number): string {
   const date = new Date(epochSec * 1000);
@@ -20,18 +20,10 @@ export function getTimeToRead(content: string): number {
 
 /**
  * Returns human readable date
- * @param dateString format YYYY-MM-DD
+ * @param dateString format yyyy-MM-DD
  */
 export function getFormattedDate(dateString: string) {
-  const dateArr = dateString.split('-');
-  return format(
-    new Date(
-      parseInt(dateArr[0]),
-      parseInt(dateArr[1]) - 1,
-      parseInt(dateArr[2])
-    ),
-    'MMMM d, yyyy'
-  );
+  return format(parse(dateString, 'yyyy-MM-dd', new Date()), 'MMMM d, yyyy');
 }
 
 /**

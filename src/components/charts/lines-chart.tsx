@@ -35,7 +35,7 @@ type Props<T> = {
   yAccessor: (d: T) => number;
   /** Chart's aspect ratio */
   aspectRatio: number;
-  options: {
+  options?: {
     margins?: {
       marginTop?: number;
       marginRight?: number;
@@ -99,6 +99,7 @@ export function LinesChart<T>({
   aspectRatio,
   options
 }: Props<T>) {
+  if (!options) options = {};
   const stylizeLine = options.stylizeLine
     ? options.stylizeLine
     : defaultStylizeLine;
@@ -169,20 +170,22 @@ export function LinesChart<T>({
 
     const containerRect = ref.current.getBoundingClientRect();
 
-    // Move tooltip (favor left side when available)
-    const mouseOffset = 30; // So the tooltip doesn't block the data point
-    let leftAdjust =
-      e.clientX - containerRect.left - window.pageXOffset + mouseOffset;
-    if (leftAdjust > refTooltip.current.clientWidth) {
-      leftAdjust =
-        leftAdjust - refTooltip.current.clientWidth - mouseOffset * 2;
+    if (options.getTooltip) {
+      // Move tooltip (favor left side when available)
+      const mouseOffset = 30; // So the tooltip doesn't block the data point
+      let leftAdjust =
+        e.clientX - containerRect.left - window.pageXOffset + mouseOffset;
+      if (leftAdjust > refTooltip.current.clientWidth) {
+        leftAdjust =
+          leftAdjust - refTooltip.current.clientWidth - mouseOffset * 2;
+      }
+      // Alternate method which favors right side when available
+      // if (leftAdjust > 690) {
+      //   leftAdjust =
+      //     leftAdjust - refTooltip.current.getBoundingClientRect().width;
+      // }
+      setTooltipLeftAdjust(leftAdjust);
     }
-    // Alternate method which favors right side when available
-    // if (leftAdjust > 690) {
-    //   leftAdjust =
-    //     leftAdjust - refTooltip.current.getBoundingClientRect().width;
-    // }
-    setTooltipLeftAdjust(leftAdjust);
 
     // Transform current mouse coords to domain values, adjusting for svg position and scroll
     const ym = yScale.invert(

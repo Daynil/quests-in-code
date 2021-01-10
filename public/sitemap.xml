@@ -47,4 +47,12 @@
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <url>
+    <loc
+      >https://questsincode.com/posts/stock-market-simulation-javascript/</loc
+    >
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
