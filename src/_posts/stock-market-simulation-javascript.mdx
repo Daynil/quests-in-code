@@ -26,7 +26,7 @@ There are [many options for using an API to access historical stock market data]
 To start, let's use Google's historical data. We can download the last 2 full years of [daily closing prices for Google as a CSV file](https://finance.yahoo.com/quote/GOOG/history?period1=1546300800&period2=1609372800&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true).
 
 <div className="mb-8">
-  <StockSim />
+  <StockSim chartType="Raw Google" />
 </div>
 
 There are two statistics we need to get from our data for our simulation model: the mean and standard deviation of the daily change of our stock price.
@@ -73,12 +73,85 @@ $S_t$ is our stock price at time "t", $S_0$ at the initial time, $\mu$ is the me
 
 In brief, GBM allows us to specify a "drift" for the stock, which we get from its mean. The drift represents the general direction the stock is moving. So, if a stock has been increasing consistently throughout our historical period, it will have a positive mean price change, with a magnitude depending on how much it increased on average. This is $\mu - \frac{\sigma^2}{2}$ in our formula.
 
-Even though our mean represents the general historical trend of the stock, we know it is completely unrealistic for a stock to increase a static amount each time day. We need to inject some volatility that we know is characteristic of the stock market. For this we turn our attention to the less straightforward portion of this equation: $\sigma W_t$.
+Even though our mean represents the general historical trend of the stock, we know it is completely unrealistic for a stock to increase a static amount each time day. We need to inject some volatility that we know is characteristic of the stock market. For this we use $\sigma W_t$.
 
-$W_t$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process), also known as [brownian motion](https://en.wikipedia.org/wiki/Brownian_motion). Essentially, we need to add a random amount of volatility (positive or negative) to a stock's average drift at every interval, and for this we can use a Wiener process. We can determine the magnitude of this volatility using the standard deviation of our stock data. The higher the standard deviation, the more volatile the stock, and the more the stock price can vary day to day, regardless of its average directional "drift".
+$W_t$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process), also known as [brownian motion](https://en.wikipedia.org/wiki/Brownian_motion). Essentially, we need to add a random amount of volatility (positive or negative), a random shock, to a stock's average drift at every interval, and for this we can use a Wiener process. We can determine the magnitude of this volatility using the standard deviation of our stock data. The higher the standard deviation, the more volatile the stock, and the more the stock price can vary day to day, regardless of its average directional "drift".
 
-To generate this random volatility based on a standard deviation, we need to get a random amount of standard deviations. In a standard normal distribution, we know that 68.2% of values fall within 1 standard deviation of the mean, 95.4% of values fall within 2, and 99.7% fall within 3.
+It's easiest to see how this works by doing a calculation.
 
-So, when we get a "random" number of standard deviations, we can't just use a random number generator alone to get a random value between -3 and 3. We know we are far more likely to have a value around 1 standard deviation from the mean than we are to have a value around 3 standard deviations from it. A random number generator would produce any of these values with equal probability, so it does not suite our needs.
+## Create a Stock Price Projection
+
+Let's use our Google data to create a projection for a single day, the first day in 2020.
+
+```javascript
+function projectStockPrice(currPrice, meanDailyChange, stdDevDailyChange) {
+  const drift = meanDailyChange - (stdDevDailyChange * stdDevDailyChange) / 2;
+  const randomShock = stdDevDailyChange * normSinv(Math.Random());
+  return currPrice * Math.exp(drift + randomShock);
+}
+
+const last2019Price = 1337.02002;
+const stockStats = getStockStats(data);
+const first2020Price = projectStockPrice(
+  last2019Price,
+  stockStats.meanDailyChange,
+  stockStats.stdDevDailyChange
+);
+```
+
+Here we just grab the last closing price in 2019 as our starting point, calculate the stats for our 2019 data as before, then plug this into the equation. The equation produces a drift from the mean, positive in this case since Google's stock price went up on average in 2019, then adds a random shock by adding a price fluctuation a random amount of standard deviations from the mean.
+
+One thing you may notice in this code that is unfamiliar is the `normSinv` function call. This is the inverse of the standard normal cumulative distribution.
+
+We can't just generate a random number and multiply it by the standard deviation, because we know a larger number of standard deviations is much less likely than a smaller number. A naive random number generator produces a random value with a uniform distribution. In other words, if we generate a random number from 1 to 6, 1 and 3 are equally likely to show up.
+
+However, we know getting a value 3 standard deviations from the mean is extremely unlikely, while 1 standard deviation is fairly likely. In a [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution), we know that 68.2% of values fall within 1 standard deviation of the mean, 95.4% of values fall within 2, and 99.7% fall within 3. So we have a less than 0.3% chance of getting a value that is over 3 standard deviations from the mean.
+
+To address this shortcoming of random number generators, we can use the inverse standard normal distribution, which allows us to get a (positive or negative) amount of standard deviations from a random value from 0 to 1, using the appropriate distribution. So, getting 3 standard deviations would require a "random number" roll of greater than 0.99, which is very unlikely, as expected.
+
+Going back to our stock example, if `Math.Random()` had produced a value of 0.89, the inverse normal distribution function would return 1.227 standard deviations. This would produce a projected stock value of $1,363.56 for the first day of 2021. If the random value was 0.21, it would return -0.806 standard deviations. This would project a stock value of $1,321.99, which is actually lower than the prior value (\$1,337.02) despite the positive mean drift of Google's stock. This reflects the high volatility of stocks.
+
+Unfortunately, there is no popular library available which implements the inverse normal distribution function in Javascript that I could find. I was able to implement this function myself using [Peter John Acklman's pseudocode algorithm](https://web.archive.org/web/20151030212308/http://home.online.no/~pjacklam/notes/invnorm/index.html). The specifics of the implementation is beyond the scope of this post, but feel free to use [my javascript implementation](https://github.com/Daynil/quests-in-code/blob/master/src/utils/normSinv.ts) if you need it.
+
+## Monte Carlo Simulation of Stock Prices for a Year
+
+Now that we've got all the pieces in place, let's create our Monte Carlo simulation for Google's 2020 stock prices. Since we would like to compare our simulation to the actual 2020 values, let's generate the same amount of values as we have actuals (252, since the market is closed weekends).
+
+```javascript
+function project2020Prices(data) {
+  const data2019 = data.filter(
+    data => new Date(data.Date).getFullYear() === 2019
+  );
+
+  const last2019Price = data2019[data2019.length - 1].Close;
+
+  const data2020 = data.filter(
+    data => new Date(data.Date).getFullYear() === 2020
+  );
+
+  const projection2020 = [];
+
+  for (let i = 0; i < data2020.length; i++) {
+    const priorPrice = i === 0 ? last2019Price : projection2020[i - 1].Close;
+
+    projection2020.push({
+      Date: data2020[i].Date,
+      Close: projectStockPrice(
+        priorPrice,
+        stockStats.meanDailyChange,
+        stockStats.stdDevDailyChange
+      )
+    });
+  }
+
+  return projection2020;
+}
+```
+
+Try generating a few projections below for Google's 2020 stock prices and see how they compare to the its 2020 actuals.
+
+<div className="mb-8">
+  <StockSim chartType="Projection Google" />
+</div>
 
 Last piece should be showing the percentile bound graphs for stocks (min/max, 25%, mean, 75%, something like that)

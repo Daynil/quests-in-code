@@ -1,4 +1,4 @@
-import { leastIndex, line, max, min, scaleLinear } from 'd3';
+import { leastIndex, line, max, maxIndex, min, scaleLinear } from 'd3';
 import React, { useMemo, useRef, useState } from 'react';
 import { useChartDimensions } from '../../utils/hooks';
 import { Axis } from './axis';
@@ -59,6 +59,7 @@ type Props<T> = {
     xFormatTick?: (d: number) => string;
     yFormatTick?: (d: number) => string;
     getTooltip?: (d: T) => React.ReactNode;
+    hoverDot?: boolean;
   };
 };
 
@@ -116,6 +117,8 @@ export function LinesChart<T>({
   const [tooltipLeftAdjust, setTooltipLeftAdjust] = useState(0);
   const [selectedPoint, setSelectedPoint] = useState<PointCoords>(null);
 
+  const longestLine = dataSeries[maxIndex(dataSeries, line => line.length)];
+
   const xScale = scaleLinear();
   if (options.xDomain) xScale.domain(options.xDomain);
   else
@@ -125,6 +128,21 @@ export function LinesChart<T>({
     ]);
   if (options.xDomainNice) xScale.nice();
   xScale.range([0, dimensions.boundedWidth]);
+
+  for (let i = 0; i < dataSeries.length; i++) {
+    const currLine = dataSeries[i];
+    const nullFilledLine: T[] = [];
+
+    if (currLine.length < longestLine.length) {
+      const indexOfStart = longestLine.findIndex(
+        point => xAccessor(point) === xAccessor(currLine[0])
+      );
+      for (let x = 0; x < longestLine.length; x++) {
+        if (x < indexOfStart || x > currLine.length) nullFilledLine.push(null);
+        else nullFilledLine.push(currLine[x]);
+      }
+    }
+  }
 
   const yScale = scaleLinear();
   if (options.yDomain) yScale.domain(options.yDomain);
@@ -204,7 +222,8 @@ export function LinesChart<T>({
     );
 
     const closestLineIndex = leastIndex(
-      dataSeries,
+      // Filter out any lines without a value at the hovered X
+      dataSeries.filter(data => !!data[closestXIndex]),
       (a, b) =>
         Math.abs(yAccessor(a[closestXIndex]) - ym) -
         Math.abs(yAccessor(b[closestXIndex]) - ym)
@@ -212,13 +231,15 @@ export function LinesChart<T>({
 
     setSelectedPoint({ lineIndex: closestLineIndex, xIndex: closestXIndex });
 
-    // Move selection dot indicator to that nearest point of cursor
-    refGdot.current.setAttribute(
-      'transform',
-      `translate(${xScale(
-        xAccessor(dataSeries[closestLineIndex][closestXIndex])
-      )},${yScale(yAccessor(dataSeries[closestLineIndex][closestXIndex]))})`
-    );
+    if (options.hoverDot) {
+      // Move selection dot indicator to that nearest point of cursor
+      refGdot.current.setAttribute(
+        'transform',
+        `translate(${xScale(
+          xAccessor(dataSeries[closestLineIndex][closestXIndex])
+        )},${yScale(yAccessor(dataSeries[closestLineIndex][closestXIndex]))})`
+      );
+    }
   }
 
   function mouseOut() {
@@ -244,15 +265,20 @@ export function LinesChart<T>({
           <g fill="none" strokeLinejoin="round" strokeLinecap="round">
             {linePaths}
           </g>
-          <g ref={refGdot} style={{ transition: defaultLineStyles.transition }}>
-            <circle
-              r="4"
-              fill="white"
-              stroke={getCircleColor()}
-              strokeWidth="3"
-              opacity={selectedPoint ? '1' : '0'}
-            />
-          </g>
+          {options.hoverDot && (
+            <g
+              ref={refGdot}
+              style={{ transition: defaultLineStyles.transition }}
+            >
+              <circle
+                r="4"
+                fill="white"
+                stroke={getCircleColor()}
+                strokeWidth="3"
+                opacity={selectedPoint ? '1' : '0'}
+              />
+            </g>
+          )}
         </Chart>
       </>
     );
