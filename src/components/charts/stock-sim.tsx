@@ -163,6 +163,7 @@ export function StockSim({ chartType }: Props) {
                 yFormatTick: d => numFormat('$.2s')(d),
                 hoverDot: true,
                 stylizeLine: (line, hovering, hoveringThisLine) => {
+                  console.log(line);
                   const lineStyle = { ...defaultLineStyles };
 
                   if (line[0].DataType === 'Proj') {

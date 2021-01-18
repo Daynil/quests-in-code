@@ -1,5 +1,10 @@
-import { leastIndex, line, max, maxIndex, min, scaleLinear } from 'd3';
+import { leastIndex, line, max, min, scaleLinear } from 'd3';
 import React, { useMemo, useRef, useState } from 'react';
+import {
+  getFullContinuousLine,
+  getNullFilledLines,
+  getSeriesDomainExtent
+} from '../../utils/data-helpers';
 import { useChartDimensions } from '../../utils/hooks';
 import { Axis } from './axis';
 import { Chart } from './chart';
@@ -117,32 +122,14 @@ export function LinesChart<T>({
   const [tooltipLeftAdjust, setTooltipLeftAdjust] = useState(0);
   const [selectedPoint, setSelectedPoint] = useState<PointCoords>(null);
 
-  const longestLine = dataSeries[maxIndex(dataSeries, line => line.length)];
-
   const xScale = scaleLinear();
   if (options.xDomain) xScale.domain(options.xDomain);
-  else
-    xScale.domain([
-      min(dataSeries, line => min(line.map(d => xAccessor(d)))),
-      max(dataSeries, line => max(line.map(d => xAccessor(d))))
-    ]);
+  else {
+    const seriesExtent = getSeriesDomainExtent(dataSeries, xAccessor);
+    xScale.domain([seriesExtent.min, seriesExtent.max]);
+  }
   if (options.xDomainNice) xScale.nice();
   xScale.range([0, dimensions.boundedWidth]);
-
-  for (let i = 0; i < dataSeries.length; i++) {
-    const currLine = dataSeries[i];
-    const nullFilledLine: T[] = [];
-
-    if (currLine.length < longestLine.length) {
-      const indexOfStart = longestLine.findIndex(
-        point => xAccessor(point) === xAccessor(currLine[0])
-      );
-      for (let x = 0; x < longestLine.length; x++) {
-        if (x < indexOfStart || x > currLine.length) nullFilledLine.push(null);
-        else nullFilledLine.push(currLine[x]);
-      }
-    }
-  }
 
   const yScale = scaleLinear();
   if (options.yDomain) yScale.domain(options.yDomain);
@@ -158,12 +145,27 @@ export function LinesChart<T>({
     .x(d => xScale(xAccessor(d)))
     .y(d => yScale(yAccessor(d)));
 
+  // const iDataSeries = getNullFilledLines(dataSeries, xAccessor);
+  const { fullContinuousLine, nullFilledSeries } = useMemo(() => {
+    if (noData)
+      return {
+        fullContinuousLine: [],
+        nullFilledSeries: [[]]
+      };
+    return {
+      fullContinuousLine: getFullContinuousLine(dataSeries, xAccessor),
+      nullFilledSeries: getNullFilledLines(dataSeries, xAccessor)
+    };
+  }, [dataSeries]);
+
   // Bottleneck, should only run when data or dimensions change
   const linePathStringArray = useMemo(
     () => dataSeries.map(line => chartLine(line)),
     [dataSeries, dimensions.width, dimensions.height]
   );
 
+  // TODO: figure out how to fix issue with new null filled arrays
+  // Points that have a null at hovered x should never have been selected to begin with
   const linePaths = dataSeries.map((line, i) => {
     const hoveringLine = selectedPoint && i === selectedPoint.lineIndex;
 
@@ -175,6 +177,8 @@ export function LinesChart<T>({
       />
     );
   });
+
+  console.log(dataSeries);
 
   function getCircleColor() {
     if (!selectedPoint) return;
@@ -217,13 +221,13 @@ export function LinesChart<T>({
     );
 
     const closestXIndex = leastIndex(
-      dataSeries[0],
+      fullContinuousLine,
       (a, b) => Math.abs(xAccessor(a) - xm) - Math.abs(xAccessor(b) - xm)
     );
 
     const closestLineIndex = leastIndex(
       // Filter out any lines without a value at the hovered X
-      dataSeries.filter(data => !!data[closestXIndex]),
+      nullFilledSeries.filter(data => !!data[closestXIndex]),
       (a, b) =>
         Math.abs(yAccessor(a[closestXIndex]) - ym) -
         Math.abs(yAccessor(b[closestXIndex]) - ym)
@@ -236,8 +240,10 @@ export function LinesChart<T>({
       refGdot.current.setAttribute(
         'transform',
         `translate(${xScale(
-          xAccessor(dataSeries[closestLineIndex][closestXIndex])
-        )},${yScale(yAccessor(dataSeries[closestLineIndex][closestXIndex]))})`
+          xAccessor(nullFilledSeries[closestLineIndex][closestXIndex])
+        )},${yScale(
+          yAccessor(nullFilledSeries[closestLineIndex][closestXIndex])
+        )})`
       );
     }
   }
@@ -305,7 +311,7 @@ export function LinesChart<T>({
         >
           {selectedPoint
             ? options.getTooltip(
-                dataSeries[selectedPoint.lineIndex][selectedPoint.xIndex]
+                nullFilledSeries[selectedPoint.lineIndex][selectedPoint.xIndex]
               )
             : null}
         </span>
