@@ -1,8 +1,9 @@
-import { leastIndex, line, max, min, scaleLinear } from 'd3';
+import { line, max, min, scaleLinear } from 'd3';
 import React, { useMemo, useRef, useState } from 'react';
 import {
+  getClosestCoordinates,
   getFullContinuousLine,
-  getNullFilledLines,
+  getLeftOffsets,
   getSeriesDomainExtent
 } from '../../utils/data-helpers';
 import { useChartDimensions } from '../../utils/hooks';
@@ -28,9 +29,14 @@ const colors = {
  * Uniquely identifies a point on a multi-line chart
  * E.g. line[lineIndex][xIndex]
  */
-export type PointCoords = {
+export type LinePointCoords = {
   lineIndex: number;
   xIndex: number;
+};
+
+export type PlanePointCoords = {
+  y: number;
+  x: number;
 };
 
 type Props<T> = {
@@ -60,7 +66,7 @@ type Props<T> = {
       hoveringThisLine: boolean
     ) => React.CSSProperties;
     /** If selected point coordinates are needed */
-    handleSetSelectedPoint?: (point: PointCoords) => void;
+    handleSetSelectedPoint?: (point: LinePointCoords) => void;
     xFormatTick?: (d: number) => string;
     yFormatTick?: (d: number) => string;
     getTooltip?: (d: T) => React.ReactNode;
@@ -120,7 +126,7 @@ export function LinesChart<T>({
   const refGdot = useRef<SVGGElement>(null);
   const refTooltip = useRef<HTMLSpanElement>(null);
   const [tooltipLeftAdjust, setTooltipLeftAdjust] = useState(0);
-  const [selectedPoint, setSelectedPoint] = useState<PointCoords>(null);
+  const [selectedPoint, setSelectedPoint] = useState<LinePointCoords>(null);
 
   const xScale = scaleLinear();
   if (options.xDomain) xScale.domain(options.xDomain);
@@ -145,16 +151,16 @@ export function LinesChart<T>({
     .x(d => xScale(xAccessor(d)))
     .y(d => yScale(yAccessor(d)));
 
-  // const iDataSeries = getNullFilledLines(dataSeries, xAccessor);
-  const { fullContinuousLine, nullFilledSeries } = useMemo(() => {
-    if (noData)
+  const { fullContinuousLine, lineLeftOffsets } = useMemo(() => {
+    if (noData) {
       return {
         fullContinuousLine: [],
-        nullFilledSeries: [[]]
+        lineLeftOffsets: []
       };
+    }
     return {
       fullContinuousLine: getFullContinuousLine(dataSeries, xAccessor),
-      nullFilledSeries: getNullFilledLines(dataSeries, xAccessor)
+      lineLeftOffsets: getLeftOffsets(dataSeries, xAccessor)
     };
   }, [dataSeries]);
 
@@ -166,6 +172,8 @@ export function LinesChart<T>({
 
   // TODO: figure out how to fix issue with new null filled arrays
   // Points that have a null at hovered x should never have been selected to begin with
+  // Just realized, I won't actually need null filled series
+  // Just the full continuous line, then get the x value @ closest x hover instead of x index
   const linePaths = dataSeries.map((line, i) => {
     const hoveringLine = selectedPoint && i === selectedPoint.lineIndex;
 
@@ -177,8 +185,6 @@ export function LinesChart<T>({
       />
     );
   });
-
-  console.log(dataSeries);
 
   function getCircleColor() {
     if (!selectedPoint) return;
@@ -220,29 +226,21 @@ export function LinesChart<T>({
         window.pageXOffset
     );
 
-    const closestXIndex = leastIndex(
-      fullContinuousLine,
-      (a, b) => Math.abs(xAccessor(a) - xm) - Math.abs(xAccessor(b) - xm)
+    const { lineIndex, xIndex } = getClosestCoordinates(
+      { x: xm, y: ym },
+      dataSeries,
+      xAccessor,
+      yAccessor
     );
 
-    const closestLineIndex = leastIndex(
-      // Filter out any lines without a value at the hovered X
-      nullFilledSeries.filter(data => !!data[closestXIndex]),
-      (a, b) =>
-        Math.abs(yAccessor(a[closestXIndex]) - ym) -
-        Math.abs(yAccessor(b[closestXIndex]) - ym)
-    );
-
-    setSelectedPoint({ lineIndex: closestLineIndex, xIndex: closestXIndex });
+    setSelectedPoint({ lineIndex, xIndex });
 
     if (options.hoverDot) {
       // Move selection dot indicator to that nearest point of cursor
       refGdot.current.setAttribute(
         'transform',
-        `translate(${xScale(
-          xAccessor(nullFilledSeries[closestLineIndex][closestXIndex])
-        )},${yScale(
-          yAccessor(nullFilledSeries[closestLineIndex][closestXIndex])
+        `translate(${xScale(xAccessor(dataSeries[lineIndex][xIndex]))},${yScale(
+          yAccessor(dataSeries[lineIndex][xIndex])
         )})`
       );
     }
@@ -311,7 +309,7 @@ export function LinesChart<T>({
         >
           {selectedPoint
             ? options.getTooltip(
-                nullFilledSeries[selectedPoint.lineIndex][selectedPoint.xIndex]
+                dataSeries[selectedPoint.lineIndex][selectedPoint.xIndex]
               )
             : null}
         </span>

@@ -16,7 +16,6 @@ export function StockSim({ chartType }: Props) {
   const [stockStats, setStockStats] = useState<StockStats>(null);
 
   // Projection Google
-  const [stockRefData, setStockRefData] = useState<StockValue[]>([]);
   const [stockProjData, setStockProjData] = useState<StockValue[]>([]);
 
   function getStockStats(data: StockValue[]): StockStats {
@@ -50,10 +49,13 @@ export function StockSim({ chartType }: Props) {
     return currPrice * Math.exp(drift + randomShock);
   }
 
-  function project2020Prices(refData: StockValue[]) {
-    const last2019Price = refData[refData.length - 1];
+  function project2020Prices(data: StockValue[], stats: StockStats) {
+    const data2019 = data.filter(
+      data => new Date(data.Date).getFullYear() === 2019
+    );
+    const last2019Price = data2019[data2019.length - 1];
 
-    const data2020 = stockData.filter(
+    const data2020 = data.filter(
       data => new Date(data.Date).getFullYear() === 2020
     );
 
@@ -73,11 +75,16 @@ export function StockSim({ chartType }: Props) {
         Date: data2020[i].Date,
         Close: projectStockPrice(
           priorPrice,
-          stockStats.meanDailyChange,
-          stockStats.stdDevDailyChange
+          stats.meanDailyChange,
+          stats.stdDevDailyChange
         )
       });
     }
+
+    // Some off by 1 error?
+    // The last index is only grabbing full data's not projected's when hovering
+    console.log(projection2020[projection2020.length - 1]);
+    console.log(data[data.length - 1]);
 
     return setStockProjData(projection2020);
   }
@@ -92,13 +99,12 @@ export function StockSim({ chartType }: Props) {
         Date: parse(day.Date, 'M/d/yyyy', new Date()).getTime(),
         Close: parseFloat(day.Close)
       })) as unknown) as StockValue[];
-      const data2019 = data.filter(
-        data => new Date(data.Date).getFullYear() === 2019
-      );
+
       setStockData(data);
-      setStockRefData(data2019);
-      setStockStats(getStockStats(data));
-      project2020Prices(data2019);
+
+      const stockStats = getStockStats(data);
+      setStockStats(stockStats);
+      project2020Prices(data, stockStats);
     }
     loadData();
   }, []);
@@ -123,37 +129,41 @@ export function StockSim({ chartType }: Props) {
 
   function getChartOfType(type: typeof chartType) {
     switch (type) {
-      case 'Raw Google':
-        return (
-          <LinesChart
-            dataSeries={[stockData]}
-            xAccessor={d => d.Date}
-            yAccessor={d => d.Close}
-            aspectRatio={1000 / 600}
-            options={{
-              yDomainNice: true,
-              xFormatTick: d => dateFormat(d, 'MMM d, yy'),
-              yFormatTick: d => numFormat('$.2s')(d),
-              getTooltip: stockTooltip,
-              hoverDot: true,
-              stylizeLine: (line, hovering, hoveringThisLine) => {
-                return defaultLineStyles;
-              }
-            }}
-          />
-        );
+      // case 'Raw Google':
+      //   return (
+      //     <LinesChart
+      //       dataSeries={[stockData]}
+      //       xAccessor={d => d.Date}
+      //       yAccessor={d => d.Close}
+      //       aspectRatio={1000 / 600}
+      //       options={{
+      //         yDomainNice: true,
+      //         xFormatTick: d => dateFormat(d, 'MMM d, yy'),
+      //         yFormatTick: d => numFormat('$.2s')(d),
+      //         getTooltip: stockTooltip,
+      //         hoverDot: true,
+      //         stylizeLine: (line, hovering, hoveringThisLine) => {
+      //           return defaultLineStyles;
+      //         }
+      //       }}
+      //     />
+      //   );
 
       case 'Projection Google':
+        const linesData: StockValue[][] =
+          stockData.length && stockProjData.length
+            ? [stockData, stockProjData]
+            : [[]];
         return (
           <>
             <button
               className="btn btn-green w-44 m-4"
-              onClick={() => project2020Prices(stockRefData)}
+              onClick={() => project2020Prices(stockData, stockStats)}
             >
               Rerun simulation
             </button>
             <LinesChart
-              dataSeries={[stockData, stockProjData]}
+              dataSeries={linesData}
               xAccessor={d => d.Date}
               yAccessor={d => d.Close}
               aspectRatio={1000 / 600}
@@ -163,10 +173,9 @@ export function StockSim({ chartType }: Props) {
                 yFormatTick: d => numFormat('$.2s')(d),
                 hoverDot: true,
                 stylizeLine: (line, hovering, hoveringThisLine) => {
-                  console.log(line);
                   const lineStyle = { ...defaultLineStyles };
 
-                  if (line[0].DataType === 'Proj') {
+                  if (line[0] && line[0].DataType === 'Proj') {
                     lineStyle.stroke = '#006AFF';
                   }
 

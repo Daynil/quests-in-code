@@ -1,5 +1,9 @@
-import { max, maxIndex, min } from 'd3';
+import { leastIndex, max, maxIndex, min } from 'd3';
 import cloneDeep from 'lodash.clonedeep';
+import {
+  LinePointCoords,
+  PlanePointCoords
+} from '../components/charts/lines-chart';
 
 export function sortLeftMostThenLongestLine<T>(
   series: T[][],
@@ -113,6 +117,81 @@ export function getFullContinuousLine<T>(
   } while (fullLineCurrMax !== seriesExtent.max);
 
   return fullContinuousLine;
+}
+
+/**
+ * Determine the amount each line is shifted from the left
+ * of the origin.
+ */
+export function getLeftOffsets<T>(series: T[][], xAccessor: (d: T) => number) {
+  const lines = cloneDeep(series);
+  const longestLine = getFullContinuousLine(lines, xAccessor);
+
+  const leftOffsets: number[] = [];
+
+  // Determine how far right shifted each line is
+  for (let i = 0; i < lines.length; i++) {
+    leftOffsets.push(
+      longestLine.findIndex(
+        point => xAccessor(point) === xAccessor(lines[i][0])
+      )
+    );
+  }
+
+  return leftOffsets;
+}
+
+/**
+ * Among a list of lines, find the line coordinates closest to a
+ * given plane point coordinate
+ */
+export function getClosestCoordinates<T>(
+  planeCoords: PlanePointCoords,
+  series: T[][],
+  xAccessor: (d: T) => number,
+  yAccessor: (d: T) => number
+): LinePointCoords {
+  const fullContinuousLine = getFullContinuousLine(series, xAccessor);
+  const lineLeftOffsets = getLeftOffsets(series, xAccessor);
+
+  const closestXIndex = leastIndex(
+    fullContinuousLine,
+    (a, b) =>
+      Math.abs(xAccessor(a) - planeCoords.x) -
+      Math.abs(xAccessor(b) - planeCoords.x)
+  );
+
+  let shortestDistance = Infinity;
+  let closestLineIndex = 0;
+  for (let i = 0; i < series.length; i++) {
+    const line = series[i];
+    const lineLeftOffset = lineLeftOffsets[i];
+    /*
+     * Skip any lines whose left offset is greater than
+     * the identified closest x index
+     * e.g. if left offset is 2, but closest x index is 1, skip
+     */
+    const rightShiftedPastX = lineLeftOffset > closestXIndex;
+    /*
+     * Skip any lines that don't have any more values
+     * at the given x index
+     * e.g. if closest x index is 5 but line length is 3
+     */
+    const leftShiftedBeforeX = closestXIndex - lineLeftOffset > line.length - 1;
+    if (rightShiftedPastX || leftShiftedBeforeX) continue;
+    const distance = Math.abs(
+      yAccessor(line[closestXIndex - lineLeftOffset]) - planeCoords.y
+    );
+    if (distance < shortestDistance) {
+      shortestDistance = distance;
+      closestLineIndex = i;
+    }
+  }
+
+  return {
+    lineIndex: closestLineIndex,
+    xIndex: closestXIndex - lineLeftOffsets[closestLineIndex]
+  };
 }
 
 /**
