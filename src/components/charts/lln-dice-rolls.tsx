@@ -122,6 +122,7 @@ export function LlnDiceRolls({}: Props) {
           yLabel: 'Mean Dice Roll',
           xLabel: 'Total Rolls',
           margins: { marginLeft: 50, marginBottom: 60 },
+          hoverDot: true,
           stylizeLine: (line, hovering, hoveringThisLine) => {
             let isMeanLine = true;
             for (let i = 0; i < line.length; i++) {

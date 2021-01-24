@@ -154,4 +154,22 @@ Try generating a few projections below for Google's 2020 stock prices and see ho
   <StockSim chartType="Projection Google" />
 </div>
 
+If you've run the simulation a bunch of times, you'll note there is a wide range of possibilities shown by the projections. We can get a projection either substantially higher than 2020's actuals, about in line with the actuals, or substantially lower. Interestingly, even with the unprecedentedly steep and rapid COVID-19 market drop in early 2020, we can still see the simulation produce a drop even steeper!
+
+Therein lies the beauty of using Monte Carlo simulations for risk management. You get a large range of possibilities on which you can base decision making. Of course, simply repeatedly pushing simulate to see the various scenarios is only useful to demonstrate the concept.
+
+## Visualizing Many Stock Simulations
+
+Let's take it a step further and run a bunch of simulations and display them all, so we can see a broad swath of projections all at once.
+
+<div className="mb-8">
+  <StockSim chartType="Multiprojection Google" />
+</div>
+
+Now we can really appreciate the range of possibilities. However, as we begin to increase the number of projections, we become quite limited by what the human eye can discern. Monte Carlo simulations are most useful when you create a huge amount of simulations. If we just throw 100,000 projections on a graph, we won't be able to make much sense of it (not to mention the rendering inefficiencies).
+
+When we're running many thousands of simulations, we become far less interested in the specifics of an individual simulation. Instead, we'd like to get a general picture of the overall tendencies of the simulations.
+
+A better way to visualize a large amount of simulations is to split them into quantiles.
+
 Last piece should be showing the percentile bound graphs for stocks (min/max, 25%, mean, 75%, something like that)

@@ -5,7 +5,7 @@ import { normSinv } from '../../utils/normSinv';
 import { defaultLineStyles, LinesChart } from './lines-chart';
 
 type Props = {
-  chartType: 'Raw Google' | 'Projection Google';
+  chartType: 'Raw Google' | 'Projection Google' | 'Multiprojection Google';
 };
 
 type StockValue = { DataType: 'Ref' | 'Proj'; Date: number; Close: number };
@@ -17,6 +17,9 @@ export function StockSim({ chartType }: Props) {
 
   // Projection Google
   const [stockProjData, setStockProjData] = useState<StockValue[]>([]);
+
+  // Multiprojection Google
+  const [stockProjections, setStockProjections] = useState<StockValue[][]>([]);
 
   function getStockStats(data: StockValue[]): StockStats {
     let stockDayPcntChange: number[] = [];
@@ -81,12 +84,17 @@ export function StockSim({ chartType }: Props) {
       });
     }
 
-    // Some off by 1 error?
-    // The last index is only grabbing full data's not projected's when hovering
-    console.log(projection2020[projection2020.length - 1]);
-    console.log(data[data.length - 1]);
+    return projection2020;
+  }
 
-    return setStockProjData(projection2020);
+  function multiProject2020Prices(data: StockValue[], stats: StockStats) {
+    const projections: StockValue[][] = [];
+
+    for (let i = 1; i < 50; i++) {
+      projections.push(project2020Prices(data, stats));
+    }
+
+    return projections;
   }
 
   useEffect(() => {
@@ -104,7 +112,8 @@ export function StockSim({ chartType }: Props) {
 
       const stockStats = getStockStats(data);
       setStockStats(stockStats);
-      project2020Prices(data, stockStats);
+      setStockProjData(project2020Prices(data, stockStats));
+      setStockProjections(multiProject2020Prices(data, stockStats));
     }
     loadData();
   }, []);
@@ -130,7 +139,7 @@ export function StockSim({ chartType }: Props) {
 
   function getChartOfType(type: typeof chartType) {
     switch (type) {
-      case 'Raw Google':
+      case 'Raw Google': {
         return (
           <LinesChart
             dataSeries={[stockData]}
@@ -149,8 +158,9 @@ export function StockSim({ chartType }: Props) {
             }}
           />
         );
+      }
 
-      case 'Projection Google':
+      case 'Projection Google': {
         const linesData: StockValue[][] =
           stockData.length && stockProjData.length
             ? [stockData, stockProjData]
@@ -159,7 +169,9 @@ export function StockSim({ chartType }: Props) {
           <>
             <button
               className="btn btn-green w-44 m-4"
-              onClick={() => project2020Prices(stockData, stockStats)}
+              onClick={() =>
+                setStockProjData(project2020Prices(stockData, stockStats))
+              }
             >
               Rerun simulation
             </button>
@@ -188,6 +200,49 @@ export function StockSim({ chartType }: Props) {
             />
           </>
         );
+      }
+
+      case 'Multiprojection Google': {
+        const linesData: StockValue[][] =
+          stockData.length && stockProjData.length
+            ? [stockData, ...stockProjections]
+            : [[]];
+        return (
+          <>
+            <button
+              className="btn btn-green w-44 m-4"
+              onClick={() =>
+                setStockProjections(
+                  multiProject2020Prices(stockData, stockStats)
+                )
+              }
+            >
+              Rerun simulation
+            </button>
+            <LinesChart
+              dataSeries={linesData}
+              xAccessor={d => d.Date}
+              yAccessor={d => d.Close}
+              aspectRatio={1000 / 600}
+              options={{
+                yDomainNice: true,
+                xFormatTick: d => dateFormat(d, 'MMM d, yy'),
+                yFormatTick: d => numFormat('$.2s')(d),
+                stylizeLine: (line, hovering, hoveringThisLine) => {
+                  const lineStyle = { ...defaultLineStyles };
+
+                  if (line[0] && line[0].DataType === 'Proj') {
+                    lineStyle.stroke = '#006AFF';
+                    lineStyle.opacity = '0.4';
+                  }
+
+                  return lineStyle;
+                }
+              }}
+            />
+          </>
+        );
+      }
 
       default:
         break;
