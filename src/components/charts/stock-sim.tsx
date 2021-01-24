@@ -109,10 +109,11 @@ export function StockSim({ chartType }: Props) {
     loadData();
   }, []);
 
-  function stockTooltip(d: StockValue) {
+  function stockTooltip(d: StockValue, name: string) {
     if (!d) return;
     return (
       <div className="inline-block p-6 bg-gray-50 shadow-md rounded-md">
+        <div className="text-center mb-2 font-bold">{name}</div>
         <div className="flex justify-evenly">
           <div className="flex flex-col px-4">
             <label className="font-semibold my-0">Date</label>
@@ -129,25 +130,25 @@ export function StockSim({ chartType }: Props) {
 
   function getChartOfType(type: typeof chartType) {
     switch (type) {
-      // case 'Raw Google':
-      //   return (
-      //     <LinesChart
-      //       dataSeries={[stockData]}
-      //       xAccessor={d => d.Date}
-      //       yAccessor={d => d.Close}
-      //       aspectRatio={1000 / 600}
-      //       options={{
-      //         yDomainNice: true,
-      //         xFormatTick: d => dateFormat(d, 'MMM d, yy'),
-      //         yFormatTick: d => numFormat('$.2s')(d),
-      //         getTooltip: stockTooltip,
-      //         hoverDot: true,
-      //         stylizeLine: (line, hovering, hoveringThisLine) => {
-      //           return defaultLineStyles;
-      //         }
-      //       }}
-      //     />
-      //   );
+      case 'Raw Google':
+        return (
+          <LinesChart
+            dataSeries={[stockData]}
+            xAccessor={d => d.Date}
+            yAccessor={d => d.Close}
+            aspectRatio={1000 / 600}
+            options={{
+              yDomainNice: true,
+              xFormatTick: d => dateFormat(d, 'MMM d, yy'),
+              yFormatTick: d => numFormat('$.2s')(d),
+              getTooltip: stockTooltip,
+              hoverDot: true,
+              stylizeLine: (line, hovering, hoveringThisLine) => {
+                return defaultLineStyles;
+              }
+            }}
+          />
+        );
 
       case 'Projection Google':
         const linesData: StockValue[][] =
@@ -172,6 +173,8 @@ export function StockSim({ chartType }: Props) {
                 xFormatTick: d => dateFormat(d, 'MMM d, yy'),
                 yFormatTick: d => numFormat('$.2s')(d),
                 hoverDot: true,
+                seriesNames: ['Actual', 'Projected'],
+                getTooltip: stockTooltip,
                 stylizeLine: (line, hovering, hoveringThisLine) => {
                   const lineStyle = { ...defaultLineStyles };
 

@@ -149,10 +149,13 @@ export function getClosestCoordinates<T>(
   planeCoords: PlanePointCoords,
   series: T[][],
   xAccessor: (d: T) => number,
-  yAccessor: (d: T) => number
+  yAccessor: (d: T) => number,
+  fullContinuousLine?: T[],
+  lineLeftOffsets?: number[]
 ): LinePointCoords {
-  const fullContinuousLine = getFullContinuousLine(series, xAccessor);
-  const lineLeftOffsets = getLeftOffsets(series, xAccessor);
+  if (!fullContinuousLine)
+    fullContinuousLine = getFullContinuousLine(series, xAccessor);
+  if (!lineLeftOffsets) lineLeftOffsets = getLeftOffsets(series, xAccessor);
 
   const closestXIndex = leastIndex(
     fullContinuousLine,

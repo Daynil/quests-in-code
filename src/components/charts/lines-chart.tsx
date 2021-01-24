@@ -53,6 +53,7 @@ type Props<T> = {
       marginBottom?: number;
       marginLeft?: number;
     };
+    seriesNames?: string[];
     xDomain?: [number, number];
     yDomain?: [number, number];
     xDomainNice?: boolean;
@@ -69,7 +70,7 @@ type Props<T> = {
     handleSetSelectedPoint?: (point: LinePointCoords) => void;
     xFormatTick?: (d: number) => string;
     yFormatTick?: (d: number) => string;
-    getTooltip?: (d: T) => React.ReactNode;
+    getTooltip?: (d: T, name?: string) => React.ReactNode;
     hoverDot?: boolean;
   };
 };
@@ -170,10 +171,6 @@ export function LinesChart<T>({
     [dataSeries, dimensions.width, dimensions.height]
   );
 
-  // TODO: figure out how to fix issue with new null filled arrays
-  // Points that have a null at hovered x should never have been selected to begin with
-  // Just realized, I won't actually need null filled series
-  // Just the full continuous line, then get the x value @ closest x hover instead of x index
   const linePaths = dataSeries.map((line, i) => {
     const hoveringLine = selectedPoint && i === selectedPoint.lineIndex;
 
@@ -230,7 +227,9 @@ export function LinesChart<T>({
       { x: xm, y: ym },
       dataSeries,
       xAccessor,
-      yAccessor
+      yAccessor,
+      fullContinuousLine,
+      lineLeftOffsets
     );
 
     setSelectedPoint({ lineIndex, xIndex });
@@ -308,9 +307,14 @@ export function LinesChart<T>({
           className="absolute inset-0 pointer-events-none"
         >
           {selectedPoint
-            ? options.getTooltip(
-                dataSeries[selectedPoint.lineIndex][selectedPoint.xIndex]
-              )
+            ? options.seriesNames
+              ? options.getTooltip(
+                  dataSeries[selectedPoint.lineIndex][selectedPoint.xIndex],
+                  options.seriesNames[selectedPoint.lineIndex]
+                )
+              : options.getTooltip(
+                  dataSeries[selectedPoint.lineIndex][selectedPoint.xIndex]
+                )
             : null}
         </span>
       )}
