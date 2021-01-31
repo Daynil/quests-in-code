@@ -153,7 +153,7 @@ export function StockSim({ chartType }: Props) {
   function stockTooltip(d: StockValue, name: string) {
     if (!d) return;
     return (
-      <div className="inline-block p-6 bg-gray-50 shadow-md rounded-md">
+      <div className="inline-block p-6 text-gray-800 bg-gray-50 shadow-md rounded-md">
         <div className="text-center mb-2 font-bold">{name}</div>
         <div className="flex justify-evenly">
           <div className="flex flex-col px-4">
@@ -328,6 +328,16 @@ export function StockSim({ chartType }: Props) {
                 }}
               />
               <div className="flex flex-row justify-center w-full">
+                <div className="flex flex-row items-center ml-8">
+                  <div
+                    style={{
+                      width: '15px',
+                      height: '15px',
+                      backgroundColor: '#48BB78'
+                    }}
+                  ></div>
+                  <div className="ml-2 text-sm">Actual</div>
+                </div>
                 <div className="flex flex-row items-center ml-8">
                   <div
                     style={{

@@ -61,9 +61,9 @@ Now we've got all the data and statistics we need, let's get to simulating!
 
 ## Creating a Monte Carlo Model for Stocks
 
-In order to simulate our stock using the Monte Carlo method, we'll need to create a model. For simpler examples like rolling dice, just the random generation of a number between 1 and 6 was sufficent. However, just randomly generating a stock price would not create a useful simulation. We need to utilize historical data to create a realistic simulation of future prices, which is where our statistics come in.
+In order to simulate our stock using the Monte Carlo method, we'll need to create a model. For simpler examples like rolling dice, just the random generation of a number between 1 and 6 was sufficent. However, just randomly generating any value for a stock price would not create a useful simulation. We need to utilize historical data to create a realistic simulation of future prices, which is where our statistics come in.
 
-One of the most commonly used models for projecting stock prices is [geometric Brownian motion (GBM)](https://en.wikipedia.org/wiki/Geometric_Brownian_motion).
+One of the most commonly used models for projecting stock prices is [Geometric Brownian motion (GBM)](https://en.wikipedia.org/wiki/Geometric_Brownian_motion).
 
 $$
 S_t = S_0 e^{(\mu - \frac{\sigma^2}{2}) t + \sigma W_t}
@@ -73,7 +73,7 @@ $S_t$ is our stock price at time "t", $S_0$ at the initial time, $\mu$ is the me
 
 In brief, GBM allows us to specify a "drift" for the stock, which we get from its mean. The drift represents the general direction the stock is moving. So, if a stock has been increasing consistently throughout our historical period, it will have a positive mean price change, with a magnitude depending on how much it increased on average. This is $\mu - \frac{\sigma^2}{2}$ in our formula.
 
-Even though our mean represents the general historical trend of the stock, we know it is completely unrealistic for a stock to increase a static amount each time day. We need to inject some volatility that we know is characteristic of the stock market. For this we use $\sigma W_t$.
+Even though our mean represents the general historical trend of the stock, we know it is completely unrealistic for a stock to increase a static amount each time day. We need to inject some of the volatility that is characteristic of the stock market that we know and love. For this we use $\sigma W_t$.
 
 $W_t$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process), also known as [brownian motion](https://en.wikipedia.org/wiki/Brownian_motion). Essentially, we need to add a random amount of volatility (positive or negative), a random shock, to a stock's average drift at every interval, and for this we can use a Wiener process. We can determine the magnitude of this volatility using the standard deviation of our stock data. The higher the standard deviation, the more volatile the stock, and the more the stock price can vary day to day, regardless of its average directional "drift".
 
@@ -229,16 +229,18 @@ After transposition, we simply call D3's quantile function on each row to get th
   <StockSim chartType="Quantiles Google" />
 </div>
 
-Now we can see at a glance where we are likely to be in 2020. since chose a worst-case quantile of 0.1 and best case of 0.9, we're saying that 80% of all scenarios fall between our top and bottom quantile.
+Now we can see at a glance where we are likely to be in 2020. Since we chose a worst-case quantile of 0.1 and best case of 0.9, we're saying that 80% of all scenarios fall between our top and bottom quantiles.
 
 Of course, you can see some of the actual projections still do fall well above or below our outer quantiles. You can extend this depending on your risk tolerances and preferences. For example, you can make the bounds 0.05 and 0.95, which would make 90% of scenarios fall between our outer bounds, and so on.
 
 The 0.25 and 0.75 bounds are essentially our "most likely" bounds, between which 50% of scenarios will fall. The 0.5 quantile just tells us the "median" case, which we can think of the most typical case.
 
+You'll see that despite the "COVID Drop" which Google experienced along with most of the stock market, its final 2020 price still tends to fall right around our median projection. Interesting!
+
 ## Conclusion
 
 It's been a bit of a journey, but it was well worth it! We've now learned how to create Monte Carlo simulations with javascript, and we learned how to create stock price projections with them.
 
-These types of calculations are often done using languages which have extensive libraries that enable advanced data analytics, like Python (using numpy and pandas) or R. One thing that frustrated me when I practiced data analytics using Python was the inability to extensively customize your charts and make them interactive. It felt like a whole dimension of data exploration and visualization was missing.
+These types of analyses are often done using languages which have extensive libraries that enable advanced data analytics, like Python (using numpy and pandas) or R. One thing that frustrated me when I practiced data analytics using Python was the inability to extensively customize your charts and make them interactive. It felt like a whole dimension of data exploration and visualization was missing.
 
 But with javascript, D3, and some creativity, we can do pretty much anything just as well as with Python, and the look and interactivity of our visualizations is limited only by our imagination!
