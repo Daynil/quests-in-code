@@ -1,14 +1,19 @@
 import { csv, deviation, format as numFormat, mean } from 'd3';
 import { format as dateFormat, parse } from 'date-fns';
 import React, { useEffect, useState } from 'react';
+import { getQuantiles } from '../../utils/data-helpers';
 import { normSinv } from '../../utils/normSinv';
 import { defaultLineStyles, LinesChart } from './lines-chart';
 
 type Props = {
-  chartType: 'Raw Google' | 'Projection Google' | 'Multiprojection Google';
+  chartType:
+    | 'Raw Google'
+    | 'Projection Google'
+    | 'Multiprojection Google'
+    | 'Quantiles Google';
 };
 
-type StockValue = { DataType: 'Ref' | 'Proj'; Date: number; Close: number };
+type StockValue = { DataType: string; Date: number; Close: number };
 type StockStats = { meanDailyChange: number; stdDevDailyChange: number };
 
 export function StockSim({ chartType }: Props) {
@@ -87,14 +92,35 @@ export function StockSim({ chartType }: Props) {
     return projection2020;
   }
 
-  function multiProject2020Prices(data: StockValue[], stats: StockStats) {
+  function multiProject2020Prices(
+    data: StockValue[],
+    stats: StockStats,
+    addQuantiles?: boolean
+  ): StockValue[][] {
     const projections: StockValue[][] = [];
 
     for (let i = 1; i < 50; i++) {
       projections.push(project2020Prices(data, stats));
     }
 
-    return projections;
+    if (!addQuantiles) return projections;
+
+    const quantiles = [0.1, 0.25, 0.5, 0.75, 0.9];
+    const projectionQuantiles = getQuantiles(
+      projections,
+      d => d.Close,
+      quantiles
+    );
+
+    const quantileLineData = projectionQuantiles.map((quantileRow, rowNum) =>
+      quantileRow.map((quantileCol, colNum) => ({
+        DataType: quantiles[rowNum] + '',
+        Date: projections[0][colNum].Date,
+        Close: quantileCol
+      }))
+    );
+
+    return projections.concat(quantileLineData);
   }
 
   useEffect(() => {
@@ -113,7 +139,13 @@ export function StockSim({ chartType }: Props) {
       const stockStats = getStockStats(data);
       setStockStats(stockStats);
       setStockProjData(project2020Prices(data, stockStats));
-      setStockProjections(multiProject2020Prices(data, stockStats));
+      setStockProjections(
+        multiProject2020Prices(
+          data,
+          stockStats,
+          chartType === 'Quantiles Google'
+        )
+      );
     }
     loadData();
   }, []);
@@ -244,13 +276,121 @@ export function StockSim({ chartType }: Props) {
         );
       }
 
+      case 'Quantiles Google': {
+        const linesData: StockValue[][] =
+          stockData.length && stockProjData.length
+            ? [stockData, ...stockProjections]
+            : [[]];
+        return (
+          <div className="flex flex-col items-center w-full">
+            <button
+              className="btn btn-green w-44 m-4"
+              onClick={() =>
+                setStockProjections(
+                  multiProject2020Prices(stockData, stockStats, true)
+                )
+              }
+            >
+              Rerun simulation
+            </button>
+            <div className="flex flex-col items-center w-full">
+              <LinesChart
+                dataSeries={linesData}
+                xAccessor={d => d.Date}
+                yAccessor={d => d.Close}
+                aspectRatio={1000 / 600}
+                options={{
+                  yDomainNice: true,
+                  xFormatTick: d => dateFormat(d, 'MMM d, yy'),
+                  yFormatTick: d => numFormat('$.2s')(d),
+                  stylizeLine: (line, hovering, hoveringThisLine) => {
+                    const lineStyle = { ...defaultLineStyles };
+
+                    if (line[0]) {
+                      if (line[0].DataType === 'Proj') {
+                        lineStyle.stroke = '#006AFF';
+                        lineStyle.opacity = '0.1';
+                      } else if (line[0].DataType === '0.9') {
+                        lineStyle.stroke = '#E4FF00';
+                      } else if (line[0].DataType === '0.75') {
+                        lineStyle.stroke = '#00FFE7';
+                      } else if (line[0].DataType === '0.5') {
+                        lineStyle.stroke = '#1600FF';
+                      } else if (line[0].DataType === '0.25') {
+                        lineStyle.stroke = '#FF00A6';
+                      } else if (line[0].DataType === '0.1') {
+                        lineStyle.stroke = '#FF0018';
+                      }
+                    }
+
+                    return lineStyle;
+                  }
+                }}
+              />
+              <div className="flex flex-row justify-center w-full">
+                <div className="flex flex-row items-center ml-8">
+                  <div
+                    style={{
+                      width: '15px',
+                      height: '15px',
+                      backgroundColor: '#E4FF00'
+                    }}
+                  ></div>
+                  <div className="ml-2 text-sm">90th Percentile</div>
+                </div>
+                <div className="flex flex-row items-center ml-8">
+                  <div
+                    style={{
+                      width: '15px',
+                      height: '15px',
+                      backgroundColor: '#00FFE7'
+                    }}
+                  ></div>
+                  <div className="ml-2 text-sm">75th Percentile</div>
+                </div>
+                <div className="flex flex-row items-center ml-8">
+                  <div
+                    style={{
+                      width: '15px',
+                      height: '15px',
+                      backgroundColor: '#1600FF'
+                    }}
+                  ></div>
+                  <div className="ml-2 text-sm">50th Percentile</div>
+                </div>
+                <div className="flex flex-row items-center ml-8">
+                  <div
+                    style={{
+                      width: '15px',
+                      height: '15px',
+                      backgroundColor: '#FF00A6'
+                    }}
+                  ></div>
+                  <div className="ml-2 text-sm">25th Percentile</div>
+                </div>
+                <div className="flex flex-row items-center ml-8">
+                  <div
+                    style={{
+                      width: '15px',
+                      height: '15px',
+                      backgroundColor: '#FF0018'
+                    }}
+                  ></div>
+                  <div className="ml-2 text-sm">10th Percentile</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
       default:
         break;
     }
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center xl:-mx-64 lg:-mx-36">
       {getChartOfType(chartType)}
     </div>
   );

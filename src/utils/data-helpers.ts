@@ -1,4 +1,12 @@
-import { leastIndex, max, maxIndex, min } from 'd3';
+import {
+  ascending,
+  leastIndex,
+  max,
+  maxIndex,
+  min,
+  quantile,
+  transpose
+} from 'd3';
 import cloneDeep from 'lodash.clonedeep';
 import {
   LinePointCoords,
@@ -241,4 +249,20 @@ export function getSeriesDomainExtent<T>(
     min: min(series, line => min(line.map(d => xAccessor(d)))),
     max: max(series, line => max(line.map(d => xAccessor(d))))
   };
+}
+
+export function getQuantiles<T>(
+  series: T[][],
+  yAccessor: (d: T) => number,
+  quantiles: number[]
+): number[][] {
+  const transposed = transpose<T>(series).map(d =>
+    d.map(dr => yAccessor(dr)).sort(ascending)
+  );
+  const quantileData: number[][] = [];
+  for (let i = 0; i < quantiles.length; i++) {
+    const quantileNum = quantiles[i];
+    quantileData.push(transposed.map(d => quantile(d, quantileNum)));
+  }
+  return quantileData;
 }
