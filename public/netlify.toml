@@ -1,8 +1,9 @@
 # Redirect with a 301
 [[redirects]]
-from = "/posts/*"
-to = "https://dlibin.net/posts/:splat"
+from = "https://questsincode.com/*"
+to = "https://dlibin.net/:splat"
 status = 301
+force = true
 
 [[headers]]
   # Define which paths this specific [[headers]] block will cover.
