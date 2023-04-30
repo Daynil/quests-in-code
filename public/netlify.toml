@@ -1,3 +1,9 @@
+# Redirect with a 301
+[[redirects]]
+from = "/posts/*"
+to = "https://dlibin.net/posts/:splat"
+status = 301
+
 [[headers]]
   # Define which paths this specific [[headers]] block will cover.
   for = "/postsMetaData.json"
